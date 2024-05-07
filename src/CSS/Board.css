@@ -1,0 +1,36 @@
+.canvas {
+  background-color: rgb(255, 255, 255);
+  height: 90000px;
+  width: 1000px;
+  position: absolute;
+}
+
+.dot {
+  border-radius: 50%;
+  position: absolute;
+}
+
+.selected {
+  stroke: red;
+}
+.temp {
+  position: absolute;
+}
+
+#debugPanel {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  z-index: 1000;
+}
+#debugContent {
+  word-wrap: break-word;
+  max-width: 800px; /* Adjust as needed */
+  max-height: 800px; /* Adjust as needed */
+  overflow: scroll; /* or any other desired value */
+}

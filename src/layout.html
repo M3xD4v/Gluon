@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
+    <style>
+        body {
+            height: 100%;
+            overflow-y: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .iframe-container {
+            flex: 1;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .navbar {
+            width: 100%;
+            background: rgb(21, 21, 21);
+            padding: 10px 0px;
+            color: #FFF;
+            z-index: 2;
+        }
+
+        .navbar ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15;
+        }
+
+        .navbar ul li {
+            display: inline;
+        }
+
+        .Tool {
+            color: white;
+            padding: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            background-color: rgb(39 39 39);
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            $(".iframe-container").scroll(function () {
+                var scrollTop = $(this).scrollTop();
+                var scrollLeft = $(this).scrollLeft();
+                $(".iframe-container").not(this).scrollTop(scrollTop).scrollLeft(scrollLeft);
+            });
+        });
+    </script>
+</head>
+
+
+
+<body>
+
+    <nav class="navbar">
+        <ul>
+            <input type="range" min="0.2" max="3" step="0.05" value="1.0" onchange="changeZoom(this.value)" class="Tool">
+            <span id="zoomValue">1.0</span>
+            <input type="number" id="customZoomInput" min="0.2" max="3" step="0.05" value="1.0" onchange="updateZoom()">
+            <li><button onclick="PageToggle()" class="Tool">Page only</button></li>
+            <li><button onclick="resetZoom()" class="Tool">Reset Zoom</button></li>
+            <li><button onclick="MultiplePage()" class="Tool">Multiple Page Toggle</button></li>
+            <li><button onclick="DoublePage()" class="Tool">Double Page</button></li>
+            <li><button onclick="TriplePage()" class="Tool">Triple Page</button></li>
+        </ul>
+    </nav>
+
+
+    <div class="container">
+        <div class="iframe-container" id="pdf_iframe">
+            <iframe src="PDF.html" id="pdfViewer"></iframe>
+        </div>
+        <div class="iframe-container" id="board_iframe">
+            <iframe src="Board.html" id="Board_Viewer"></iframe>
+        </div>
+    </div>
+
+
+</body>
+
+
+
+
+<script>
+    var view_mode = "0";
+
+    function onViewModeZero() {
+        let board = document.getElementById("board_iframe");
+        board.style.display = "block"
+    }
+
+    function onViewModeOne() {
+        let board = document.getElementById("board_iframe");
+        board.style.display = "none"
+    }
+
+    // Create a proxy to intercept changes to view_mode
+    var view_mode_proxy = new Proxy({
+        value: view_mode
+    }, {
+        set: function (target, key, value) {
+            if (key === 'value') {
+                if (value === "0") {
+                    onViewModeZero();
+                } else if (value === "1") {
+                    onViewModeOne();
+                } else {
+                    console.error("Invalid view mode: " + value);
+                    return false; // Prevent setting invalid values
+                }
+                target[key] = value;
+                return true;
+            }
+        }
+    });
+
+
+
+    function GetIframeHeight(ID) {
+        var iframe = document.getElementById(ID);
+        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        var iframeHeight = iframeDocument.getElementById('viewerContainer').scrollHeight;
+        return iframeHeight;
+    }
+
+    function setIframeBodyHeight(iframeId, height) {
+        var iframe = document.getElementById(iframeId);
+        if (iframe) {
+            var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDocument.body.style.height = height + 'px';
+        } else {
+            console.error('Iframe with id', iframeId, 'not found.');
+        }
+    }
+
+    var PDF_Iframe = document.getElementById('pdfViewer');
+    console.log(PDF_Iframe)
+    var Board_Iframe = document.getElementById('Board_Viewer');
+    let temp_zoom = 1;
+
+    function changeZoom(value) {
+    if (view_mode_proxy.value == 1) {
+        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+        viewerContainer.setAttribute('zoom', value);
+        temp_zoom = value;
+        document.getElementById('zoomValue').textContent = value.toFixed(2);
+        document.getElementById('customZoomInput').value = value.toFixed(2); 
+    }
+}
+
+PDF_Iframe.addEventListener('load', function() {
+    var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+    viewerContainer.addEventListener('wheel', function(event) {
+        if (event.ctrlKey) {
+            event.preventDefault();
+            var delta = Math.sign(event.deltaY);
+            
+            var zoomStep = 0.05; // You can adjust this value for finer or coarser zoom increments
+            var currentZoom = parseFloat(document.getElementById('zoomValue').textContent);
+            var newZoom = currentZoom + delta * zoomStep;
+            newZoom = Math.max(0.1, Math.min(10.0, newZoom));
+
+            changeZoom(newZoom);
+        }
+    });
+});
+
+function updateZoom() {
+    var customZoomValue = parseFloat(document.getElementById('customZoomInput').value);
+    if (!isNaN(customZoomValue) && customZoomValue >= 0.2 && customZoomValue <= 3) {
+        changeZoom(customZoomValue);
+    } else {
+        alert("Please enter a valid zoom value between 0.2 and 3.");
+    }
+}
+
+    function resetZoom() {
+        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+        var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
+        viewerContainer.setAttribute('zoom', "page-width");
+        temp_zoom = "page-width";
+        document.getElementById('zoomValue').textContent = "page-width";
+
+    }
+
+    function PageToggle(value) {
+        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+        var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
+
+        if (view_mode_proxy.value == 0) {
+            view_mode_proxy.value = "1"
+            viewerContainer.setAttribute('zoom', temp_zoom);
+        } else if (view_mode_proxy.value == 1) {
+            view_mode_proxy.value = "0";
+            viewerContainer.setAttribute('zoom', "page-width");
+        }
+    }
+
+    function MultiplePage() {
+        var viewer = PDF_Iframe.contentDocument.getElementById('viewer');
+        viewer.classList.toggle('pdfViewer');
+        viewer.classList.toggle('pdfViewer_MultiplePage');
+    }
+    function DoublePage() {
+        changeZoom(1.14)
+    }
+    function TriplePage() {
+        changeZoom(0.75)
+    }
+    setTimeout(function () {
+        setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
+        var Board_Iframe = document.getElementById('Board_Viewer');
+        Board_Iframe.contentDocument.getElementById('canvas_container').height = GetIframeHeight('pdfViewer')
+        Board_Iframe.contentDocument.getElementById('canvas_container').width = Board_Iframe.contentDocument
+            .getElementById('board_container').offsetWidth
+    }, 500);
+
+    // Debounce function to limit scroll event firing frequency
+    function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+
+    // Function to synchronize scrolling between PDF and Board
+    function syncScroll(fromElement, toElement) {
+        const scrollTop = fromElement.scrollTop;
+        toElement.contentWindow.scrollTo(0, scrollTop);
+    }
+
+    function syncScroll_Second(value) {
+        var PDF_Iframe = document.getElementById('pdfViewer');
+        var PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
+        var PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
+        PDF_DIV.scrollTo(0, value);
+    }
+
+    let activeIframe = null;
+
+    function setActiveIframe(iframe) {
+        activeIframe = iframe;
+    }
+
+    // PDF Viewer
+    PDF_Iframe.addEventListener("load", function () {
+        setActiveIframe('PDF');
+        const PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
+        const PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
+        let lastScrollTop = PDF_DIV.scrollTop;
+        // Synchronize PDF scroll to Board
+        PDF_DIV.addEventListener('scroll', debounce(() => {
+            const scrollTop = PDF_DIV.scrollTop;
+            if (scrollTop !== lastScrollTop) {
+                lastScrollTop = scrollTop;
+                if (activeIframe === 'PDF') {
+                    syncScroll(PDF_DIV, document.getElementById('Board_Viewer'));
+                }
+            }
+        }, 1));
+    });
+
+    // Board Viewer
+    Board_Iframe.addEventListener("load", function () {
+        setActiveIframe('Board');
+        const iframeWindow = Board_Iframe.contentWindow;
+        const iframeDocument = iframeWindow.document;
+        let lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body.scrollTop;
+
+        // Synchronize Board scroll to PDF
+        iframeDocument.addEventListener('scroll', debounce(() => {
+            lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body
+                .scrollTop;
+            if (activeIframe === 'Board') {
+                syncScroll_Second(lastScrollTop);
+            }
+        }, 1));
+    });
+
+    // Event listeners to track active iframe
+    PDF_Iframe.addEventListener('mouseover', function () {
+        setActiveIframe('PDF');
+    });
+
+    Board_Iframe.addEventListener('mouseover', function () {
+        setActiveIframe('Board');
+    });
+</script>
+
+</html>

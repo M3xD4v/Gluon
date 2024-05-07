@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollable PDF Viewer with PDF.js</title>
+</head>
+<link rel="stylesheet" href="CSS/pdf_viewer.css">
+<script src="../../../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
+<script src="../../../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
+<script src="JS/RightClick.JS" type="module"></script>
+<body tabindex="1">
+    <div id="customMenu" class="custom-menu" style="display: none;">
+            <button id="copyAction">translate</button>
+            <button id="copyAction">Lorem</button>
+            <button id="copyAction">Lorem</button>
+    </div>
+
+    <div id="viewerContainer" zoom="1">
+        <div id="viewer" class="pdfViewer"></div>
+    </div>
+
+</body>
+<script src="JS/PDFRenderer.js" type="module"></script>
+
+
+<script>
+
+    
+</script>
+<style>
+    body {
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+    }
+
+    #viewerContainer {
+        overflow: auto;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-content: center;
+        justify-content: space-around;
+    }
+
+    div::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    .custom-menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px 12px;
+        z-index: 1000;
+    }
+
+</style>
+
+</html>

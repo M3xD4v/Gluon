@@ -1,0 +1,20 @@
+{
+  "name": "gluon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^30.0.2"
+  },
+  "dependencies": {
+    "custom-electron-titlebar": "^4.2.8",
+    "electron-pdf-window": "^1.0.12",
+    "pdfjs-dist": "^4.2.67"
+  }
+}
