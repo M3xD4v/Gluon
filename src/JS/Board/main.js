@@ -1,7 +1,7 @@
 var click = 0 
 var startPoint;
 var IntervalArray = [];
-
+var previewLineGlobal;
 var InControl = [];
 
 

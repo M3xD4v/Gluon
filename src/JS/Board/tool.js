@@ -12,6 +12,46 @@ function text() {
     });
 }
 
+function previewLine(input,options) {
+    previewLn = new fabric.Line([input.x, input.y, canvas.getPointer(options.e).x, canvas.getPointer(options.e).y], {
+        stroke: 'black',
+        selectable: false,
+        evented: false,
+        strokeDashArray: [10, 10] // optional: dashed line for preview
+    });
+    previewLineGlobal = previewLn
+    canvas.add(previewLn);
+
+    canvas.on('mouse:move', function PreviewLineFunc() {
+        var pointer = canvas.getPointer(options.e);
+        previewLn.set({
+            x2: pointer.x,
+            y2: pointer.y
+        });
+        canvas.renderAll();
+        if (previewLineGlobal == undefined) canvas.off('mouse:move', PreviewLineFunc);
+    });
+}
+
+function rectangle() {
+    canvas.selection = false
+    canvas.on('mouse:down', function RectMDown(options) {
+        if (options.target == null && GAV("tool") == "rectangle") {
+            click = click + 1
+            var pointer = canvas.getPointer(options.e);
+            if (startPoint == undefined) {
+                startPoint = pointer;
+                previewRectangle(pointer, options);
+            } else if (startPoint != undefined) {
+                addRectangle(startPoint, pointer);
+                canvas.off('mouse:down', RectMDown);
+                canvas.remove(previewRectGlobal);
+                previewRectGlobal = undefined;
+            }
+        }
+    });
+}
+
 function line() {
     canvas.selection = false
     canvas.on('mouse:down', function LineMDown (options) {
@@ -20,10 +60,13 @@ function line() {
             var pointer = canvas.getPointer(options.e);
             if (startPoint == undefined) {
                 startPoint = pointer;
+                previewLine(pointer,options)
             }
             else if (startPoint != undefined) {
                 addLine(startPoint,pointer)
                 canvas.off('mouse:down', LineMDown);
+                canvas.remove(previewLineGlobal);
+                previewLineGlobal = undefined;
             }
         }
     });

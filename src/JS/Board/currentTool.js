@@ -3,6 +3,7 @@ function activateTool(toolName) {
         "text": text,
         "line": line,
         "edit": edit,
+        "rectangle": rectangle,
         "delete": deleteSelected,
         "none": buh,
     };

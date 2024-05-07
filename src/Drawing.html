@@ -20,7 +20,6 @@
   <div id="debugPanel">
     <h2>Debugging Panel</h2>
     <div id="debugContent">
-
     </div>
   </div>
 
@@ -29,8 +28,13 @@
     <button onclick="setTool('line')">line</button>
     <button onclick="setTool('edit')">edit</button>
     <button onclick="setTool('delete')">delete</button>
+    <button onclick="setTool('rectangle')">rectangle</button>
     <button onclick="saveCanvas()">save Canvas</button>
     <button onclick="loadCanvas()">load Canvas</button>
+    <button id="btoggleButton">Display Bounding Boxes</button>
+    <br>
+    <button onclick="canvas.getActiveObject().sendBackwards();">Stack DOWN</button>
+    <button onclick="canvas.getActiveObject().bringForward();">Stack UP</button>
   </div>
 
   <label for="ColorI">Color:</label>
@@ -43,9 +47,25 @@
     <canvas id="my_canvas" width="1000" height="9000" style="border:1px solid #ccc"></canvas>
   </div>
 
+  <div id="objectsMenu" style="position: absolute; top: 93px; left: 700px;"></div>
 
   <script>
     var canvas = new fabric.Canvas('my_canvas');
+
+    function updateObjectsMenu() {
+      var objects = canvas.getObjects();
+      var objectsMenu = document.getElementById('objectsMenu');
+      objectsMenu.innerHTML = ''; // Clear previous content
+
+      objects.forEach(function (object, index) {
+        var objectItem = document.createElement('div');
+        objectItem.textContent = (index + 1) + ': ' + object.type;
+        objectsMenu.appendChild(objectItem);
+      });
+    }
+
+    // Call the function to initially populate the menu
+    updateObjectsMenu();
   </script>
 
 

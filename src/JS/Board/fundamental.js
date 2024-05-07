@@ -24,6 +24,7 @@ function addText(x, y) {
 
 function addLine(pos1, pos2) {
     if (!canvas.getActiveObject()) { // Check if there isn't a target selected
+        
         var line = makeLine([pos1.x, pos1.y, pos2.x, pos2.y]);
         canvas.add(line);
         canvas.selection = true
@@ -32,9 +33,10 @@ function addLine(pos1, pos2) {
 }
 
 function makeLine(coords) {
+    var ColorInput = document.getElementById('ColorI');
     return new fabric.Line(coords, {
-        fill: 'red',
-        stroke: 'red',
+        fill: ColorInput.value,
+        stroke: ColorInput.value,
         strokeWidth: 5,
         selectable: true,
         evented: false,
@@ -69,10 +71,12 @@ function replaceValues(ContP, line) {
 }
 
 
-function addControlPoints(x, y, fill, radius, line) {
+function addControlPoints(x, y, radius, line) {
     const circle = new fabric.Circle({
         radius: radius,
-        fill: fill,
+        stroke: "#212121",
+        strokeWidth: 2,
+        fill: "#636363",
         left: x,
         top: y,
         hasControls: false,
@@ -92,8 +96,8 @@ function lineControlPoints(line) {
         const controlPoint = new ControlPoint(line);
         InControl.push(controlPoint);
 
-        addControlPoints(line.x1, line.y1, "black", 5, line);
-        addControlPoints(line.x2, line.y2, "black", 5, line);
+        addControlPoints(line.x1, line.y1, 5, line);
+        addControlPoints(line.x2, line.y2, 5, line);
         move(line)
     }
 }
@@ -111,17 +115,21 @@ function move(line) {
     let point1 = selected[0]
     let point2 = selected[1]
     point1.on('moving', function () {
+        point1.bringToFront();
         line.set({
             x1: point1.left,
             y1: point1.top
         });
+        line.setCoords();
         canvas.renderAll();
     });
     point2.on('moving', function () {
+        point2.bringToFront();
         line.set({
             x2: point2.left,
             y2: point2.top
         });
+        line.setCoords();
         canvas.renderAll();
     });
 }
@@ -138,4 +146,57 @@ function deleteControlPoints(line) {
         canvas.remove(getAllControlPoints()[index])
     }
     InControl = []
+}
+
+function previewRectangle(input, options) {
+    previewRect = new fabric.Rect({
+        left: input.x,
+        top: input.y,
+        width: canvas.getPointer(options.e).x - input.x,
+        height: canvas.getPointer(options.e).y - input.y,
+        stroke: 'black',
+        fill: "#43ff6494",
+        selectable: false,
+        evented: false,
+        strokeDashArray: [10, 10] 
+    });
+    previewRectGlobal = previewRect;
+    canvas.add(previewRect);
+
+    canvas.on('mouse:move', function PreviewRectFunc() {
+        var pointer = canvas.getPointer(options.e);
+        previewRect.set({
+            width: pointer.x - input.x,
+            height: pointer.y - input.y
+        });
+        canvas.renderAll();
+        if (previewRectGlobal == undefined) canvas.off('mouse:move', PreviewRectFunc);
+    });
+}
+
+
+function addRectangle(pos1, pos2) {
+    if (!canvas.getActiveObject()) { // Check if there isn't a target selected
+        var rect = makeRectangle(pos1, pos2);
+        canvas.add(rect);
+        canvas.selection = true;
+        TC();
+    }
+}
+
+function makeRectangle(pos1, pos2) {
+    var ColorInput = document.getElementById('ColorI');
+    return new fabric.Rect({
+        left: Math.min(pos1.x, pos2.x),
+        top: Math.min(pos1.y, pos2.y),
+        width: Math.abs(pos1.x - pos2.x),
+        height: Math.abs(pos1.y - pos2.y),
+        fill: ColorInput.value,
+        stroke: ColorInput.value,
+        strokeWidth: 5,
+        selectable: true,
+        evented: true,
+        hasControls: true,
+        hasBorders: true
+    });
 }

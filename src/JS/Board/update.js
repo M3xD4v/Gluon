@@ -5,21 +5,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (canvas.getActiveObject() != null) {
             let activeObject = canvas.getActiveObject()
 
-            if (activeObject.type == "text") {
+            if (activeObject.type == "textbox") {
                 activeObject.set('fill', ColorInput.value);
                 canvas.renderAll();
             }
 
-            if (activeObject.type == "line") {
+            else if (activeObject.type == "line") {
+                activeObject.set('stroke', ColorInput.value);
+                canvas.renderAll();
+            }
+
+            else if (activeObject.type == "rect") {
+                activeObject.set('fill', ColorInput.value);
                 activeObject.set('stroke', ColorInput.value);
                 canvas.renderAll();
             }
 
 
-
         }
     });
     function CheckIfSelected() {
+        updateObjectsMenu();
             var activeObject = canvas.getActiveObject();
             if (activeObject) {
                 if (activeObject._objects == undefined && activeObject.type == "line") {
