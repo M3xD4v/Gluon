@@ -1,202 +1,100 @@
-function generateID(inputString) {
-    let hash = CryptoJS.SHA256(inputString).toString(CryptoJS.enc.Hex);
-    return hash;
+function getColor() {
+    return document.getElementById('ColorValue').value;
 }
 
-function getMousePosition(options) {
-    return canvas.getPointer(options.e)
+function getWidth() {
+    return document.getElementById('WidthValue').value;
 }
 
-function addText(x, y) {
-    var text = new fabric.Textbox('Your Text Here', {
-        left: x,
-        top: y,
-        fontSize: 20,
-        fill: 'black'
+function line_f(firstPosition, secondPosition, color, strokeWidth) {
+    let line = draw.line(firstPosition.x, firstPosition.y, secondPosition.x, secondPosition.y).stroke({
+        width: strokeWidth
     });
-    canvas.add(text);
-    canvas.setActiveObject(text);
-    text.enterEditing();
-    text.selectAll();
-    canvas.selection = true
-    TC();
+    line.stroke({
+        color: color
+    });
+    return {
+        do: () => line.show(),
+        undo: () => line.hide()
+    };
 }
 
-function addLine(pos1, pos2) {
-    if (!canvas.getActiveObject()) { // Check if there isn't a target selected
+function text_f(position, text, color, fontSize) {
+    let textElement = draw.text(text).fill(color).font({size: fontSize})
+    textElement.move(position.x, position.y);
+    return {
+        do: () => textElement.show(),
+        undo: () => textElement.hide()
+    };
+}
+
+    function createMovableTextbox(position) {
+        console.log('ah')
+        var offsetX = 100; // Adjust this value if you want the box to be offset from the mouse position
+        var offsetY = 50; // Adjust this value if you want the box to be offset from the mouse position
+
+
+        var movableBox = document.createElement('div');
+        var drawingDiv = document.getElementById('drawing');
+        console.log(drawingDiv)
+        drawingDiv.appendChild(movableBox);
+
         
-        var line = makeLine([pos1.x, pos1.y, pos2.x, pos2.y]);
-        canvas.add(line);
-        canvas.selection = true
-        TC();
-    }
-}
-
-function makeLine(coords) {
-    var ColorInput = document.getElementById('ColorI');
-    return new fabric.Line(coords, {
-        fill: ColorInput.value,
-        stroke: ColorInput.value,
-        strokeWidth: 5,
-        selectable: true,
-        evented: false,
-        hasControls: false,
-        hasBorders: false
-    });
-}
+        movableBox.className = 'movableBox';
+        movableBox.style.position = 'absolute';
+        movableBox.style.left = position.x + 'px';
+        movableBox.style.top = position.y + 'px';
+        movableBox.setAttribute('contenteditable', 'true');
+        movableBox.innerHTML = 'text';
 
 
-class ControlPoint {
-    constructor(object, c1 = "empty", c2 = "empty") {
-        this.object = object;
-        this.c1 = c1;
-        this.c2 = c2;
-    }
 
-    setContP(ContP) {
-        if (this.c1 === "empty") {
-            this.c1 = ContP;
-        } else {
-            this.c2 = ContP;
-        }
-    }
-}
+        var isDown = false;
+        var initialX, initialY;
 
-
-function replaceValues(ContP, line) {
-    const controlPoint = InControl.find(cp => cp.object === line);
-    if (controlPoint) {
-        controlPoint.setContP(ContP);
-    }
-}
-
-
-function addControlPoints(x, y, radius, line) {
-    const circle = new fabric.Circle({
-        radius: radius,
-        stroke: "#212121",
-        strokeWidth: 2,
-        fill: "#636363",
-        left: x,
-        top: y,
-        hasControls: false,
-        hasBorders: false,
-    });
-    canvas.add(circle);
-    replaceValues(circle, line);
-}
-
-function isLineInControl(line) {
-    return InControl.some(cp => cp.object === line);
-}
-
-
-function lineControlPoints(line) {
-    if (!isLineInControl(line) && line.type === "line") {
-        const controlPoint = new ControlPoint(line);
-        InControl.push(controlPoint);
-
-        addControlPoints(line.x1, line.y1, 5, line);
-        addControlPoints(line.x2, line.y2, 5, line);
-        move(line)
-    }
-}
-
-function getControlPoints(line) {
-    const controlPoint = InControl.find(cp => cp.object === line);
-    if (controlPoint) {
-        return [controlPoint.c1, controlPoint.c2];
-    }
-    return [];
-}
-
-function move(line) {
-    var selected = getControlPoints(line)
-    let point1 = selected[0]
-    let point2 = selected[1]
-    point1.on('moving', function () {
-        point1.bringToFront();
-        line.set({
-            x1: point1.left,
-            y1: point1.top
+        movableBox.addEventListener('mousedown', function(e) {
+            isDown = true;
+            initialX = e.clientX - parseInt(movableBox.style.left);
+            initialY = e.clientY - parseInt(movableBox.style.top);
         });
-        line.setCoords();
-        canvas.renderAll();
-    });
-    point2.on('moving', function () {
-        point2.bringToFront();
-        line.set({
-            x2: point2.left,
-            y2: point2.top
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDown) {
+                e.preventDefault();
+                movableBox.style.left = (e.clientX - initialX) + 'px';
+                movableBox.style.top = (e.clientY - initialY) + 'px';
+            }
         });
-        line.setCoords();
-        canvas.renderAll();
-    });
-}
-function getAllControlPoints() {
-    const allControlPoints = [];
-    InControl.forEach(cp => {
-        allControlPoints.push(cp.c1, cp.c2);
-    });
-    return allControlPoints;
-}
 
-function deleteControlPoints(line) {
-    for (let index = 0; index < getAllControlPoints().length; index++) {
-        canvas.remove(getAllControlPoints()[index])
-    }
-    InControl = []
-}
-
-function previewRectangle(input, options) {
-    previewRect = new fabric.Rect({
-        left: input.x,
-        top: input.y,
-        width: canvas.getPointer(options.e).x - input.x,
-        height: canvas.getPointer(options.e).y - input.y,
-        stroke: 'black',
-        fill: "#43ff6494",
-        selectable: false,
-        evented: false,
-        strokeDashArray: [10, 10] 
-    });
-    previewRectGlobal = previewRect;
-    canvas.add(previewRect);
-
-    canvas.on('mouse:move', function PreviewRectFunc() {
-        var pointer = canvas.getPointer(options.e);
-        previewRect.set({
-            width: pointer.x - input.x,
-            height: pointer.y - input.y
+        document.addEventListener('mousemove', function(e) {
+            if (!isDown) return;
+        
+            e.preventDefault();
+        
+            var drawingDivRect = drawingDiv.getBoundingClientRect();
+        
+            var newX = e.clientX - initialX;
+            var newY = e.clientY - initialY;
+        
+            // Check boundaries
+            if (newX < drawingDivRect.left) {
+                newX = drawingDivRect.left;
+            } else if (newX + movableBox.offsetWidth > drawingDivRect.right) {
+                newX = drawingDivRect.right - movableBox.offsetWidth;
+            }
+        
+            if (newY < drawingDivRect.top) {
+                newY = drawingDivRect.top;
+            } else if (newY + movableBox.offsetHeight > drawingDivRect.bottom) {
+                newY = drawingDivRect.bottom - movableBox.offsetHeight;
+            }
+        
+            movableBox.style.left = newX + 'px';
+            movableBox.style.top = newY + 'px';
         });
-        canvas.renderAll();
-        if (previewRectGlobal == undefined) canvas.off('mouse:move', PreviewRectFunc);
-    });
-}
 
-
-function addRectangle(pos1, pos2) {
-    if (!canvas.getActiveObject()) { // Check if there isn't a target selected
-        var rect = makeRectangle(pos1, pos2);
-        canvas.add(rect);
-        canvas.selection = true;
-        TC();
+        document.addEventListener('mouseup', function() {
+            isDown = false;
+        });
     }
-}
 
-function makeRectangle(pos1, pos2) {
-    var ColorInput = document.getElementById('ColorI');
-    return new fabric.Rect({
-        left: Math.min(pos1.x, pos2.x),
-        top: Math.min(pos1.y, pos2.y),
-        width: Math.abs(pos1.x - pos2.x),
-        height: Math.abs(pos1.y - pos2.y),
-        fill: ColorInput.value,
-        stroke: ColorInput.value,
-        strokeWidth: 5,
-        selectable: true,
-        evented: true,
-        hasControls: true,
-        hasBorders: true
-    });
-}

@@ -1,10 +1,9 @@
 .canvas {
   background-color: rgb(255, 255, 255);
-  height: 90000px;
-  width: 1000px;
+  height: 100%;
+  width: 100%;
   position: absolute;
 }
-
 .dot {
   border-radius: 50%;
   position: absolute;
@@ -33,4 +32,11 @@
   max-width: 800px; /* Adjust as needed */
   max-height: 800px; /* Adjust as needed */
   overflow: scroll; /* or any other desired value */
+}
+
+.movableBox {
+  max-width:80%;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: system-ui;
 }

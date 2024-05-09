@@ -1,75 +1,104 @@
-var click = 0 
-var startPoint;
-var IntervalArray = [];
-var previewLineGlobal;
-var InControl = [];
+
+let firstPosition = null;
+let secondPosition = null;
+let DrawEventListeners = [];
+let history = [];
+let pointer = -1;
+let preview = null;
+
+
+function clearDrawEventListeners() {
+    DrawEventListeners.forEach((listener) => {
+        draw.off(listener.type, listener.func);
+    });
+    DrawEventListeners = [];
+}
+
+function EventListenerTrack(Event_Name,Event_Type,Event_Func) {
+let event = {
+    name: Event_Name,
+    type: Event_Type,
+    func: Event_Func
+}
+DrawEventListeners.push(event);
+}
+
+function disableEventListener(event){
+    draw.off(event.type, event.func);
+    DrawEventListeners = DrawEventListeners.filter((listener) => listener.name !== event.name);
+}
+
+function getEventListenerByName(name){
+    return DrawEventListeners.find((listener) => listener.name === name);
+}
 
 
 function setTool(tool) {
-
-    const activeTool = localStorage.getItem("activeTool");
-
     if (activeTool === tool) {
-        TC()
+        resetTools()
     } else {
-        localStorage.setItem("activeTool", tool);
-        activateTool(tool);
-        actTool = tool;
+        activeTool = tool;
+        activateTool(tool)
     }
 
 }
-
-function GAV(key) {
-    return localStorage.getItem("active" + key.charAt(0).toUpperCase() + key.slice(1));
+function resetTools() {
+    firstPosition = null;
+    secondPosition = null;
+    clearDrawEventListeners();
+    activateTool("none")
+    activeTool = "none";
 }
 
-function stopChecking() {
-    IntervalArray.forEach(function(intervalId) {
-        clearInterval(intervalId);
-    });
+function exportCanvas() {
+    var svg = draw.svg();
+    var svgBlob = new Blob([svg], { type: "image/svg+xml" });
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = "canvas.svg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(svgUrl);
+  }
+  
+  function importCanvas() {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/svg+xml";
+    input.onchange = function(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var svgString = event.target.result;
+        draw.clear();
+        draw.svg(svgString);
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+  
+
+  function execute(action) {
+    history = history.slice(0, pointer + 1);
+    action.do();
+    history.push(action);
+    pointer = history.length - 1;
 }
 
-function TC() {
-    setTool("none")
-    stopChecking()
-    click = 0;
-    startPoint = undefined;
+function undo() {
+    if (pointer >= 0) {
+        history[pointer].undo();
+        pointer--;
+    }
 }
 
-function saveCanvas() {
-    var jsonData = JSON.stringify(canvas.toJSON());
-    downloadFile(jsonData, 'temp.json', 'application/json');
+function redo() {
+    if (pointer < history.length - 1) {
+        pointer++;
+        history[pointer].do();
+        console.log(history[pointer])
+    }
 }
-function loadCanvas() {
-    var fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'application/json';
-
-    fileInput.addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function(event) {
-            var jsonData = event.target.result;
-            canvas.loadFromJSON(jsonData, canvas.renderAll.bind(canvas));
-        };
-        reader.readAsText(file);
-    });
-
-    fileInput.click();
-}
-
-function downloadFile(data, filename, type) {
-    var file = new Blob([data], {type: type});
-    var a = document.createElement("a");
-    var url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }, 0);
-}
-
-

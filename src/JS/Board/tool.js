@@ -1,91 +1,51 @@
-function buh() {
-    console.log("")
-}
-
-function text() {
-    canvas.selection = false
-    canvas.on('mouse:down', function TextMDown (options) {
-        if (options.target == null && GAV("tool") == "text") {
-            addText(getMousePosition(options).x, getMousePosition(options).y);
-            canvas.off('mouse:down', TextMDown);
-        }
-    });
-}
-
-function previewLine(input,options) {
-    previewLn = new fabric.Line([input.x, input.y, canvas.getPointer(options.e).x, canvas.getPointer(options.e).y], {
-        stroke: 'black',
-        selectable: false,
-        evented: false,
-        strokeDashArray: [10, 10] // optional: dashed line for preview
-    });
-    previewLineGlobal = previewLn
-    canvas.add(previewLn);
-
-    canvas.on('mouse:move', function PreviewLineFunc() {
-        var pointer = canvas.getPointer(options.e);
-        previewLn.set({
-            x2: pointer.x,
-            y2: pointer.y
-        });
-        canvas.renderAll();
-        if (previewLineGlobal == undefined) canvas.off('mouse:move', PreviewLineFunc);
-    });
-}
-
-function rectangle() {
-    canvas.selection = false
-    canvas.on('mouse:down', function RectMDown(options) {
-        if (options.target == null && GAV("tool") == "rectangle") {
-            click = click + 1
-            var pointer = canvas.getPointer(options.e);
-            if (startPoint == undefined) {
-                startPoint = pointer;
-                previewRectangle(pointer, options);
-            } else if (startPoint != undefined) {
-                addRectangle(startPoint, pointer);
-                canvas.off('mouse:down', RectMDown);
-                canvas.remove(previewRectGlobal);
-                previewRectGlobal = undefined;
-            }
-        }
-    });
+function notool() {
+    console.log("notool")
 }
 
 function line() {
-    canvas.selection = false
-    canvas.on('mouse:down', function LineMDown (options) {
-        if (options.target == null && GAV("tool") == "line") {
-            click = click + 1
-            var pointer = canvas.getPointer(options.e);
-            if (startPoint == undefined) {
-                startPoint = pointer;
-                previewLine(pointer,options)
-            }
-            else if (startPoint != undefined) {
-                addLine(startPoint,pointer)
-                canvas.off('mouse:down', LineMDown);
-                canvas.remove(previewLineGlobal);
-                previewLineGlobal = undefined;
-            }
-        }
-    });
-}
+    function handleClick(event) {
+        const position = draw.point(event.clientX, event.clientY);
+        if (firstPosition === null) {
+            firstPosition = position;
+            previewLine(position);
 
-function deleteSelected() {
-    canvas.remove(...canvas.getActiveObjects());
-}
-
-function edit() {
-    function checkActiveObject() {
-        var activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            console.log("There is an active object:", activeObject);
-        } else {
-            console.log("No active object.");
+        } else if (secondPosition === null) {
+            disableEventListener(getEventListenerByName("previewLine"));
+            preview.remove();
+            secondPosition = position;
+            execute(line_f(firstPosition, secondPosition, getColor(), getWidth()));
+            resetTools()
         }
     }
 
-    IntervalArray.push(setInterval(checkActiveObject, 500));
-    
+    draw.on('click', handleClick);
+    EventListenerTrack("line_drawing", "click", handleClick);
+}
+
+function previewLine(startingPosition) {
+    function handleMouseMove(event) {
+        const position = draw.point(event.clientX, event.clientY);
+        if (preview) {
+            preview.remove();
+        }
+        preview = draw.line(startingPosition.x, startingPosition.y, position.x, position.y).stroke({
+            width: getWidth()
+        });
+        preview.stroke({
+            color: 'lightgray'
+        });
+    }
+
+    draw.on('mousemove', handleMouseMove);
+    EventListenerTrack("previewLine", "mousemove", handleMouseMove);
+}
+
+function text(){
+    function handleClick(event) {
+        const position = draw.point(event.clientX, event.clientY);
+        createMovableTextbox(position);
+        resetTools();
+    }
+    draw.on('click', handleClick);
+    EventListenerTrack("text_drawing", "click", handleClick);
 }

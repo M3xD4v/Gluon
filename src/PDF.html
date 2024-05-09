@@ -7,8 +7,8 @@
     <title>Scrollable PDF Viewer with PDF.js</title>
 </head>
 <link rel="stylesheet" href="CSS/pdf_viewer.css">
-<script src="../../../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
-<script src="../../../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
+<script src="../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
+<script src="../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
 <script src="JS/RightClick.JS" type="module"></script>
 <body tabindex="1">
     <div id="customMenu" class="custom-menu" style="display: none;">
@@ -22,13 +22,9 @@
     </div>
 
 </body>
+<script src="JS/RightClick.JS" type="module"></script>
 <script src="JS/PDFRenderer.js" type="module"></script>
 
-
-<script>
-
-    
-</script>
 <style>
     body {
         background-color: #ffffff;
@@ -62,4 +58,11 @@
 
 </style>
 
+
+<script>
+document.addEventListener('wheel', function(event) {
+    window.parent.postMessage(event.deltaY, "*");
+});
+
+</script>
 </html>

@@ -3,6 +3,7 @@
 
 <head>
     <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
+
     <style>
         body {
             height: 100%;
@@ -53,7 +54,6 @@
             border-radius: 5px;
             margin: 5px;
         }
-
     </style>
     <script>
         $(document).ready(function () {
@@ -72,7 +72,8 @@
 
     <nav class="navbar">
         <ul>
-            <input type="range" min="0.2" max="3" step="0.05" value="1.0" onchange="changeZoom(this.value)" class="Tool">
+            <input type="range" min="0.2" max="3" step="0.05" value="1.0" onchange="changeZoom(this.value)"
+                class="Tool">
             <span id="zoomValue">1.0</span>
             <input type="number" id="customZoomInput" min="0.2" max="3" step="0.05" value="1.0" onchange="updateZoom()">
             <li><button onclick="PageToggle()" class="Tool">Page only</button></li>
@@ -101,6 +102,7 @@
 
 <script>
     var view_mode = "0";
+
 
     function onViewModeZero() {
         let board = document.getElementById("board_iframe");
@@ -152,45 +154,44 @@
     }
 
     var PDF_Iframe = document.getElementById('pdfViewer');
-    console.log(PDF_Iframe)
     var Board_Iframe = document.getElementById('Board_Viewer');
     let temp_zoom = 1;
 
     function changeZoom(value) {
-    if (view_mode_proxy.value == 1) {
-        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-        viewerContainer.setAttribute('zoom', value);
-        temp_zoom = value;
-        document.getElementById('zoomValue').textContent = value.toFixed(2);
-        document.getElementById('customZoomInput').value = value.toFixed(2); 
-    }
-}
-
-PDF_Iframe.addEventListener('load', function() {
-    var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-    viewerContainer.addEventListener('wheel', function(event) {
-        if (event.ctrlKey) {
-            event.preventDefault();
-            var delta = Math.sign(event.deltaY);
-            
-            var zoomStep = 0.05; // You can adjust this value for finer or coarser zoom increments
-            var currentZoom = parseFloat(document.getElementById('zoomValue').textContent);
-            var newZoom = currentZoom + delta * zoomStep;
-            newZoom = Math.max(0.1, Math.min(10.0, newZoom));
-
-            changeZoom(newZoom);
+        if (view_mode_proxy.value == 1) {
+            var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+            viewerContainer.setAttribute('zoom', value);
+            temp_zoom = value;
+            document.getElementById('zoomValue').textContent = value.toFixed(2);
+            document.getElementById('customZoomInput').value = value.toFixed(2);
         }
-    });
-});
-
-function updateZoom() {
-    var customZoomValue = parseFloat(document.getElementById('customZoomInput').value);
-    if (!isNaN(customZoomValue) && customZoomValue >= 0.2 && customZoomValue <= 3) {
-        changeZoom(customZoomValue);
-    } else {
-        alert("Please enter a valid zoom value between 0.2 and 3.");
     }
-}
+
+    PDF_Iframe.addEventListener('load', function () {
+        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
+        viewerContainer.addEventListener('wheel', function (event) {
+            if (event.ctrlKey) {
+                event.preventDefault();
+                var delta = Math.sign(event.deltaY);
+
+                var zoomStep = 0.05; // You can adjust this value for finer or coarser zoom increments
+                var currentZoom = parseFloat(document.getElementById('zoomValue').textContent);
+                var newZoom = currentZoom + delta * zoomStep;
+                newZoom = Math.max(0.1, Math.min(10.0, newZoom));
+
+                changeZoom(newZoom);
+            }
+        });
+    });
+
+    function updateZoom() {
+        var customZoomValue = parseFloat(document.getElementById('customZoomInput').value);
+        if (!isNaN(customZoomValue) && customZoomValue >= 0.2 && customZoomValue <= 3) {
+            changeZoom(customZoomValue);
+        } else {
+            alert("Please enter a valid zoom value between 0.2 and 3.");
+        }
+    }
 
     function resetZoom() {
         var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
@@ -219,19 +220,19 @@ function updateZoom() {
         viewer.classList.toggle('pdfViewer');
         viewer.classList.toggle('pdfViewer_MultiplePage');
     }
+
     function DoublePage() {
         changeZoom(1.14)
     }
+
     function TriplePage() {
         changeZoom(0.75)
     }
     setTimeout(function () {
         setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
         var Board_Iframe = document.getElementById('Board_Viewer');
-        Board_Iframe.contentDocument.getElementById('canvas_container').height = GetIframeHeight('pdfViewer')
-        Board_Iframe.contentDocument.getElementById('canvas_container').width = Board_Iframe.contentDocument
-            .getElementById('board_container').offsetWidth
-    }, 500);
+    }, 200);
+
 
     // Debounce function to limit scroll event firing frequency
     function debounce(func, delay) {
@@ -256,6 +257,7 @@ function updateZoom() {
         var PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
         PDF_DIV.scrollTo(0, value);
     }
+
 
     let activeIframe = null;
 
@@ -305,7 +307,12 @@ function updateZoom() {
 
     Board_Iframe.addEventListener('mouseover', function () {
         setActiveIframe('Board');
-    });
+    });  
+
+
+
+
+
 </script>
 
 </html>

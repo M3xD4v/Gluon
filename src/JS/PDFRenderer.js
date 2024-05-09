@@ -1,13 +1,9 @@
-
-
-
-
 pdfjsLib.GlobalWorkerOptions.workerSrc ="../../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
 const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
 const CMAP_PACKED = true;
 
-const DEFAULT_URL = "../assets/numbered-test.pdf";
-//const DEFAULT_URL = "../assets/norse.pdf";
+//const DEFAULT_URL = "../assets/numbered-test.pdf";
+const DEFAULT_URL = "../assets/norse.pdf";
 const ENABLE_XFA = true;
 
 const SANDBOX_BUNDLE_SRC = new URL(
@@ -48,7 +44,6 @@ pdfScriptingManager.setViewer(pdfViewer);
 
 eventBus.on("pagesinit", function () {
   pdfViewer.currentScaleValue = "page-width";
-  console.log(pdfViewer.currentScaleValue)
   var viewerContainer = document.getElementById('viewerContainer');
 
 // Create a MutationObserver instance

@@ -1,11 +1,8 @@
 function activateTool(toolName) {
     const toolFunctions = {
-        "text": text,
         "line": line,
-        "edit": edit,
-        "rectangle": rectangle,
-        "delete": deleteSelected,
-        "none": buh,
+        "text": text,
+        "none": notool,
     };
 
     const tool = toolFunctions[toolName];
