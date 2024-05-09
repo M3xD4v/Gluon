@@ -31,6 +31,8 @@
     <button onclick="draw.clear()">clear</button>
     <button onclick="undo()">undo</button>
     <button onclick="redo()">redo</button>
+    <button onclick="collission()">collission</button>
+    <button onclick="temporary()">temporary</button>
     <br>
     <label for="ColorI">Color:</label>
     <input type="color" id="ColorValue" value="#041000">
@@ -47,6 +49,8 @@
   <script>
     var activeTool = "none"
     var draw = SVG().addTo('#drawing').size('100%', '100%');
+    var state = null;
+    //checkGlobalStack()
   </script>
 
 

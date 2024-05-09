@@ -4,6 +4,7 @@
   width: 100%;
   position: absolute;
 }
+
 .dot {
   border-radius: 50%;
   position: absolute;
@@ -12,6 +13,7 @@
 .selected {
   stroke: red;
 }
+
 .temp {
   position: absolute;
 }
@@ -27,16 +29,24 @@
   font-family: Arial, sans-serif;
   z-index: 1000;
 }
+
 #debugContent {
   word-wrap: break-word;
-  max-width: 800px; /* Adjust as needed */
-  max-height: 800px; /* Adjust as needed */
-  overflow: scroll; /* or any other desired value */
+  max-width: 800px;
+  /* Adjust as needed */
+  max-height: 800px;
+  /* Adjust as needed */
+  overflow: scroll;
+  /* or any other desired value */
 }
 
 .movableBox {
-  max-width:80%;
+  max-width: 80%;
   padding: 10px;
   border-radius: 5px;
   font-family: system-ui;
+}
+
+.collission_line {
+  stroke: rgba(0, 0, 0, 0);
 }

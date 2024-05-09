@@ -1,7 +1,7 @@
 function activateTool(toolName) {
     const toolFunctions = {
         "line": line,
-        "text": text,
+        //"text": text,
         "none": notool,
     };
 
