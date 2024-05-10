@@ -17,8 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
       "secondPosition": JSON.stringify(secondPosition),
       "history": JSON.stringify(history),
       "pointer": JSON.stringify(pointer),
-      "lines": line_list.length,
-      "state": state
+      "lines": object_list.length,
+      "state": selection_state,
+      "selected": selected
     };
 
     var hasChanges = false;

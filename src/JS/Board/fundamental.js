@@ -31,18 +31,21 @@ function line_f(firstPosition, secondPosition, color, strokeWidth) {
 }
 
 function InitLine(line, collission_line) {
-    let id = line_list.length;
+    let id = object_list.length;
     let combined = {
-        line: line,
-        collission_line: collission_line,
-        id: id
+        object: line,
+        type: "line",
+        collission_object: collission_line,
+        id: id,
+        color: line.node.attributes.stroke.value,
+        control_points: [],
+        pivot: []
     };
-    make_line_movable(combined)
-    line_list.push(combined);
+    object_list.push(combined);
 }
 
 function getLineByID(id) {
-    let current_line = line_list.find(element => element.id == id);
+    let current_line = object_list.find(element => element.id == id);
     return current_line;
 }
 
@@ -64,7 +67,6 @@ function createMovableTextbox(position) {
     movableBox.style.top = position.y + 'px';
     movableBox.setAttribute('contenteditable', 'true');
     movableBox.innerHTML = 'text';
-
 
 
     var isDown = false;

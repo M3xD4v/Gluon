@@ -228,10 +228,20 @@
     function TriplePage() {
         changeZoom(0.75)
     }
+    let board_test = true
     setTimeout(function () {
-        setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
-        var Board_Iframe = document.getElementById('Board_Viewer');
-    }, 200);
+        if (board_test == false) {
+            setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
+        }
+        if (board_test == true) {
+            let boardIF = document.getElementById('Board_Viewer');
+            let doc = boardIF.contentDocument || boardIF.contentWindow.document;
+            doc.body.style.height = '1000px';
+            if (document.getElementById('pdfViewer')) {
+                document.getElementById('pdf_iframe').style.display = "none";
+            }
+        }
+    }, 300);
 
 
     // Debounce function to limit scroll event firing frequency
@@ -307,12 +317,7 @@
 
     Board_Iframe.addEventListener('mouseover', function () {
         setActiveIframe('Board');
-    });  
-
-
-
-
-
+    });
 </script>
 
 </html>

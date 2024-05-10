@@ -1,8 +1,16 @@
 function notool() {
+    clearDrawEventListeners()
+    deselect();
+    if (preview) {
+        preview.remove();
+    }
     console.log("notool")
 }
 
 function line() {
+    change_selection_state("off");
+    clearDrawEventListeners()
+    deselect();
     function handleClick(event) {
         const position = draw.point(event.clientX, event.clientY);
         if (firstPosition === null) {
@@ -41,6 +49,12 @@ function previewLine(startingPosition) {
 }
 
 function text(){
+    change_selection_state("off");
+    clearDrawEventListeners()
+    deselect();
+    if (preview) {
+        preview.remove();
+    }
     function handleClick(event) {
         const position = draw.point(event.clientX, event.clientY);
         createMovableTextbox(position);

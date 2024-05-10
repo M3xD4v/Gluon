@@ -15,7 +15,7 @@
 
 
 
-<body>
+<body style="height: 1000px;">
 
   <div id="debugPanel">
     <h2>Debugging Panel</h2>
@@ -33,6 +33,9 @@
     <button onclick="redo()">redo</button>
     <button onclick="collission()">collission</button>
     <button onclick="temporary()">temporary</button>
+    <button onclick="change_selection_state('canvas')">canvas selection</button>
+    <button onclick="change_selection_state('text')">text selection</button>
+    <button onclick="deselect()">deselect</button>
     <br>
     <label for="ColorI">Color:</label>
     <input type="color" id="ColorValue" value="#041000">
@@ -50,7 +53,7 @@
     var activeTool = "none"
     var draw = SVG().addTo('#drawing').size('100%', '100%');
     var state = null;
-    //checkGlobalStack()
+    var selection_state = null;
   </script>
 
 
