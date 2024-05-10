@@ -8,7 +8,6 @@
   <script src="JS/Board/main.js"></script>
   <script src="JS/Board/fundamental.js"></script>
   <script src="JS/Board/tool.js"></script>
-  <script src="JS/Board/currentTool.js"></script>
   <script src="JS/Board/update.js"></script>
   <script src="JS/Board/debug.js"></script>
 </head>
@@ -26,6 +25,7 @@
   <div id="menu" style="position: fixed;">
     <button onclick="setTool('line')">line</button>
     <button onclick="setTool('text')">text</button>
+    <button onclick="setTool('draw')">draw</button>
     <button onclick="exportCanvas()">export</button>
     <button onclick="importCanvas()">import</button>
     <button onclick="draw.clear()">clear</button>
@@ -36,6 +36,11 @@
     <button onclick="change_selection_state('canvas')">canvas selection</button>
     <button onclick="change_selection_state('text')">text selection</button>
     <button onclick="deselect()">deselect</button>
+
+    <button onclick="enable_ramer()">ramer Douglas Peucker</button>
+    <button onclick="enable_catmull()">Catmull Rom Spline</button>
+
+
     <br>
     <label for="ColorI">Color:</label>
     <input type="color" id="ColorValue" value="#041000">
@@ -54,6 +59,16 @@
     var draw = SVG().addTo('#drawing').size('100%', '100%');
     var state = null;
     var selection_state = null;
+    var ramer = false;
+    var catmull = false;
+    function enable_catmull() {
+      catmull = !catmull;
+    }
+    function enable_ramer() {
+      ramer = !ramer;
+    }
+    
+    
   </script>
 
 

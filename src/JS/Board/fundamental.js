@@ -44,11 +44,6 @@ function InitLine(line, collission_line) {
     object_list.push(combined);
 }
 
-function getLineByID(id) {
-    let current_line = object_list.find(element => element.id == id);
-    return current_line;
-}
-
 function createMovableTextbox(position) {
     console.log('ah')
     var offsetX = 100; // Adjust this value if you want the box to be offset from the mouse position
@@ -116,4 +111,29 @@ function createMovableTextbox(position) {
     document.addEventListener('mouseup', function () {
         isDown = false;
     });
+}
+
+
+function rectangle_f(firstPosition, secondPosition, color, strokeWidth) {
+    let rectangle = draw.rect(secondPosition.x - firstPosition.x, secondPosition.y - firstPosition.y).stroke({
+        width: strokeWidth
+    });
+    rectangle.stroke({
+        color: color
+    });
+    rectangle.fill('none');
+    let collission_rectangle = draw.rect(secondPosition.x - firstPosition.x, secondPosition.y - firstPosition.y).stroke({
+        width: strokeWidth * 4
+    });
+    collission_rectangle.stroke({
+        color: "transparent"
+    });
+    collission_rectangle.fill('none');
+    collission_rectangle.node.setAttribute("class", "collission_rectangle");
+    collission_rectangle.node.setAttribute("id", "collission_rectangle");
+    InitRectangle(rectangle, collission_rectangle)
+    return {
+        do: () => rectangle.show(),
+        undo: () => rectangle.hide()
+    };
 }

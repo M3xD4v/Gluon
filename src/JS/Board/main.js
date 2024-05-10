@@ -1,6 +1,6 @@
 let firstPosition = null;
 let secondPosition = null;
-let DrawEventListeners = [];
+var DrawEventListeners = [];
 let history = [];
 let pointer = -1;
 let preview = null;
@@ -11,6 +11,23 @@ var selected_original_color = null;
 let selection_event_objects = [];
 let control_points = [];
 
+
+
+function activateTool(toolName) {
+    const toolFunctions = {
+        "line": line,
+        "text": text,
+        "draw": free_draw,
+        "none": notool,
+    };
+
+    const tool = toolFunctions[toolName];
+    if (tool) {
+        tool();
+    } else {
+        console.log("Unknown tool");
+    }
+}
 
 function clearDrawEventListeners() {
     DrawEventListeners.forEach((listener) => {
@@ -270,76 +287,76 @@ function deselect(global) {
                 enable_selection(object_list[i]);
             }
         }
+    } else {
+        console.log("selected is not valid");
+    }
+}
+
+function delete_controlpoints() {
+    for (let i = 0; i < control_points.length; i++) {
+        control_points[i].remove();
+
+    }
+}
+
+function disable_all_object_events() {
+    let obj = selection_event_objects
+    for (let i = 0; i < obj.length; i++) {
+        if (obj[i].name == "all") {
+            console.log(obj[i])
+            obj[i].object.off();
         } else {
-            console.log("selected is not valid");
+            obj[i].object.off(obj[i].type, obj[i].name);
         }
     }
+}
 
-    function delete_controlpoints() {
-        for (let i = 0; i < control_points.length; i++) {
-            control_points[i].remove();
-
-        }
-    }
-
-    function disable_all_object_events() {
-        let obj = selection_event_objects
-        for (let i = 0; i < obj.length; i++) {
-            if (obj[i].name == "all") {
-                console.log(obj[i])
-                obj[i].object.off();
-            } else {
-                obj[i].object.off(obj[i].type, obj[i].name);
-            }
-        }
-    }
-
-    function enable_selection(object_element) {
-        if (object_element.type === "line" && selected == null && activeTool == "none") {
-            let collision = object_element.collission_object;
-            let object = object_element.object;
-            let color = object.node.attributes.stroke.value
-            collision.on("mouseover", function () {
-                object.stroke({
-                    color: "red"
-                });
+function enable_selection(object_element) {
+    if (object_element.type === "line" && selected == null && activeTool == "none") {
+        let collision = object_element.collission_object;
+        let object = object_element.object;
+        let color = object.node.attributes.stroke.value
+        collision.on("mouseover", function () {
+            object.stroke({
+                color: "red"
             });
-            collision.on("mouseout", function () {
-                object.stroke({
-                    color: color
-                });
+        });
+        collision.on("mouseout", function () {
+            object.stroke({
+                color: color
             });
-            collision.on("click", function click() {
-                select(object_element)
-            })
-            add_selection_event(collision, "all");
-        }
+        });
+        collision.on("click", function click() {
+            select(object_element)
+        })
+        add_selection_event(collision, "all");
     }
+}
 
-    function change_selection_state(newstate) {
-        selection_state = newstate;
-        if (newstate === "canvas") {
-            let movableBox = document.getElementsByClassName('movableBox');
-            for (let i = 0; i < movableBox.length; i++) {
-                movableBox[i].style.pointerEvents = "none";
-            }
-            for (let i = 0; i < object_list.length; i++) {
-                enable_selection(object_list[i])
-            }
+function change_selection_state(newstate) {
+    selection_state = newstate;
+    if (newstate === "canvas") {
+        let movableBox = document.getElementsByClassName('movableBox');
+        for (let i = 0; i < movableBox.length; i++) {
+            movableBox[i].style.pointerEvents = "none";
         }
-        if (newstate === "text") {
-            let movableBox = document.getElementsByClassName('movableBox');
-            disable_all_object_events();
-            deselect("global");
-            for (let i = 0; i < movableBox.length; i++) {
-                movableBox[i].style.pointerEvents = "auto";
-            }
-        }
-        if (newstate === "off") {
-            let movableBox = document.getElementsByClassName('movableBox');
-            disable_all_object_events()
-            for (let i = 0; i < movableBox.length; i++) {
-                movableBox[i].style.pointerEvents = "none";
-            }
+        for (let i = 0; i < object_list.length; i++) {
+            enable_selection(object_list[i])
         }
     }
+    if (newstate === "text") {
+        let movableBox = document.getElementsByClassName('movableBox');
+        disable_all_object_events();
+        deselect("global");
+        for (let i = 0; i < movableBox.length; i++) {
+            movableBox[i].style.pointerEvents = "auto";
+        }
+    }
+    if (newstate === "off") {
+        let movableBox = document.getElementsByClassName('movableBox');
+        disable_all_object_events()
+        for (let i = 0; i < movableBox.length; i++) {
+            movableBox[i].style.pointerEvents = "none";
+        }
+    }
+}
