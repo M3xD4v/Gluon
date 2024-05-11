@@ -10,8 +10,7 @@ var selected = null;
 var selected_original_color = null;
 let selection_event_objects = [];
 let control_points = [];
-
-
+var path_selected_snapshot;
 
 function activateTool(toolName) {
     const toolFunctions = {
@@ -167,7 +166,6 @@ function start_movelinewithcollission(object, pivot) {
 }
 
 function make_line_movable(line_object) {
-    let collission = line_object.collission_object;
     let line = line_object.object;
     let parentNode = line.node.parentNode;
 
@@ -253,6 +251,139 @@ function line_controlpoints(line_object) {
     line_object.control_points.push(c2);
 }
 
+function start_movelinewithcollission(object, pivot) {
+    let collission_line = object.collission_object;
+    let line = object.object;
+
+    function linetransform(event) {
+        if (state === "hold") {
+            const position = draw.point(event.clientX, event.clientY);
+            line.center(position.x, position.y);
+            collission_line.center(position.x, position.y);
+            pivot.center(position.x, position.y);
+
+            object.control_points[0].center(line.node.attributes.x1.value, line.node.attributes.y1.value);
+            object.control_points[1].center(line.node.attributes.x2.value, line.node.attributes.y2.value);
+
+        }
+    }
+
+    draw.on('mousemove', linetransform);
+    add_selection_event(draw, linetransform, "mousemove");
+}
+
+function start_movepathwithcollission(object, pivot) {
+    function pathtransform(event) {
+        if (state === "hold") {
+            let collission_line = path_selected_snapshot.collission_object;
+            let line = path_selected_snapshot.object;
+            const position = draw.point(event.clientX, event.clientY);
+
+            line.center(position.x, position.y);
+            collission_line.center(position.x, position.y);
+            pivot.center(position.x, position.y);
+
+            for (let i = 0; i < path_selected_snapshot.control_points.length; i++) {
+                let path_points = path_array(line.node.attributes.d.value);
+                path_selected_snapshot.control_points[i].center(path_points[i].x, path_points[i].y);
+            }
+
+        }
+    }
+
+    draw.on('mousemove', pathtransform);
+    add_selection_event(draw, pathtransform, "mousemove");
+    EventListenerTrack("movepath", "mousemove", pathtransform);
+}
+
+function make_path_movable(path_object) {
+    let path = path_object.object;
+    let parentNode = path.node.parentNode;
+    let circle = draw.circle(15).fill('gray');
+    let center = path.bbox();
+    circle.center(center.cx, center.cy);
+    circle.on('mousedown', function (event) {
+        state = "hold";
+        start_movepathwithcollission(path_object, circle)
+        circle.node.style.cursor = "grabbing";
+        parentNode.appendChild(circle.node);
+    })
+    circle.on('mouseup', function (event) {
+        state = "nohold";
+        circle.node.style.cursor = "auto";
+        circle.off('mousemove');
+        disableEventListener(getEventListenerByName("movepath"));
+    })
+    
+    add_selection_event(circle, "all");
+    path_object.pivot.push(circle);
+    control_points.push(circle);
+
+}
+function control_move_path(path_object, control_point, num) {
+    let path = path_object.object;
+    let collision = path_object.collission_object;
+    let path_points = path_array(path.node.attributes.d.value);
+    function control_move(event) {
+        const position = draw.point(event.clientX, event.clientY);
+        path_points[num].x = position.x;
+        path_points[num].y = position.y;
+        let new_path = points_to_path(path_points.map(point => [point.x, point.y]));
+        control_point.center(position.x, position.y);
+        path.node.setAttribute("d", new_path);
+        collision.node.setAttribute("d", new_path);
+        path_selected_snapshot = path_object;
+        //path_object.pivot[0].center(path.bbox().cx, path.bbox().cy);
+
+    }
+
+    draw.on('mousemove', control_move);
+    add_selection_event(draw, control_move, "mousemove");
+
+
+}
+function path_smoothen(path_object) {
+    let path = path_object.object;
+    let path_points = path_array(path.node.attributes.d.value);
+    let smooth_button = draw.circle(15).fill('green');
+    let center = path.bbox();
+    smooth_button.center(center.cx + 100, center.cy);
+    function smoothen_path(event) {
+        let path = path_object.object;
+        let collision = path_object.collission_object;
+        let path_points = path_array(path.node.attributes.d.value);
+        let convert1 = path_points.flatMap(obj => [obj.x, obj.y])
+        let smooth_path = Catmull_Rom_Spline(convert1, 1.0);
+        path.node.setAttribute("d", smooth_path);
+        collision.node.setAttribute("d", smooth_path);
+        
+        
+    }
+    smooth_button.on('click', smoothen_path);
+    add_selection_event(smooth_button, "all");
+    control_points.push(smooth_button);
+}
+
+function path_controlpoints(path_object) {
+    let path = path_object.object;
+    let path_points = path_array(path.node.attributes.d.value);
+    let path_length = path_points.length;
+    for (let i = 0; i < path_length; i++) {
+        let c = draw.circle(15).fill('#2f2f2f40');
+        c.center(path_points[i].x, path_points[i].y);
+        c.on('mousedown', function (event) {
+            control_move_path(path_object, c, i)
+        })
+        c.on('mouseup', function (event) {
+            draw.off('mousemove');
+            c.off('mousemove');
+        })
+        control_points.push(c);
+        path_object.control_points.push(c);
+        add_selection_event(c, "all");
+    }
+
+}
 function select(object) {
     selected = object;
     selected_original_color = object.color;
@@ -267,6 +398,14 @@ function select(object) {
         object.pivot = [];
         make_line_movable(object);
         line_controlpoints(object);
+    }
+    if (object.type === "path") {
+        path_selected_snapshot = object;
+        object.control_points = [];
+        object.pivot = [];
+        //make_path_movable(object);
+        path_controlpoints(object);
+        path_smoothen(object);
     }
 }
 
@@ -295,7 +434,6 @@ function deselect(global) {
 function delete_controlpoints() {
     for (let i = 0; i < control_points.length; i++) {
         control_points[i].remove();
-
     }
 }
 
@@ -303,7 +441,6 @@ function disable_all_object_events() {
     let obj = selection_event_objects
     for (let i = 0; i < obj.length; i++) {
         if (obj[i].name == "all") {
-            console.log(obj[i])
             obj[i].object.off();
         } else {
             obj[i].object.off(obj[i].type, obj[i].name);
@@ -313,6 +450,25 @@ function disable_all_object_events() {
 
 function enable_selection(object_element) {
     if (object_element.type === "line" && selected == null && activeTool == "none") {
+        let collision = object_element.collission_object;
+        let object = object_element.object;
+        let color = object.node.attributes.stroke.value
+        collision.on("mouseover", function () {
+            object.stroke({
+                color: "red"
+            });
+        });
+        collision.on("mouseout", function () {
+            object.stroke({
+                color: color
+            });
+        });
+        collision.on("click", function click() {
+            select(object_element)
+        })
+        add_selection_event(collision, "all");
+    }
+    if (object_element.type === "path" && selected == null && activeTool == "none") {
         let collision = object_element.collission_object;
         let object = object_element.object;
         let color = object.node.attributes.stroke.value
