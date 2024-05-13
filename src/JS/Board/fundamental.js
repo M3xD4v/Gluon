@@ -1,9 +1,9 @@
 function getColor() {
-    return document.getElementById('ColorValue').value;
+    return document.getElementById('colorvalue').attributes.fill.value;
 }
 
 function getWidth() {
-    return document.getElementById('WidthValue').value;
+    return 2;
 }
 
 function line_f(firstPosition, secondPosition, color, strokeWidth) {

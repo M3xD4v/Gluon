@@ -50,3 +50,99 @@
 .collission_line {
   stroke: rgba(0, 0, 0, 0);
 }
+
+.canvas_toolbar {
+  position: fixed;
+  background-color: white;
+  font-family: Arial, sans-serif;
+  z-index: 1000;
+  width: 100%;
+  height: 6vh; /* Adjusted height to accommodate margins */
+  bottom: 0;
+  border-top: solid 0.25vh;
+}
+
+#drawing {
+  background-color: rgb(255, 253, 252);
+  background-image:
+    linear-gradient(0deg, transparent 24px, rgba(0, 0, 0, 0.1) 25px, transparent 26px),
+    linear-gradient(90deg, transparent 24px, rgba(0, 0, 0, 0.1) 25px, transparent 26px);
+  background-size: 35px 35px;
+}
+
+.edit_area {
+  height: 100%;
+  float: right;
+  width: 30vh;
+  border-left: solid 0.25vh;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* This will affect the scrollbar globally */
+::-webkit-scrollbar {
+  width: 0.5vh;
+  /* Adjust scrollbar width */
+  height: 5px;
+  /* Adjust scrollbar height */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  /* Handle color */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Color of the handle on hover */
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5vh;
+  height: 5vh;
+  border: 0.25vh solid #58585859;
+  outline: none;
+  padding: 0.75vh;
+  background-color: #fff;
+  margin: 0.5vh 0.5vh;
+  margin-right: 0;
+}
+
+.button svg {
+  width: 5vh;
+  height: 5vh;
+}
+.button:hover {
+  background-color: #ffe1bf;
+}
+.button:active {
+  background-color: #FFB385;
+}
+
+.strokesvg:hover {
+  stroke:#ff7045;
+}
+.strokesvg:active {
+  stroke:#FF3D00;
+}
+
+.fillsvg:hover {
+  fill: #ff7045;
+}
+.fillsvg:active {
+  fill: #FF3D00;
+}
+

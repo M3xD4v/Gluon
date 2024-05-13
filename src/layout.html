@@ -9,6 +9,8 @@
             height: 100%;
             overflow-y: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -54,6 +56,14 @@
             border-radius: 5px;
             margin: 5px;
         }
+        .split {
+            height: 100%;
+            width: 0.25vh;
+            right: 50%;
+            background-color: black;
+            position: fixed;
+
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -70,25 +80,11 @@
 
 <body>
 
-    <nav class="navbar">
-        <ul>
-            <input type="range" min="0.2" max="3" step="0.05" value="1.0" onchange="changeZoom(this.value)"
-                class="Tool">
-            <span id="zoomValue">1.0</span>
-            <input type="number" id="customZoomInput" min="0.2" max="3" step="0.05" value="1.0" onchange="updateZoom()">
-            <li><button onclick="PageToggle()" class="Tool">Page only</button></li>
-            <li><button onclick="resetZoom()" class="Tool">Reset Zoom</button></li>
-            <li><button onclick="MultiplePage()" class="Tool">Multiple Page Toggle</button></li>
-            <li><button onclick="DoublePage()" class="Tool">Double Page</button></li>
-            <li><button onclick="TriplePage()" class="Tool">Triple Page</button></li>
-        </ul>
-    </nav>
-
-
     <div class="container">
         <div class="iframe-container" id="pdf_iframe">
             <iframe src="PDF.html" id="pdfViewer"></iframe>
         </div>
+        <div class="split"></div>
         <div class="iframe-container" id="board_iframe">
             <iframe src="Board.html" id="Board_Viewer"></iframe>
         </div>
@@ -102,8 +98,11 @@
 
 <script>
     var view_mode = "0";
-
-
+    //on document window resize, resetzoom
+    window.onresize = function () {
+        resetZoom();
+    };
+    
     function onViewModeZero() {
         let board = document.getElementById("board_iframe");
         board.style.display = "block"
@@ -148,6 +147,8 @@
         if (iframe) {
             var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
             iframeDocument.body.style.height = height + 'px';
+            localStorage.setItem("board_height", iframeDocument.body.scrollHeight);
+            localStorage.setItem("board_width", iframeDocument.body.scrollWidth);
         } else {
             console.error('Iframe with id', iframeId, 'not found.');
         }
@@ -198,8 +199,8 @@
         var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
         viewerContainer.setAttribute('zoom', "page-width");
         temp_zoom = "page-width";
-        document.getElementById('zoomValue').textContent = "page-width";
-
+        let pdf_width = viewerContainer.scrollWidth;
+        localStorage.setItem("pdf_width", pdf_width);
     }
 
     function PageToggle(value) {
@@ -232,6 +233,7 @@
     setTimeout(function () {
         if (board_test == false) {
             setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
+            //setIframeBodyHeight('Board_Viewer', localStorage.getItem("total_height"));
         }
         if (board_test == true) {
             let boardIF = document.getElementById('Board_Viewer');
