@@ -1,9 +1,14 @@
 function getColor() {
-    return document.getElementById('colorvalue').attributes.fill.value;
+    return document.getElementById('colorvalue').value;
+    
 }
 
-function getWidth() {
-    return 2;
+function getWidth(object) {
+    if (object == "line") {
+        return document.getElementById('line_widthvalue').value;
+    } else if (object == "draw") {
+        return document.getElementById('draw_widthvalue').value;
+    }
 }
 
 function line_f(firstPosition, secondPosition, color, strokeWidth) {
@@ -15,7 +20,7 @@ function line_f(firstPosition, secondPosition, color, strokeWidth) {
     });
 
     let collission_line = draw.line(firstPosition.x, firstPosition.y, secondPosition.x, secondPosition.y).stroke({
-        width: strokeWidth * 4
+        width: "5vh"
     });
     collission_line.stroke({
         color: "#00ff0d42"
@@ -45,14 +50,12 @@ function InitLine(line, collission_line) {
 }
 
 function createMovableTextbox(position) {
-    console.log('ah')
     var offsetX = 100; // Adjust this value if you want the box to be offset from the mouse position
     var offsetY = 50; // Adjust this value if you want the box to be offset from the mouse position
 
 
     var movableBox = document.createElement('div');
     var drawingDiv = document.getElementById('drawing');
-    console.log(drawingDiv)
     drawingDiv.appendChild(movableBox);
 
 
@@ -157,6 +160,7 @@ function draw_f(points_array, path, path_object) {
 
 function InitDrawLine(object, collission_line) {
     let id = object_list.length;
+    let smooth_value = smooth_free_draw ? "true" : "false";
     let combined = {
         object: object,
         type: "path",
@@ -164,7 +168,8 @@ function InitDrawLine(object, collission_line) {
         id: id,
         color: object.node.attributes.stroke.value,
         control_points: [],
-        pivot: []
+        pivot: [],
+        smoothing: smooth_value
     };
     object_list.push(combined);
 }

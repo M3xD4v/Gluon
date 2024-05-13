@@ -2696,3 +2696,18 @@
   background-color: rgb(255 255 255);
   display: inline-block; /* Ensure pages are displayed side by side */
 }
+
+::-webkit-scrollbar {
+  width: 7px;
+ 
+}
+
+::-webkit-scrollbar-track {
+  background: #58585859;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: black;
+  border: 1px;
+  height: 8vh !important;
+}

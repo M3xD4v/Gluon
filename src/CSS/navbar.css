@@ -1,0 +1,114 @@
+#mySidenav {
+    height: calc(100vh - (14vh + 6vh*6 ));
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border: solid 0vh black;
+    overflow-x: hidden;
+    margin-top: 6.4vh;
+    border-top: none;
+}
+
+.openbtn, #mySidenav {
+    transition-property: border, width, top;
+    transition-duration: 0.25s;
+    transition-timing-function: ease;
+}
+
+#mySidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+#mySidenav a:hover {
+    color: #f1f1f1;
+}
+
+#mySidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 10px 15px;
+    border: solid 0.25vh black;
+    position: absolute;
+    height: 6.4vh;
+    width: 6.4vh;
+    left: 0;
+    top: 0;
+    transition: all 0.1s ease-in-out;
+}
+
+.openbtn:hover {
+    background-color: #ffe1bf;
+    color: #ff7045;
+}
+.openbtn:active {
+    background-color: #FFB385;
+    color: #FF3D00;
+}
+
+.tButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5vh;
+    height: 5vh;
+    border: 0.25vh solid #58585859;
+    outline: none;
+    padding: 0.75vh;
+    background-color: #fff;
+    margin: 0.5vh 0.5vh;
+    margin-right: 0;
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .tButton:hover {
+    background-color: #ffe1bf;
+    color: #ff7045;
+  }
+  .tButton:active {
+    background-color: #FFB385;
+    color: #FF3D00;
+  }
+  
+  .tButton_activated {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5vh;
+    height: 5vh;
+    border: 0.25vh solid #ffffff94;
+    outline: none;
+    padding: 0.75vh;
+    background-color: #121212;
+    margin: 0.5vh 0.5vh;
+    margin-right: 0;
+    color: white;
+    transition: all 0.1s ease-in-out;
+  }
+  
+
+  .tButton_activated:hover {
+    background-color: #323232;
+    color: #ff7045;
+  }
+  .tButton_activated:active {
+    background-color: #2d2d2d;
+    color: #ffa185;
+  }

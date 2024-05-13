@@ -22,8 +22,9 @@ function line() {
             disableEventListener(getEventListenerByName("previewLine"));
             preview.remove();
             secondPosition = position;
-            execute(line_f(firstPosition, secondPosition, getColor(), getWidth()));
-            resetTools()
+            execute(line_f(firstPosition, secondPosition, getColor(), getWidth("line")));
+            firstPosition = null;
+            secondPosition = null;
         }
     }
 
@@ -38,7 +39,7 @@ function previewLine(startingPosition) {
             preview.remove();
         }
         preview = draw.line(startingPosition.x, startingPosition.y, position.x, position.y).stroke({
-            width: getWidth()
+            width: getWidth("line")
         });
         preview.stroke({
             color: 'lightgray'
@@ -66,7 +67,18 @@ function text() {
     draw.on('click', handleClick);
     EventListenerTrack("text_drawing", "click", handleClick);
 }
-
+function selection() {
+    deselect();
+    if (selection_type.length == 1 && selection_type[0] == "canvas") {
+        change_selection_state("canvas");
+    } else if (selection_type.length == 1 && selection_type[0] == "text") {
+        change_selection_state("text");
+    } else if (selection_type.length == 2) {
+        change_selection_state("both");
+    } else if (selection_type.length == 0) {
+        change_selection_state("off");
+    }
+}
 
 function free_draw() {
     change_selection_state("off");
@@ -77,10 +89,13 @@ function free_draw() {
 
     let path_object;
     function initial_check(event) {
+        if (event.button !== 0) {
+            return;
+        }
         let position = draw.point(event.clientX, event.clientY);
         path = "m " + position.x + " " + position.y;
         path_object = draw.path(path).stroke({
-            width: getWidth()
+            width: getWidth("draw")
         });
         path_object.stroke({
             color: getColor()
@@ -91,17 +106,19 @@ function free_draw() {
         points.push([position.x + 1 , position.y]); 
     }
     function let_go(event) {
+        if (event.button !== 0) {
+            return;
+        }
         path_object.remove();
         let ramerDouglasPeucker_points = ramerDouglasPeucker(points, 3.0);
         let smooth_path;
-        console.log(transformArray(ramerDouglasPeucker_points))
         if (smooth_free_draw == true) {
             smooth_path = Catmull_Rom_Spline(transformArray(ramerDouglasPeucker_points), 1.0);
         } else {
             smooth_path = points_to_path(ramerDouglasPeucker_points);
         }
         let new_path = draw.path(smooth_path).stroke({
-            width: getWidth()
+            width: getWidth("draw")
         });
 
         new_path.stroke({
@@ -111,13 +128,13 @@ function free_draw() {
         new_path.node.style.strokeLinecap = "round";
 
         let collission_path = draw.path(smooth_path).stroke({
-            width: getWidth() * 4 
+            width: "4vh"
         });
 
         collission_path.stroke({
             color: "transparent"
         });
-        collission_path.node.style.fill = "transparent";
+        collission_path.node.style.fill = "none";
         collission_path.node.style.strokeLinecap = "round";
         InitDrawLine(new_path, collission_path);
 

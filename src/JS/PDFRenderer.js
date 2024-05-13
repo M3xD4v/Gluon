@@ -2,8 +2,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc ="../../../node_modules/pdfjs-dist/build/
 const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
 const CMAP_PACKED = true;
 
-const DEFAULT_URL = "../assets/numbered-test.pdf";
-//const DEFAULT_URL = "../assets/norse.pdf";
+//const DEFAULT_URL = "../assets/numbered-test.pdf";
+const DEFAULT_URL = "../assets/norse.pdf";
 //const DEFAULT_URL = "../assets/grid.pdf";
 const ENABLE_XFA = true;
 
@@ -45,7 +45,6 @@ pdfScriptingManager.setViewer(pdfViewer);
 
 eventBus.on("pagesinit", function () {
   pdfViewer.currentScaleValue = "page-width";
-  console.log(pdfViewer.container)
   var viewerContainer = document.getElementById('viewerContainer');
 
 // Create a MutationObserver instance
@@ -53,7 +52,6 @@ var observer = new MutationObserver(function(mutationsList) {
     mutationsList.forEach(function(mutation) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'zoom') {
             var newZoomLevel = mutation.target.getAttribute('zoom');
-            console.log('Zoom level changed:', newZoomLevel);
             pdfViewer.currentScaleValue = newZoomLevel;
         }
     });
@@ -87,7 +85,6 @@ for (let i = 1; i <= pdfDocument.numPages; i++) {
 
 pdfDocument.getPage(1).then(function(page) {
   var viewport = page.getViewport({ scale: 1 });
-  console.log('Page width:', viewport.width, 'Page height:', viewport.height);
   localStorage.setItem('first_page',[viewport.width, viewport.height]);
 });
 
@@ -99,7 +96,6 @@ Promise.all(pagePromises)
       total_height += viewport.height;
     });
     localStorage.setItem('total_height',total_height);
-    console.log("Total height:", total_height);
   })
   .catch(error => {
     console.error("Error retrieving pages:", error);

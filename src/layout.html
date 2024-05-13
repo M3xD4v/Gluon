@@ -3,7 +3,8 @@
 
 <head>
     <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
-
+    <script src="JS/notification.js"></script>
+    <link rel="stylesheet" href="CSS/navbar.css">
     <style>
         body {
             height: 100%;
@@ -29,33 +30,6 @@
             border: 0;
         }
 
-        .navbar {
-            width: 100%;
-            background: rgb(21, 21, 21);
-            padding: 10px 0px;
-            color: #FFF;
-            z-index: 2;
-        }
-
-        .navbar ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 15;
-        }
-
-        .navbar ul li {
-            display: inline;
-        }
-
-        .Tool {
-            color: white;
-            padding: 5px;
-            padding-left: 15px;
-            padding-right: 15px;
-            background-color: rgb(39 39 39);
-            border-radius: 5px;
-            margin: 5px;
-        }
         .split {
             height: 100%;
             width: 0.25vh;
@@ -64,6 +38,19 @@
             position: fixed;
 
         }
+
+        #notification {
+            position: absolute;
+            top: -10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: solid 0.25vh black;
+            color: #000;
+            padding: 1vh 5vh;
+            z-index: 1;
+        }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -79,6 +66,18 @@
 
 
 <body>
+
+    <div id="notification">This is a notification</div>
+
+    <button class="openbtn" onclick="toggleNav()">↳</button>
+
+
+    <div id="mySidenav" class="sidenav">
+        <button class="tButton" id="fpButton" onclick="PageToggle()">full page</button>
+        <button class="tButton" id="mpButton" onclick="MultiplePage()">multi page</button>
+        <button class="tButton" onclick="resetZoom()">Reset Zoom</button>
+    </div>
+
 
     <div class="container">
         <div class="iframe-container" id="pdf_iframe">
@@ -97,12 +96,32 @@
 
 
 <script>
+    function toggleNav() {
+        let button = document.getElementsByClassName("openbtn")[0];
+        let sidenav = document.getElementById("mySidenav");
+        if (sidenav.style.width === "6vh") {
+            button.innerHTML = "↳";
+            sidenav.style.width = "0";
+            sidenav.style.border = "solid 0vh black"
+            sidenav.style.borderTop = "none";
+        } else {
+            button.innerHTML = "↲";
+            sidenav.style.width = "6vh";
+            sidenav.style.border = "solid 0.25vh black"
+            sidenav.style.borderTop = "none";
+        }
+    }
+
+
+
     var view_mode = "0";
-    //on document window resize, resetzoom
+    let zoomValue = 1;
+
+    /*
     window.onresize = function () {
         resetZoom();
     };
-    
+    */
     function onViewModeZero() {
         let board = document.getElementById("board_iframe");
         board.style.display = "block"
@@ -112,7 +131,6 @@
         let board = document.getElementById("board_iframe");
         board.style.display = "none"
     }
-
     // Create a proxy to intercept changes to view_mode
     var view_mode_proxy = new Proxy({
         value: view_mode
@@ -160,11 +178,11 @@
 
     function changeZoom(value) {
         if (view_mode_proxy.value == 1) {
+            showNotification_value("zoom: " + value.toFixed(3));
+            zoomValue = value;
             var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
             viewerContainer.setAttribute('zoom', value);
             temp_zoom = value;
-            document.getElementById('zoomValue').textContent = value.toFixed(2);
-            document.getElementById('customZoomInput').value = value.toFixed(2);
         }
     }
 
@@ -176,8 +194,7 @@
                 var delta = Math.sign(event.deltaY);
 
                 var zoomStep = 0.05; // You can adjust this value for finer or coarser zoom increments
-                var currentZoom = parseFloat(document.getElementById('zoomValue').textContent);
-                var newZoom = currentZoom + delta * zoomStep;
+                var newZoom = zoomValue + delta * zoomStep;
                 newZoom = Math.max(0.1, Math.min(10.0, newZoom));
 
                 changeZoom(newZoom);
@@ -185,16 +202,9 @@
         });
     });
 
-    function updateZoom() {
-        var customZoomValue = parseFloat(document.getElementById('customZoomInput').value);
-        if (!isNaN(customZoomValue) && customZoomValue >= 0.2 && customZoomValue <= 3) {
-            changeZoom(customZoomValue);
-        } else {
-            alert("Please enter a valid zoom value between 0.2 and 3.");
-        }
-    }
 
     function resetZoom() {
+        showNotification_value("zoom: page-width");
         var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
         var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
         viewerContainer.setAttribute('zoom', "page-width");
@@ -203,14 +213,23 @@
         localStorage.setItem("pdf_width", pdf_width);
     }
 
-    function PageToggle(value) {
+    function PageToggle() {
         var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
         var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
+        let split = document.getElementsByClassName("split")[0];
+        let button = document.getElementById('fpButton');
+        button.classList.toggle('tButton_activated');
+        button.classList.toggle('tButton');
+
 
         if (view_mode_proxy.value == 0) {
+            showNotification_value("page layout: text only");
+            split.style.display = "none";
             view_mode_proxy.value = "1"
             viewerContainer.setAttribute('zoom', temp_zoom);
         } else if (view_mode_proxy.value == 1) {
+            showNotification_value("page layout: text & board");
+            split.style.display = "block";
             view_mode_proxy.value = "0";
             viewerContainer.setAttribute('zoom', "page-width");
         }
@@ -218,21 +237,20 @@
 
     function MultiplePage() {
         var viewer = PDF_Iframe.contentDocument.getElementById('viewer');
+        let button = document.getElementById('mpButton');
+        button.classList.toggle('tButton_activated');
+        button.classList.toggle('tButton');
+
         viewer.classList.toggle('pdfViewer');
         viewer.classList.toggle('pdfViewer_MultiplePage');
-    }
-
-    function DoublePage() {
-        changeZoom(1.14)
-    }
-
-    function TriplePage() {
-        changeZoom(0.75)
+        if (view_mode_proxy.value == 0) {
+            showNotification("Multiple Page Mode is only available in Full Page Mode", 1.5);
+        }
     }
     let board_test = false
     setTimeout(function () {
         if (board_test == false) {
-            setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
+            //setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
             //setIframeBodyHeight('Board_Viewer', localStorage.getItem("total_height"));
         }
         if (board_test == true) {

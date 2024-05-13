@@ -3,6 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="CSS/Board.css">
+  <link rel="stylesheet" href="CSS/menu.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="JS/Board/main.js"></script>
@@ -10,8 +11,7 @@
   <script src="JS/Board/tool.js"></script>
   <script src="JS/Board/update.js"></script>
   <script src="JS/Board/debug.js"></script>
-  <script src="JS/Board/svg.panzoom.js"></script>
-
+  <script src="JS/Board/settings-menus.js"></script>
 </head>
 
 
@@ -24,57 +24,93 @@
     </div>
   </div>
   <div id="menu" class="canvas_toolbar">
-    <button onclick="setTool('draw')" class="button">
-      <svg class="strokesvg fillsvg" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="none">
-        <path d="M18 2L22 6M2 22L3.2764 17.3199C3.35968 17.0145 3.40131 16.8619 3.46523 16.7195C3.52199 16.5931 3.59172 16.4729 3.67332 16.3609C3.76521 16.2348 3.87711 16.1229 4.1009 15.8991L14.4343 5.56569C14.6323 5.36768 14.7313 5.26867 14.8455 5.23158C14.9459 5.19895 15.0541 5.19895 15.1545 5.23158C15.2687 5.26867 15.3677 5.36768 15.5657 5.56569L18.4343 8.43431C18.6323 8.63232 18.7313 8.73133 18.7684 8.84549C18.8011 8.94591 18.8011 9.05409 18.7684 9.15451C18.7313 9.26867 18.6323 9.36768 18.4343 9.56569L8.1009 19.8991C7.87711 20.1229 7.76521 20.2348 7.63908 20.3267C7.52709 20.4083 7.40692 20.478 7.28052 20.5348C7.13815 20.5987 6.98548 20.6403 6.68014 20.7236L2 22Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <button onclick="setTool('draw')" class="button" id="draw_button">
+      draw
     </button>
-    <button onclick="resetZoom()" class="button">
-      <svg class="strokesvg" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 32 32" id="i-zoom-reset"
-        fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <circle cx="14" cy="14" r="12" />
-        <path d="M23 23 L30 30" />
-        <path d="M9 12 L9 9 12 9 M16 9 L19 9 19 12 M9 16 L9 19 12 19 M19 16 L19 19 16 19" />
-      </svg>
-    </button>
-    <button  onclick="setTool('line')" class="button" >
-      <svg class="strokesvg fillsvg" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="800px" height="800px" viewBox="0 0 24 24"><path d="M3.293,20.707a1,1,0,0,1,0-1.414l16-16a1,1,0,1,1,1.414,1.414l-16,16A1,1,0,0,1,3.293,20.707Z"/></svg>
+    <button onclick="setTool('line')" class="button" id="line_button">
+      line
     </button>
     <button onclick="setTool('text')" class="button">
-      <svg class="strokesvg fillsvg" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="black">
-        <path  clip-rule="evenodd" d="M3 5C3 4.44772 3.44772 4 4 4H12H20C20.5523 4 21 4.44772 21 5V7C21 7.55228 20.5523 8 20 8C19.4477 8 19 7.55228 19 7V6H13V19H15C15.5523 19 16 19.4477 16 20C16 20.5523 15.5523 21 15 21H12H9C8.44772 21 8 20.5523 8 20C8 19.4477 8.44772 19 9 19H11V6H5V7C5 7.55228 4.55228 8 4 8C3.44772 8 3 7.55228 3 7V5Z" stroke="black"/>
-        </svg>
-    </button> 
-
-
-    <button onclick="change_selection_state('canvas')" class="button">
-      canvas
-    </button>
-    <button onclick="change_selection_state('text')" class="button">
       text
     </button>
-    <button onclick="deselect()" class="button">
-      deselect
+    <button onclick="setTool('selection')" id="selection_button" class="button">
+      selection
     </button>
 
 
 
+
+
+    <div id="settings_line" class="settings_menu" style="height: 25vh; width: 26vh; display: none;">
+      <div class="settings_inner">
+        <p style="margin: 0px;">temporary:</p>
+        <button class="checkmark" onclick=""></button>
+      </div>
+      <div class="settings_inner">
+        <p style="margin: 0px;">Type:</p>
+        <button class="settings_button"></button>
+        <button class="settings_button"></button>
+        <button class="settings_button"></button>
+      </div>
+      <div class="settings_inner">
+        <p style="margin: 0px;">Arrow:</p>
+        <button class="settings_button"></button>
+        <button class="settings_button"></button>
+        <button class="settings_button"></button>
+      </div>
+      <div class="settings_inner">
+        <p style="margin: 0px;">Width:</p>
+        <input id="line_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="1">
+        <button id="line_width_increase"  onclick="adjust_width(1,'line')" class="settings_button">increase</button>
+        <button id="decrease_width_increase" onclick="adjust_width(-1,'line')" class="settings_button">decrease</button>
+      </div>
+    </div>
+
+    <div id="settings_draw" class="settings_menu" style="height: 25vh; width: 26vh; display: none;">
+      <div class="settings_inner">
+        <p style="margin: 0px;">Smoothing:</p>
+        <button class="checkmark" id="smoothing_toggle" onclick="toggle_smoothing()"></button>
+      </div>
+      <div class="settings_inner">
+        <p style="margin: 0px;">Width:</p>
+        <input id="draw_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="1">
+        <button id="draw_width_increase"  onclick="adjust_width(1,'draw')" class="settings_button">increase</button>
+        <button id="decrease_width_increase" onclick="adjust_width(-1,'draw')" class="settings_button">decrease</button>
+      </div>
+    </div>
+
+    <div id="settings_selection" class="settings_menu" style="height: 25vh; width: 26vh; display: none;">
+      <div class="settings_inner">
+        <p style="margin: 0px;">allow:</p>
+        <button onclick="toggle_selection('text');" class="button selection_toggle stbutton" id="text_selection"style="display: none;">
+          text selection
+        </button>
+        <button onclick="toggle_selection('canvas');" class="button selection_toggle stbutton" id="canvas_selection" style="display: none;">
+          canvas selection
+        </button>
+      </div>
+    </div>
+    
     <div class="edit_area">
 
+      <button onclick="selection_settings()" class="button selection_settings stbutton" style="display: none;" >
+        selection settings
+       </button>
 
-      <button class="button">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 30 30">
-          <circle id="colorvalue" cx="15" cy="15" r="14" fill="red" stroke="black" stroke-width="2"></circle>
-        </svg>
+      <button onclick="window.parent.showNotification('temporarily bugged, make sure to click the actual color', 2);" class="stbutton button all" id="color_settings" style="display: none;">
+        <input onclick="hide_all_menus()" id="colorvalue" type="color" value="#1dbbce"
+          style="border: 0; background: transparent">
       </button>
-      <button class="button">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="800px" height="800px" viewBox="0 0 14 14"
-          role="img" focusable="false" aria-hidden="true">
-          <path d="M1 1h12v3H1V1zm0 4.2h12v2.4H1V5.2zm0 3.6h12v1.8H1V8.8zm0 3h12V13H1v-1.2z" /></svg>
+      <button onclick="line_settings()" class="button line_settings stbutton line" style="display: none;" >
+       line settings
       </button>
-
-
-
+      <button onclick="draw_settings()" class="button draw_settings stbutton draw" style="display: none;">
+        draw settings
+      </button>
+      
+      <button onclick="delete_selected()" id="delete_button" class="button delete_button stbutton delete" style="display: none;">
+        delete
+      </button>
     </div>
   </div>
 
@@ -86,36 +122,21 @@
 
   <script>
     var activeTool = "none"
-    var draw = SVG().addTo('#drawing').size('100%', '100%').viewbox('0 0 1000 1000');
+    var draw = SVG().addTo('#drawing').size('100%', '100%');
     draw.node.setAttribute('id', 'svg_canvas');
     var state = null;
     var selection_state = null;
     var smooth_free_draw = false;
-    let h = localStorage.getItem("first_page").split(",")[1];
-    let w = localStorage.getItem("first_page").split(",")[0];
-    resetZoom();
+
+
+    let body = document.getElementsByTagName("body")[0];
+    body.style.overflow = "hidden";
+    window.onload = function () {
+      document.body.style.height = 10000000 + "px";
+    };
 
     function enable_freedraw_smoothening() {
       smooth_free_draw = !smooth_free_draw;
-    }
-
-    let canvas = document.getElementById('svg_canvas');
-    canvas.setAttribute('preserveAspectRatio', 'xMinYMin meet');
-
-    draw.panZoom({
-      wheelZoom: false,
-      pinchZoom: false,
-      panButton: 1,
-      //wheelZoom: true,
-      zoomMin: 0.2,
-      zoomMax: 2,
-      //margins:true
-    })
-
-    //reset zoom function
-    function resetZoom() {
-      console.log(h, w);
-      draw.viewbox(0, 0, w, h);
     }
   </script>
 
