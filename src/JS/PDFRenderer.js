@@ -1,11 +1,11 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc ="../../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
-const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
-const CMAP_PACKED = true;
+window.CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
+window.CMAP_PACKED = true;
 
 //const DEFAULT_URL = "../assets/numbered-test.pdf";
-const DEFAULT_URL = "../assets/norse.pdf";
+var DEFAULT_URL = "../assets/norse.pdf";
 //const DEFAULT_URL = "../assets/grid.pdf";
-const ENABLE_XFA = true;
+window.ENABLE_XFA = true;
 
 const SANDBOX_BUNDLE_SRC = new URL(
   "../../node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
@@ -17,14 +17,14 @@ const container = document.getElementById("viewerContainer");
 const eventBus = new pdfjsViewer.EventBus();
 
 // (Optionally) enable hyperlinks within PDF files.
-const pdfLinkService = new pdfjsViewer.PDFLinkService({
+window.pdfLinkService = new pdfjsViewer.PDFLinkService({
   eventBus,
 });
 
 // (Optionally) enable find controller.
 const pdfFindController = new pdfjsViewer.PDFFindController({
   eventBus,
-  linkService: pdfLinkService,
+  linkService: window.pdfLinkService,
 });
 
 // (Optionally) enable scripting support.
@@ -33,26 +33,27 @@ const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
   sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
 });
 
-const pdfViewer = new pdfjsViewer.PDFViewer({
+window.pdfViewer = new pdfjsViewer.PDFViewer({
   container,
   eventBus,
-  linkService: pdfLinkService,
+  linkService: window.pdfLinkService,
   findController: pdfFindController,
   scriptingManager: pdfScriptingManager,
 });
-pdfLinkService.setViewer(pdfViewer);
-pdfScriptingManager.setViewer(pdfViewer);
+window.pdfLinkService.setViewer(window.pdfViewer);
+pdfScriptingManager.setViewer(window.pdfViewer);
 
 eventBus.on("pagesinit", function () {
-  pdfViewer.currentScaleValue = "page-width";
+  window.pdfViewer.currentScaleValue = "page-width";
   var viewerContainer = document.getElementById('viewerContainer');
+
 
 // Create a MutationObserver instance
 var observer = new MutationObserver(function(mutationsList) {
     mutationsList.forEach(function(mutation) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'zoom') {
             var newZoomLevel = mutation.target.getAttribute('zoom');
-            pdfViewer.currentScaleValue = newZoomLevel;
+            window.pdfViewer.currentScaleValue = newZoomLevel;
         }
     });
 });
@@ -61,19 +62,18 @@ observer.observe(viewerContainer, { attributes: true });
 
 
 });
-
 // Loading document.
 const loadingTask = pdfjsLib.getDocument({
   url: DEFAULT_URL,
-  cMapUrl: CMAP_URL,
-  cMapPacked: CMAP_PACKED,
-  enableXfa: ENABLE_XFA,
+  cMapUrl: window.CMAP_URL,
+  cMapPacked: window.CMAP_PACKED,
+  enableXfa: window.ENABLE_XFA,
 });
 
 const pdfDocument = await loadingTask.promise;
 // Document loaded, specifying document for the viewer and
 // the (optional) linkService.
-pdfViewer.setDocument(pdfDocument);
+window.pdfViewer.setDocument(pdfDocument);
 
 pdfLinkService.setDocument(pdfDocument, null);
 
@@ -100,3 +100,4 @@ Promise.all(pagePromises)
   .catch(error => {
     console.error("Error retrieving pages:", error);
   });
+

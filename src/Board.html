@@ -27,6 +27,12 @@
     <button onclick="setTool('draw')" class="button" id="draw_button">
       draw
     </button>
+    <button onclick="importCanvas(exportCanvas())" class="button" id="draw_button">
+      import
+    </button>
+    <button onclick="exportCanvas()" class="button" id="draw_button">
+      export
+    </button>
     <button onclick="setTool('line')" class="button" id="line_button">
       line
     </button>
@@ -138,6 +144,9 @@
     function enable_freedraw_smoothening() {
       smooth_free_draw = !smooth_free_draw;
     }
+    function exportBoard() {
+
+}
   </script>
 
 

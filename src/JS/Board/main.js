@@ -121,35 +121,43 @@ function resetTools(keep_selection) {
 }
 
 function exportCanvas() {
-    var svg = draw.svg();
-    var svgBlob = new Blob([svg], {
-        type: "image/svg+xml"
-    });
-    var svgUrl = URL.createObjectURL(svgBlob);
-    var downloadLink = document.createElement("a");
-    downloadLink.href = svgUrl;
-    downloadLink.download = "canvas.svg";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(svgUrl);
+    let data = [];
+    for (let i = 0; i < object_list.length; i++) {
+        let JSON_data = {
+            object: object_list[i].object.node.outerHTML,
+            collission: object_list[i].collission_object.node.outerHTML,
+            type: object_list[i].type,
+            color: object_list[i].color,
+            smoothing: object_list[i].smoothing,
+            stroke: object_list[i].object.node.attributes["stroke-width"].value
+        }
+        data.push(JSON_data);
+    }
+    console.log(data);
+    return data;
 }
+function importCanvas(data) {
+    draw.clear();
+    object_list = [];
 
-function importCanvas() {
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/svg+xml";
-    input.onchange = function (event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function (event) {
-            var svgString = event.target.result;
-            draw.clear();
-            draw.svg(svgString);
-        };
-        reader.readAsText(file);
-    };
-    input.click();
+    for (let i = 0; i < data.length; i++) {
+        let object = data[i].object;
+        let collission = data[i].collission;
+        let type = data[i].type;
+        let color = data[i].color;
+        let smoothing = data[i].smoothing;
+        let obj = draw.svg(object)
+        let col = draw.svg(collission)
+        let object_element = {
+            object: obj,
+            collission_object: col,
+            type: type,
+            color: color,
+            smoothing: smoothing
+        }
+        object_list.push(object_element);
+    }
+
 }
 
 

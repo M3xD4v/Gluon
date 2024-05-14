@@ -1,8 +1,8 @@
     var { ipcRenderer } = require('electron');
 
-    // Example data to send
-    const data = {
-        message: 'Hello from PDF.html!'
-    };
-
-    ipcRenderer.send('pdfData', data);
+    ipcRenderer.on('open-file_pdf', () => {
+        open_newFile_pdf();
+    });
+    ipcRenderer.on('save-file', () => {
+        save_File();
+    });
