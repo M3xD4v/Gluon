@@ -67,6 +67,8 @@ function text() {
     draw.on('click', handleClick);
     EventListenerTrack("text_drawing", "click", handleClick);
 }
+
+
 function selection() {
     deselect();
     if (selection_type.length == 1 && selection_type[0] == "canvas") {
@@ -78,6 +80,76 @@ function selection() {
     } else if (selection_type.length == 0) {
         change_selection_state("off");
     }
+
+    function tgmultiselect(event) {
+        toggle_multi_select(draw.point(event.clientX, event.clientY))
+    }
+
+    draw.on('mousedown',tgmultiselect);
+
+    function tgstop(event) {
+        toggle_multi_select()
+        if (multi_select_box == null) return;
+        
+        let box_position = multi_select_box.bbox();
+        multi_select_box.remove();
+        multi_select_box = null;
+        for (let i = 0; i < object_list.length; i++) {
+            let object = object_list[i].object;
+            let object_position = object.bbox();
+            if (check_if_bbox_collides(box_position, object_position)) {
+                select_multiple(object_list[i].object)
+            }
+        }
+    }
+    draw.on('mouseup', tgstop);
+
+    EventListenerTrack("selection", "mousedown", tgmultiselect);
+    EventListenerTrack("selection", "mouseup", tgstop);
+
+}
+
+function check_if_bbox_collides(box1, box2) {
+    if (box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.y + box1.height > box2.y) {
+        return true;
+    }
+}
+
+
+function toggle_multi_select(data) {
+    multi_select = !multi_select;
+    if (multi_select == true) {
+        function multiselectfunction(event) {
+            var rect;
+            var pos1 = data
+            if (pos1 == null) {
+                return;
+            }
+            var pos2 = draw.point(event.clientX, event.clientY)
+            var width = Math.abs(pos2.x - pos1.x);
+            var height = Math.abs(pos2.y - pos1.y);
+
+            if (multi_select_box == null) {
+                rect = draw.rect(width, height).move(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
+                rect.fill("transparent");
+                rect.stroke({
+                    color: "black",
+                    width: 2
+                });
+                multi_select_box = rect;
+                multi_select_box = rect;
+            } else {
+                multi_select_box.width(width);
+                multi_select_box.height(height);
+                multi_select_box.move(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y));
+            }
+        }
+
+
+        draw.on('mousemove', multiselectfunction);
+    } else {
+        draw.off('mousemove', multiselectfunction);
+    }
 }
 
 function free_draw() {
@@ -88,6 +160,7 @@ function free_draw() {
     let points = [];
 
     let path_object;
+
     function initial_check(event) {
         if (event.button !== 0) {
             return;
@@ -101,10 +174,11 @@ function free_draw() {
             color: getColor()
         });
         path_object.node.style.fill = "transparent";
-        points.push([position.x, position.y]); 
+        points.push([position.x, position.y]);
         draw_f(points, path, path_object);
-        points.push([position.x + 1 , position.y]); 
+        points.push([position.x + 1, position.y]);
     }
+
     function let_go(event) {
         if (event.button !== 0) {
             return;
@@ -168,6 +242,6 @@ function free_draw() {
 
     draw.on("mousedown", initial_check);
     EventListenerTrack("free_draw", "mousedown", initial_check);
-    draw.on("mouseup", let_go );
+    draw.on("mouseup", let_go);
     EventListenerTrack("free_draw", "mouseup", let_go);
 }

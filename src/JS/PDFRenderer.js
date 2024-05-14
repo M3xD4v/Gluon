@@ -38,12 +38,14 @@ window.pdfViewer = new pdfjsViewer.PDFViewer({
   eventBus,
   linkService: window.pdfLinkService,
   findController: pdfFindController,
-  scriptingManager: pdfScriptingManager,
+  scriptingManager: pdfScriptingManager
 });
 window.pdfLinkService.setViewer(window.pdfViewer);
 pdfScriptingManager.setViewer(window.pdfViewer);
 
 eventBus.on("pagesinit", function () {
+  let button = document.getElementById("openpdf");
+  button.style.display = "none";
   window.pdfViewer.currentScaleValue = "page-width";
   var viewerContainer = document.getElementById('viewerContainer');
 
@@ -73,9 +75,9 @@ const loadingTask = pdfjsLib.getDocument({
 const pdfDocument = await loadingTask.promise;
 // Document loaded, specifying document for the viewer and
 // the (optional) linkService.
-window.pdfViewer.setDocument(pdfDocument);
+//window.pdfViewer.setDocument(pdfDocument);
 
-pdfLinkService.setDocument(pdfDocument, null);
+//pdfLinkService.setDocument(pdfDocument, null);
 
 let total_height = 0;
 const pagePromises = [];

@@ -5,6 +5,7 @@
     <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
     <script src="JS/notification.js"></script>
     <script src="JS/IPC.js"></script>
+    <script src="JS/saveloadSystem"></script>
 
     <link rel="stylesheet" href="CSS/navbar.css">
     <style>
@@ -52,7 +53,6 @@
             padding: 1vh 5vh;
             z-index: 1;
         }
-
     </style>
     <script>
         $(document).ready(function () {
@@ -98,9 +98,10 @@
 
 
 <script>
-
     var view_mode = "0";
     let zoomValue = 1;
+    var { ipcRenderer } = require('electron');
+
 
     /*
     window.onresize = function () {
@@ -323,6 +324,7 @@
     Board_Iframe.addEventListener('mouseover', function () {
         setActiveIframe('Board');
     });
+
     function toggleNav() {
         let button = document.getElementsByClassName("openbtn")[0];
         let sidenav = document.getElementById("mySidenav");
@@ -338,35 +340,9 @@
             sidenav.style.borderTop = "none";
         }
     }
-
-    function open_newFile_pdf() {
-        let pdfViewer = PDF_Iframe.contentDocument
-        let window = pdfViewer.defaultView
-
-        let inputElement = document.createElement('input');
-        document.body.appendChild(inputElement);
-        inputElement.style.position = 'absolute';
-        inputElement.style.top = '100px';
-        inputElement.type = 'file';
-        inputElement.accept = '.pdf';
-        inputElement.onchange = function (event) {
-            let file = event.target.files[0];
-            let reader = new FileReader();
-            reader.onload = function (event) {
-                let data = event.target.result;
-                let int8Array = new Int8Array(data);
-                PDF_Iframe.contentWindow.load_new_pdf(int8Array)
-            };
-            reader.readAsArrayBuffer(file);
-        };
-    }
-        
-    function save_File() {
-        let pdfWindow = PDF_Iframe.contentDocument.defaultView
-        let boardWindow = Board_Iframe.contentDocument.defaultView
-        let pdf_data = pdfWindow.exportPDF()
-        //let board_data = boardWindow.exportBoard()
-        boardWindow.exportCanvas();
+    
+    function restart() {
+        ipcRenderer.send('restart');
     }
 </script>
 

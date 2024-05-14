@@ -13,6 +13,11 @@ let control_points = [];
 var path_selected_snapshot;
 var selection_type = [];
 
+var multi_select = false;
+multi_select_box = null;
+var m_selected = [];
+var bbox = null;
+
 function activateTool(toolName) {
     const toolFunctions = {
         "line": line,
@@ -123,39 +128,104 @@ function resetTools(keep_selection) {
 function exportCanvas() {
     let data = [];
     for (let i = 0; i < object_list.length; i++) {
-        let JSON_data = {
-            object: object_list[i].object.node.outerHTML,
-            collission: object_list[i].collission_object.node.outerHTML,
-            type: object_list[i].type,
-            color: object_list[i].color,
-            smoothing: object_list[i].smoothing,
-            stroke: object_list[i].object.node.attributes["stroke-width"].value
+        if (object_list[i].type == "line") {
+            let JSON_data = {
+                object: object_list[i].object.node.outerHTML,
+                collission: object_list[i].collission_object.node.outerHTML,
+                type: object_list[i].type,
+                color: object_list[i].color,
+                smoothing: object_list[i].smoothing,
+                stroke: object_list[i].object.node.attributes["stroke-width"].value
+            }
+            data.push(JSON_data);
         }
-        data.push(JSON_data);
+        if (object_list[i].type == "path") {
+            let JSON_data = {
+                object: object_list[i].object.node.outerHTML,
+                collission: object_list[i].collission_object.node.outerHTML,
+                type: object_list[i].type,
+                color: object_list[i].color,
+                smoothing: object_list[i].smoothing,
+                stroke: object_list[i].object.node.attributes["stroke-width"].value,
+                d: object_list[i].object.node.attributes.d.value,
+                fill: object_list[i].object.node.style.fill
+            }
+            data.push(JSON_data);
+        }
     }
-    console.log(data);
     return data;
 }
+
+function line_htmlstring_to_position(object) {
+    let regex = /x1="(\d+)" y1="(\d+)" x2="(\d+)" y2="(\d+)"/;
+    let match = object.match(regex);
+
+    if (match) {
+        return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3]), parseInt(match[4])];
+    }
+}
+
 function importCanvas(data) {
     draw.clear();
     object_list = [];
-
+    resetTools();
+    //turn data to json from string
+    data = JSON.parse(data);
     for (let i = 0; i < data.length; i++) {
-        let object = data[i].object;
-        let collission = data[i].collission;
-        let type = data[i].type;
-        let color = data[i].color;
-        let smoothing = data[i].smoothing;
-        let obj = draw.svg(object)
-        let col = draw.svg(collission)
-        let object_element = {
-            object: obj,
-            collission_object: col,
-            type: type,
-            color: color,
-            smoothing: smoothing
+        if (data[i].type == "line") {
+            let object = draw.line().stroke({
+                color: data[i].color,
+                width: data[i].stroke
+            });
+            let collission = draw.line().stroke({
+                color: "transparent",
+                width: data[i].stroke
+            });
+
+            let pos = line_htmlstring_to_position(data[i].object);
+            let col_pos = line_htmlstring_to_position(data[i].collission);
+            object.plot(pos[0], pos[1], pos[2], pos[3]);
+            collission.plot(col_pos[0], col_pos[1], col_pos[2], col_pos[3]);
+
+            let line = {
+                object: object,
+                collission_object: collission,
+                type: "line",
+                color: data[i].color,
+                control_points: [],
+                smoothing: "false",
+            }
+            object_list.push(line);
+            enable_selection(line);
+        } else if (data[i].type == "path") {
+            let object = draw.path().stroke({
+                color: data[i].color,
+                width: data[i].stroke
+            });
+            let collission = draw.path().stroke({
+                color: "transparent",
+                width: data[i].stroke
+            });
+
+
+            object.node.attributes.d.value = data[i].d;
+            collission.node.attributes.d.value = data[i].d;
+            collission.node.style.fill = "transparent";
+            object.node.style.fill = "transparent";
+            object.node.style.strokeLinecap = "round";
+
+
+            let line = {
+                object: object,
+                collission_object: collission,
+                type: "path",
+                color: data[i].color,
+                control_points: [],
+                smoothing: "false"
+            }
+            object_list.push(line);
+            enable_selection(line);
         }
-        object_list.push(object_element);
     }
 
 }
@@ -431,11 +501,82 @@ function select(object) {
         });
         selected.color = color_input.value;
     });
+}
+
+function select_multiple(object) {
+    selected = "multiple";
+    if (!m_selected.includes(object)) {
+        m_selected.push(object);
+    }
+    let box;
+    if (bbox == null) {
+        let bb = get_multiple_bb();
+        box = draw.rect(bb.width, bb.height).fill("transparent").stroke({
+            color: "#ff8600",
+            width: 1
+        });
+        box.move(bb.x, bb.y);
+        bbox = box;
+
+    } else {
+        let bb = get_multiple_bb();
+        bbox.size(bb.width, bb.height);
+        bbox.move(bb.x, bb.y);
+        bbox.on('click', function (evne) {
+            let initial_position = draw.point(event.clientX, event.clientY);
+            bbox.on('mousemove', function (event) {
+                let pos = draw.point(event.clientX, event.clientY);
+                bbox.center(pos.x, pos.y);
+                let offset = {
+                    x: pos.x - initial_position.x,
+                    y: pos.y - initial_position.y
+                }
+
+                for (let i = 0; i < m_selected.length; i++) {
+                    let object = m_selected[i];
+                    //console.log(offset)
+                    object.dmove(offset.x, offset.y);
+                }
+                initial_position = pos;
+            });
+        });
+    }
+}
+
+
+function get_multiple_bb() {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (let i = 0; i < m_selected.length; i++) {
+        let bbox = m_selected[i].bbox();
+        minX = Math.min(minX, bbox.x);
+        minY = Math.min(minY, bbox.y);
+        maxX = Math.max(maxX, bbox.x2);
+        maxY = Math.max(maxY, bbox.y2);
+    }
+    let width = maxX - minX;
+    let height = maxY - minY;
+    return {
+        x: minX,
+        y: minY,
+        width: width,
+        height: height
+    };
 
 }
 
+
 function deselect(global) {
-    if (selected) {
+    if (selected == "multiple") {
+        selected = null;
+        m_selected = [];
+        bbox.remove();
+        bbox = null;
+        
+    } else if (selected && selected != "multiple") {
         selected.object.stroke({
             color: selected_original_color
         });
