@@ -17,7 +17,7 @@
 <body tabindex="1">
 
     <div id="customMenu" class="custom-menu" style="display: none;">
-        <button id="copyAction" class="quick_button">translate</button>
+        <button id="copyAction" class="quick_button" onclick="explain()">explain</button>
         <button id="copyAction" class="quick_button">Lorem</button>
         <button id="copyAction" class="quick_button">Lorem</button>
     </div>
@@ -53,6 +53,12 @@
             window.pdfViewer.setDocument(pdfDocument);
             window.pdfLinkService.setDocument(pdfDocument, null);
         });
+    }
+
+    function explain() {
+        let selectedText = window.getSelection().toString();
+        let string = "Explain this text in simpler terms: " + selectedText;
+        window.parent.ipcRenderer.send('AI', string);
     }
 </script>
 <style>

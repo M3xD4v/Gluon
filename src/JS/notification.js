@@ -6,7 +6,7 @@ function showNotification(text, time) {
     notification.style.top = "25px";
     notification.innerHTML = text;
     setTimeout(() => {
-        notification.style.top = "-10vh";
+        notification.style.top = "-16vh";
     }, seconds);
 }
 

@@ -18,6 +18,7 @@
     "@svgdotjs/svg.panzoom.js": "^2.1.2",
     "custom-electron-titlebar": "^4.2.8",
     "electron-pdf-window": "^1.0.12",
+    "ollama": "^0.5.1",
     "pdfjs-dist": "^4.2.67"
   }
 }

@@ -76,6 +76,9 @@ function setTool(tool) {
         if (tool == "draw") {
             toggle_buttons("draw")
         }
+        if (tool == "text") {
+            toggle_buttons("text")
+        }
         if (tool == "selection") {
             toggle_buttons("selection")
             let buttons = document.getElementsByClassName("stbutton");
@@ -120,6 +123,8 @@ function resetTools(keep_selection) {
         }
         let active_buttons = document.getElementsByClassName("button_active")
         if (active_buttons.length > 0 && !active_buttons[0].classList.value.includes("selection_toggle")) {
+            let img = active_buttons[0].getElementsByTagName("img")[0];
+            img.style.filter = "invert(0)";
             active_buttons[0].classList.add("button");
             active_buttons[0].classList.remove("button_active");
         }
@@ -151,6 +156,14 @@ function exportCanvas() {
                 d: object_list[i].object.node.attributes.d.value,
                 fill: object_list[i].object.node.style.fill
             }
+            data.push(JSON_data);
+        }
+        if (object_list[i].type == "text") {
+            let JSON_data = {
+                object: object_list[i].object.outerHTML,
+                type: object_list[i].type,
+            }
+            console.log(JSON_data)
             data.push(JSON_data);
         }
     }
@@ -226,6 +239,13 @@ function importCanvas(data) {
             }
             object_list.push(line);
             enable_selection(line);
+        } else if (data[i].type == "text") {
+            let object = data[i].object;
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = object;
+            var newElement = tempDiv.firstChild;
+            document.getElementById("drawing").appendChild(newElement);
+            TextInit(newElement);
         }
     }
 
@@ -472,7 +492,7 @@ function select(object) {
         color: "#ff8600"
     });
     for (let i = 0; i < object_list.length; i++) {
-        object_list[i].collission_object.off();
+        if (object_list[i].type != "text") object_list[i].collission_object.off();
     }
     if (object.type === "line") {
         object.control_points = [];
@@ -661,7 +681,7 @@ function change_selection_state(newstate) {
     selection_state = newstate;
     if (newstate === "canvas") {
         resetTools("keep_selection")
-        let movableBox = document.getElementsByClassName('movableBox');
+        let movableBox = document.getElementsByClassName('textbox');
         for (let i = 0; i < movableBox.length; i++) {
             movableBox[i].style.pointerEvents = "none";
         }
@@ -670,7 +690,7 @@ function change_selection_state(newstate) {
         }
     }
     if (newstate === "text") {
-        let movableBox = document.getElementsByClassName('movableBox');
+        let movableBox = document.getElementsByClassName('textbox');
         disable_all_object_events();
         deselect("global");
         resetTools("keep_selection")
@@ -679,14 +699,14 @@ function change_selection_state(newstate) {
         }
     }
     if (newstate === "off") {
-        let movableBox = document.getElementsByClassName('movableBox');
+        let movableBox = document.getElementsByClassName('textbox');
         disable_all_object_events()
         for (let i = 0; i < movableBox.length; i++) {
             movableBox[i].style.pointerEvents = "none";
         }
     }
     if (newstate === "both") {
-        let movableBox = document.getElementsByClassName('movableBox');
+        let movableBox = document.getElementsByClassName('textbox');
         for (let i = 0; i < movableBox.length; i++) {
             movableBox[i].style.pointerEvents = "auto";
         }

@@ -5,7 +5,7 @@
     <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
     <script src="JS/notification.js"></script>
     <script src="JS/IPC.js"></script>
-    <script src="JS/saveloadSystem"></script>
+    <script src="JS/saveloadSystem.js"></script>
 
     <link rel="stylesheet" href="CSS/navbar.css">
     <style>
@@ -344,6 +344,12 @@
     function restart() {
         ipcRenderer.send('restart');
     }
+
+    ipcRenderer.send('AI', "HI how are you?");
+    ipcRenderer.on('AIResponse', (event, file) => {
+        showNotification(file, 2);
+        });
+
 </script>
 
 </html>

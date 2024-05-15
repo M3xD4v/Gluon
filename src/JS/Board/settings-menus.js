@@ -26,14 +26,26 @@ function toggle_buttons(name) {
         let elements = document.getElementById("line_button")
         elements.classList.toggle("button_active");
         elements.classList.toggle("button");
+        let img = elements.getElementsByTagName("img")[0];         img.style.filter = "invert(100)";
+        
     } else if (name === "draw") {
         let elements = document.getElementById("draw_button")
         elements.classList.toggle("button");
         elements.classList.toggle("button_active");
+        let img = elements.getElementsByTagName("img")[0];
+        img.style.filter = "invert(100)";
     } else if (name === "selection") {
         let elements = document.getElementById("selection_button")
         elements.classList.toggle("button");
         elements.classList.toggle("button_active");
+        let img = elements.getElementsByTagName("img")[0];
+        img.style.filter = "invert(100)";
+    } else if (name === "text") {
+        let elements = document.getElementById("text_button")
+        elements.classList.toggle("button");
+        elements.classList.toggle("button_active");
+        let img = elements.getElementsByTagName("img")[0];
+        img.style.filter = "invert(100)";
     }
 }
 

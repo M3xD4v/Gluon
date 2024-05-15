@@ -1,22 +1,36 @@
-const {
-    app,
-    BrowserWindow,
-    Menu,
-    screen,
-    ipcMain,
-    dialog
-} = require('electron');
+const {app,BrowserWindow,Menu,screen,ipcMain,dialog} = require('electron');
+
 var fs = require('fs');
+const { default: ollama } = require('ollama'); // CJS`
+
+
+let modelResponse = ""
+
+async function invokeLLM(props) {
+    console.log(`[${props.model}]: ${props.content}`)
+    try {
+      const response = await ollama.chat({
+        model: props.model,
+        messages: [{ role: props.role, content: props.content }],
+      })
+      return response.message.content;
+    }
+    catch(error) {
+      console.log(`Query failed`)
+      console.log(error)
+    }
+  }
+  
+
+
+
+
 app.once('ready', () => {
-    const {
-        width,
-        height
-    } = screen.getPrimaryDisplay().workAreaSize;
+    const {width, height} = screen.getPrimaryDisplay().workAreaSize;
 
     let win = new BrowserWindow({
         width: width,
         height: height,
-        //resizable: false,
         maximizable: true,
         webPreferences: {
             plugins: true,
@@ -27,6 +41,20 @@ app.once('ready', () => {
     win.setAspectRatio(16 / 9);
     win.loadFile('src/layout.html');
     win.setMaximizable(true)
+
+    ipcMain.on('AI', (event,data) => {
+        let chatConfig = {
+            model: "llama3",
+            role: "user",
+            content: data
+          }
+
+          invokeLLM(chatConfig).then(modelResponse => {
+            event.sender.send('AIResponse', modelResponse);
+          });
+        });
+
+
 
     ipcMain.on('open_dialog_project', (event) => {
         dialog.showOpenDialog(win, {
@@ -108,6 +136,7 @@ app.once('ready', () => {
             label: 'File',
             submenu: [{
                     label: 'New',
+                    accelerator: 'Ctrl+R',
                     click: () => {
                         app.relaunch()
                         app.exit()
@@ -121,12 +150,14 @@ app.once('ready', () => {
                 },
                 {
                     label: 'Save Project',
+                    accelerator: 'Ctrl+S',
                     click: () => {
                         win.webContents.send('save-project');
                     }
                 },
                 {
                     label: 'Load Project',
+                    accelerator: 'Ctrl+O',
                     click: () => {
                         win.webContents.send('load-project');
                     }
@@ -137,6 +168,7 @@ app.once('ready', () => {
 
                 {
                     label: 'Inpsect',
+                    accelerator: 'Ctrl+Shift+I',
                     click: () => {
                         win.webContents.openDevTools();
                     }

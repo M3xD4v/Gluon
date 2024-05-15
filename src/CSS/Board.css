@@ -159,13 +159,18 @@ html {
   padding: 5px;
   resize: both;
   overflow: auto;
-  /* required for resize to work */
+
 }
 
 .text_buttons {
   display: none;
   position: absolute;
   top: -6.25vh;
+  padding: 0;
+}
+.textbox_button img {
+  user-select: none;
+  pointer-events: none;
 }
 
 .textbox_button {
@@ -175,6 +180,9 @@ html {
   border: solid black 0.25vh;
   margin-left: 1px;
   font-size: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .textbox_container {
   position: absolute;

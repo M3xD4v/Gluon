@@ -1,6 +1,6 @@
 function getColor() {
     return document.getElementById('colorvalue').value;
-    
+
 }
 
 function getWidth(object) {
@@ -69,31 +69,31 @@ function TextInit(object) {
     object_list.push(combined);
     let buttons = object.getElementsByClassName("textbox_button");
     let button_container = object.getElementsByClassName("text_buttons");
-    console.log(object);
     let textbox = object.getElementsByClassName("textbox");
-    const buttonIds = ['move', 'incrase', 'decrease', 'bold', 'italic', 'underline', 'colorPicker'];
+
+    console.log(buttons);
     const [moveButton, increaseButton, decreaseButton, boldButton, italicButton, underlineButton, colorPicker] = buttons;
 
-
-    function changeFontSize(size) {
-        const selection = window.getSelection();
+    function increaseFontSelected(factor) {
+        var selection = window.getSelection();
         if (!selection.rangeCount) return;
-        let range = selection.getRangeAt(0);
-        let node = range.startContainer.parentNode;
-        let span;
-        if (node.nodeName === 'SPAN') {
-            span = node;
-            let currentSize = parseInt(span.style.fontSize);
-            console.log
-            span.style.fontSize = `10px`;
-        } else {
-            span = document.createElement('span');
-            span.textContent = range.toString();
-            range.deleteContents();
-            range.insertNode(span);
-            span.style.fontSize = `10px`;
+        if (selection.anchorNode instanceof HTMLSpanElement) {
+            selection.anchorNode.style.fontSize = (parseInt(selection.anchorNode.style.fontSize) + factor) + 'px';
+            return;
         }
-    
+        var range = selection.getRangeAt(0);
+        var selectedText = range.extractContents();
+        var span = document.createElement('span');
+        span.appendChild(selectedText);
+        var currentFontSize = window.getComputedStyle(range.startContainer.parentNode).fontSize;
+        span.style.fontSize = (parseInt(currentFontSize) + factor) + 'px';
+        range.insertNode(span);
+
+        // Reselect the text
+        var newRange = document.createRange();
+        newRange.selectNodeContents(span);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
     }
 
 
@@ -103,30 +103,116 @@ function TextInit(object) {
         selectedText = e.target.parentElement.parentElement;
     });
 
-    // Update the mouseup event listener for the move button
-    moveButton.addEventListener('mouseup', () => {
-        isTextMoving = false;
-    });
 
-    // Update the mousemove event listener
-    document.addEventListener('mousemove', (e) => {
-        if (isTextMoving) {
-            selectedText.style.left = `${e.clientX - 10}px`;
-            selectedText.style.top = `${e.clientY + 10}px`;
+    document.addEventListener('mouseup', () => {
+        if (isTextMoving = true) {
+            isTextMoving = false;
         }
     });
+
+
+    function textmove(e) {
+        if (isTextMoving) {
+            let newX = draw.point(e.clientX, e.clientY).x;
+            let newY = draw.point(e.clientX, e.clientY).y;
+
+            var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+            var pixels = 3 * (vh / 100);
+
+            let offsetx = selectedText.getBoundingClientRect().left - moveButton.getBoundingClientRect().left;
+            let offsety = selectedText.getBoundingClientRect().top - moveButton.getBoundingClientRect().top;
+            /*
+            let boxWidth = selectedText.offsetWidth;
+            let boxHeight = selectedText.offsetHeight;
+            let scrollY = window.scrollY;
+            let windowWidth = window.innerWidth;
+            let windowHeight = window.innerHeight;
+    
+            if (newX + boxWidth + 50 > windowWidth) {
+                newX = windowWidth - boxWidth - 50;
+            }
+    
+            if (newY + boxHeight > windowHeight) {
+                newY = windowHeight - boxHeight ;
+            }
+    
+            if (newX < 0) {
+                newX = 0;
+            }
+    
+            if (newY < 0) {
+                newY = 0;
+            }
+            */
+            selectedText.style.left = newX + offsetx - pixels + "px";
+            selectedText.style.top = newY + offsety - pixels + "px";
+        }
+    }
+
     object.addEventListener('click', () => {
+        document.addEventListener('mousemove', textmove);
         button_container[0].style.display = "flex";
+
+        let rect = button_container[0].getBoundingClientRect();
+        let isOnScreen = rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
+        isOnScreen = true;
+        if (isOnScreen == false) {
+            //move the button container to the bottom of the container, calculate it based on the textbox height
+            let textbox_height = textbox[0].offsetHeight;
+            button_container[0].style.left = "0px";
+            button_container[0].style.top = `${textbox_height}px`;
+
+        }
+        if (isOnScreen == true) {
+            button_container[0].style.left = "0px";
+            button_container[0].style.top = `-6vh`;
+        }
     });
+
     textbox[0].addEventListener('blur', () => {
         button_container[0].style.display = "none";
+        document.removeEventListener('mousemove', textmove);
     });
 
     increaseButton.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // prevent the mousedown event from causing the textbox to lose focus
+        e.preventDefault();
     });
     increaseButton.addEventListener('click', () => {
-        changeFontSize(3);
+        increaseFontSelected(5);
+    });
+    decreaseButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    decreaseButton.addEventListener('mousedown', (e) => {
+        increaseFontSelected(-5);
+    });
+
+    colorPicker.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    colorPicker.addEventListener('input', () => {
+        document.execCommand('foreColor', false, colorPicker.value);
+    });
+
+    boldButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    boldButton.addEventListener('input', () => {
+        document.execCommand('bold', false, null);
+    });
+
+    italicButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    italicButton.addEventListener('input', () => {
+        document.execCommand('italic', false, null);
+    });
+
+    underlineButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    underlineButton.addEventListener('input', () => {
+        document.execCommand('underline', false, null);
     });
 }
 
