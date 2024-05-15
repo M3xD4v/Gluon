@@ -17,6 +17,7 @@ var multi_select = false;
 multi_select_box = null;
 var m_selected = [];
 var bbox = null;
+var isTextMoving = false; let selectedText = null;
 
 function activateTool(toolName) {
     const toolFunctions = {
@@ -505,6 +506,7 @@ function select(object) {
 
 function select_multiple(object) {
     selected = "multiple";
+
     if (!m_selected.includes(object)) {
         m_selected.push(object);
     }

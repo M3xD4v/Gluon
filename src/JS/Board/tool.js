@@ -81,6 +81,8 @@ function selection() {
         change_selection_state("off");
     }
 
+
+    /*
     function tgmultiselect(event) {
         toggle_multi_select(draw.point(event.clientX, event.clientY))
     }
@@ -106,7 +108,7 @@ function selection() {
 
     EventListenerTrack("selection", "mousedown", tgmultiselect);
     EventListenerTrack("selection", "mouseup", tgstop);
-
+    */
 }
 
 function check_if_bbox_collides(box1, box2) {

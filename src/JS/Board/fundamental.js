@@ -50,72 +50,85 @@ function InitLine(line, collission_line) {
 }
 
 function createMovableTextbox(position) {
-    var offsetX = 100; // Adjust this value if you want the box to be offset from the mouse position
-    var offsetY = 50; // Adjust this value if you want the box to be offset from the mouse position
-
-
-    var movableBox = document.createElement('div');
-    var drawingDiv = document.getElementById('drawing');
-    drawingDiv.appendChild(movableBox);
-
-
-    movableBox.className = 'movableBox';
-    movableBox.style.position = 'absolute';
-    movableBox.style.left = position.x + 'px';
-    movableBox.style.top = position.y + 'px';
-    movableBox.setAttribute('contenteditable', 'true');
-    movableBox.innerHTML = 'text';
-
-
-    var isDown = false;
-    var initialX, initialY;
-
-    movableBox.addEventListener('mousedown', function (e) {
-        isDown = true;
-        initialX = e.clientX - parseInt(movableBox.style.left);
-        initialY = e.clientY - parseInt(movableBox.style.top);
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (isDown) {
-            e.preventDefault();
-            movableBox.style.left = (e.clientX - initialX) + 'px';
-            movableBox.style.top = (e.clientY - initialY) + 'px';
-        }
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (!isDown) return;
-
-        e.preventDefault();
-
-        var drawingDivRect = drawingDiv.getBoundingClientRect();
-
-        var newX = e.clientX - initialX;
-        var newY = e.clientY - initialY;
-
-        // Check boundaries
-        if (newX < drawingDivRect.left) {
-            newX = drawingDivRect.left;
-        } else if (newX + movableBox.offsetWidth > drawingDivRect.right) {
-            newX = drawingDivRect.right - movableBox.offsetWidth;
-        }
-
-        if (newY < drawingDivRect.top) {
-            newY = drawingDivRect.top;
-        } else if (newY + movableBox.offsetHeight > drawingDivRect.bottom) {
-            newY = drawingDivRect.bottom - movableBox.offsetHeight;
-        }
-
-        movableBox.style.left = newX + 'px';
-        movableBox.style.top = newY + 'px';
-    });
-
-    document.addEventListener('mouseup', function () {
-        isDown = false;
-    });
+    let txt_template = document.getElementById("text_box_template");
+    let new_instance = txt_template.cloneNode(true);
+    new_instance.style.display = "block";
+    new_instance.style.left = position.x + "px";
+    new_instance.style.top = position.y + "px";
+    document.getElementById("drawing").appendChild(new_instance);
+    TextInit(new_instance);
 }
 
+function TextInit(object) {
+    let id = object_list.length;
+    let combined = {
+        object: object,
+        type: "text",
+        id: id,
+    };
+    object_list.push(combined);
+    let buttons = object.getElementsByClassName("textbox_button");
+    let button_container = object.getElementsByClassName("text_buttons");
+    console.log(object);
+    let textbox = object.getElementsByClassName("textbox");
+    const buttonIds = ['move', 'incrase', 'decrease', 'bold', 'italic', 'underline', 'colorPicker'];
+    const [moveButton, increaseButton, decreaseButton, boldButton, italicButton, underlineButton, colorPicker] = buttons;
+
+
+    function changeFontSize(size) {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        let range = selection.getRangeAt(0);
+        let node = range.startContainer.parentNode;
+        let span;
+        if (node.nodeName === 'SPAN') {
+            span = node;
+            let currentSize = parseInt(span.style.fontSize);
+            console.log
+            span.style.fontSize = `10px`;
+        } else {
+            span = document.createElement('span');
+            span.textContent = range.toString();
+            range.deleteContents();
+            range.insertNode(span);
+            span.style.fontSize = `10px`;
+        }
+    
+    }
+
+
+    moveButton.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // prevent the mousedown event from causing the textbox to lose focus
+        isTextMoving = true;
+        selectedText = e.target.parentElement.parentElement;
+    });
+
+    // Update the mouseup event listener for the move button
+    moveButton.addEventListener('mouseup', () => {
+        isTextMoving = false;
+    });
+
+    // Update the mousemove event listener
+    document.addEventListener('mousemove', (e) => {
+        if (isTextMoving) {
+            selectedText.style.left = `${e.clientX - 10}px`;
+            selectedText.style.top = `${e.clientY + 10}px`;
+        }
+    });
+    object.addEventListener('click', () => {
+        button_container[0].style.display = "flex";
+    });
+    textbox[0].addEventListener('blur', () => {
+        button_container[0].style.display = "none";
+    });
+
+    increaseButton.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // prevent the mousedown event from causing the textbox to lose focus
+    });
+    increaseButton.addEventListener('click', () => {
+        changeFontSize(3);
+    });
+}
 
 function rectangle_f(firstPosition, secondPosition, color, strokeWidth) {
     let rectangle = draw.rect(secondPosition.x - firstPosition.x, secondPosition.y - firstPosition.y).stroke({

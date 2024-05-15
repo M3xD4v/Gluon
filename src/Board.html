@@ -18,6 +18,20 @@
 
 <body style="height: 1000px;">
 
+  <div class="textbox_container" id="text_box_template" style="display: none;">
+    <div class="text_buttons">
+        <button class="textbox_button" id="move" style="cursor: move;">Move Textbox</button>
+        <button class="textbox_button" id="increase">Increase font size</button>
+        <button class="textbox_button" id="decrease">Decrease font size</button>
+        <button class="textbox_button" id="bold">Bold</button>
+        <button class="textbox_button" id="italic">Italic</button>
+        <button class="textbox_button" id="underline">Underline</button>
+        <input class="textbox_button" type="color" id="colorPicker" value="#000000">
+    </div>
+    <div class="textbox" contenteditable="true"> This is a movable textbox</div>
+</div>
+
+
   <div id="debugPanel" style="display: none;">
     <h2>Debugging Panel</h2>
     <div id="debugContent">

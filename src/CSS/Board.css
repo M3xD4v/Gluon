@@ -151,3 +151,32 @@ html {
 .settings_button:hover, .checkmark:hover {
   background-color: #FFB385;
 }
+
+
+.textbox {
+  position: absolute;
+  border: 1px solid black;
+  padding: 5px;
+  resize: both;
+  overflow: auto;
+  /* required for resize to work */
+}
+
+.text_buttons {
+  display: none;
+  position: absolute;
+  top: -6.25vh;
+}
+
+.textbox_button {
+  width: 6vh;
+  height: 6vh;
+  background: white;
+  border: solid black 0.25vh;
+  margin-left: 1px;
+  font-size: 5px;
+}
+.textbox_container {
+  position: absolute;
+  display: none;
+}

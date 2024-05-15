@@ -15,11 +15,13 @@
 <script src="JS/PDFRenderer.js" type="module"></script>
 
 <body tabindex="1">
+
     <div id="customMenu" class="custom-menu" style="display: none;">
-        <button id="copyAction">translate</button>
-        <button id="copyAction">Lorem</button>
-        <button id="copyAction">Lorem</button>
+        <button id="copyAction" class="quick_button">translate</button>
+        <button id="copyAction" class="quick_button">Lorem</button>
+        <button id="copyAction" class="quick_button">Lorem</button>
     </div>
+
     <div id="menu" class="canvas_toolbar">
         <button onclick="onViewModeOne()" class="button">
         </button>
@@ -73,11 +75,15 @@
     .custom-menu {
         display: none;
         position: absolute;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        background-color: white;
+        border: 0.25vh solid #000000;
         padding: 8px 12px;
         z-index: 1000;
+    }
+
+    .quick_button {
+        background-color: white;
+        border: 0.25vh solid #000000;
     }
     .importbutton {
     height: 5vh;
