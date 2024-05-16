@@ -13,6 +13,7 @@ let control_points = [];
 var path_selected_snapshot;
 var selection_type = [];
 
+let textSelected = null;
 var multi_select = false;
 multi_select_box = null;
 var m_selected = [];
@@ -180,6 +181,9 @@ function line_htmlstring_to_position(object) {
 }
 
 function importCanvas(data) {
+
+
+
     draw.clear();
     object_list = [];
     resetTools();
@@ -484,6 +488,7 @@ function update_settings_menus(object) {
 }
 
 function select(object) {
+    if (object.object.node.style.display == "none") return;
     selected = object;
     window.parent.showNotification_value("selected" + " " + object.type + " " + "object");
     update_settings_menus(object)
@@ -743,6 +748,7 @@ function delete_selected() {
         window.parent.showNotification("double click for confirmation", 0);
         delete_click_count = 1;
     } else if (delete_click_count == 1 && selected != null) {
+        delete_click_count = 0;
         let index = object_list.indexOf(selected);
         object_list.splice(index, 1);
         selected.object.remove();

@@ -1,6 +1,7 @@
 const {app,BrowserWindow,Menu,screen,ipcMain,dialog} = require('electron');
 
 var fs = require('fs');
+
 const { default: ollama } = require('ollama'); // CJS`
 
 
@@ -21,10 +22,7 @@ async function invokeLLM(props) {
     }
   }
   
-
-
-
-
+let offline_ai_enabled = true; 
 app.once('ready', () => {
     const {width, height} = screen.getPrimaryDisplay().workAreaSize;
 
@@ -41,19 +39,50 @@ app.once('ready', () => {
     win.setAspectRatio(16 / 9);
     win.loadFile('src/layout.html');
     win.setMaximizable(true)
-
-    ipcMain.on('AI', (event,data) => {
+    if (offline_ai_enabled){
+    ipcMain.on('AI', (event,data,type) => {
         let chatConfig = {
             model: "llama3",
             role: "user",
             content: data
           }
-
+          if (type == "chat"){
           invokeLLM(chatConfig).then(modelResponse => {
-            event.sender.send('AIResponse', modelResponse);
-          });
-        });
+            event.sender.send('AIResponse', modelResponse, type);
+            console.log(modelResponse)
+          })}
+            else if (type == "explain"){
+                chatConfig.content = "Explain in simpler terms this text: " + data
 
+                invokeLLM(chatConfig).then(modelResponse => {
+                    event.sender.send('AIResponse', modelResponse, type);
+                    console.log(modelResponse)
+                })
+            }
+            else if (type == "bullet"){
+                chatConfig.content = "Give me the bullet points of the following text: " + data
+
+                invokeLLM(chatConfig).then(modelResponse => {
+                    event.sender.send('AIResponse', modelResponse, type);
+                    console.log(modelResponse)
+                })
+            }
+            else if (type == "shorten"){
+                chatConfig.content = "Shorten this text but leave all the important information: " + data
+                console.log(chatConfig.content)
+                invokeLLM(chatConfig).then(modelResponse => {
+                    event.sender.send('AIResponse', modelResponse, type);
+                    console.log(modelResponse)
+                })
+            }
+
+        });
+    }
+    else {
+        ipcMain.on('AI', (event,data,type) => {
+            event.sender.send('AIResponse', "AI is disabled", type);
+        });
+    }
 
 
     ipcMain.on('open_dialog_project', (event) => {

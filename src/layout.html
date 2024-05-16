@@ -71,13 +71,33 @@
 
     <div id="notification">This is a notification</div>
 
-    <button class="openbtn" onclick="toggleNav()">↳</button>
+    <button class="openbtn" onclick="toggleNav()">
+        <img src="../assets/SVGs/right.svg" style="width: 5vh;"><img>
+    </button>
+
+
+    <div class="chat-container" style="display: none;">
+        <div class="chat-box">
+            <div class="chat-output" id="chatOutput">
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message here...">
+                <button id="sendButton" onclick="sendPrompt()">Send</button>
+            </div>
+        </div>
+    </div>
 
 
     <div id="mySidenav" class="sidenav">
-        <button class="tButton" id="fpButton" onclick="PageToggle()">full page</button>
-        <button class="tButton" id="mpButton" onclick="MultiplePage()">multi page</button>
-        <button class="tButton" onclick="resetZoom()">Reset Zoom</button>
+        <button class="tButton" id="fpButton" onclick="PageToggle(); changeFilter(this)">
+            <img src="../assets/SVGs/maximize.svg" style="width: 5vh;"><img>
+        </button>
+        <button class="tButton" id="mpButton" onclick="MultiplePage(); changeFilter(this)">
+            <img src="../assets/SVGs/book.svg" style="width: 5vh;"><img>
+        </button>
+        <button class="tButton" onclick="resetZoom()">
+            <img src="../assets/SVGs/zoom_reset.svg" style="width: 5vh;"><img>
+        </button>
     </div>
 
 
@@ -100,7 +120,9 @@
 <script>
     var view_mode = "0";
     let zoomValue = 1;
-    var { ipcRenderer } = require('electron');
+    var {
+        ipcRenderer
+    } = require('electron');
 
 
     /*
@@ -261,7 +283,6 @@
         };
     }
 
-    // Function to synchronize scrolling between PDF and Board
     function syncScroll(fromElement, toElement) {
         const scrollTop = fromElement.scrollTop;
         toElement.contentWindow.scrollTo(0, scrollTop);
@@ -281,7 +302,6 @@
         activeIframe = iframe;
     }
 
-    // PDF Viewer
     PDF_Iframe.addEventListener("load", function () {
         setActiveIframe('PDF');
         const PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
@@ -328,28 +348,114 @@
     function toggleNav() {
         let button = document.getElementsByClassName("openbtn")[0];
         let sidenav = document.getElementById("mySidenav");
+        let img = button.getElementsByTagName("img")[0];
         if (sidenav.style.width === "6vh") {
-            button.innerHTML = "↳";
+            img.src = "../assets/SVGs/right.svg";
             sidenav.style.width = "0";
             sidenav.style.border = "solid 0vh black"
             sidenav.style.borderTop = "none";
         } else {
-            button.innerHTML = "↲";
+            img.src = "../assets/SVGs/left.svg";
             sidenav.style.width = "6vh";
             sidenav.style.border = "solid 0.25vh black"
             sidenav.style.borderTop = "none";
         }
     }
-    
+
     function restart() {
         ipcRenderer.send('restart');
     }
 
-    ipcRenderer.send('AI', "HI how are you?");
-    ipcRenderer.on('AIResponse', (event, file) => {
-        showNotification(file, 2);
-        });
+    function changeFilter(element) {
+        let img = element.getElementsByTagName("img")[0]
+        if (img.style.filter != "invert(100%)") {
+            img.style.filter = "invert(100%)";
+        } else {
+            img.style.filter = "invert(0%)";
+        }
+    }
 
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        if (document.activeElement.id == "chatInput") sendPrompt();
+    }
+});
+    function text_to_canvas(text) {
+        Board_Iframe.contentWindow.add_text_box(text);
+    }
+
+    function toggleAiChat() {
+        let chat = document.getElementsByClassName("chat-container")[0];
+        if (chat.style.display == "none") {
+            chat.style.display = "block";
+        } else {
+            chat.style.display = "none";
+        }
+    }
+
+    function sendPrompt() {
+        let input = document.getElementById("chatInput");
+        let output = document.getElementById("chatOutput");
+        if (input.value == "") return;
+        output.innerHTML += "<p class='user-input'>" + input.value + "</p>";
+
+        ipcRenderer.send('AI', input.value, "chat");
+        input.value = "";
+
+    }
+    ipcRenderer.on('AIResponse', (event, file, type) => {
+        if (type == "chat") {
+            let output = document.getElementById("chatOutput");
+            output.innerHTML += "<p>" + file + "</p>";
+            output.scrollTop = output.scrollHeight
+        }
+        else {
+            createPromptMenu(file,type)
+        }
+    });
+
+    function createPromptMenu(file,title) {
+    if (document.getElementsByClassName("prompt_response")[0]) {
+        let old_menu = document.getElementsByClassName("prompt_response")[0];
+        old_menu.remove();
+    }
+
+    let new_menu = document.createElement("div");
+    new_menu.className = "prompt_response";
+
+    let promptHeader = document.createElement("div");
+    promptHeader.className = "prompt_header";
+
+    let promptTitle = document.createElement("div");
+    promptTitle.className = "prompt_title";
+    promptTitle.textContent = title;
+
+    let removeButton = document.createElement("button");
+    removeButton.className = "remove_button";
+    removeButton.textContent = "X";
+    removeButton.onclick = function () {
+        new_menu.remove();
+    };
+    let transferButton = document.createElement("button");
+    transferButton.className = "transfer_button";
+    transferButton.textContent = "transfer";
+    transferButton.onclick = function () {
+        text_to_canvas(file);
+    };
+
+    promptHeader.appendChild(promptTitle);
+    promptHeader.appendChild(transferButton);
+    promptHeader.appendChild(removeButton);
+
+    let promptContent = document.createElement("div");
+    promptContent.className = "prompt_content";
+    promptContent.textContent = file;
+
+    new_menu.appendChild(promptHeader);
+    new_menu.appendChild(promptContent);
+
+    document.body.appendChild(new_menu);
+}
 </script>
 
 </html>

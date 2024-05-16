@@ -129,6 +129,7 @@ html {
 
 
 .settings_button {
+  user-select: none;
   width: 5vh;
   height: 5vh;
   border: 0.25vh solid #58585859;
@@ -163,6 +164,7 @@ html {
 }
 
 .text_buttons {
+  user-select: none;
   display: none;
   position: absolute;
   top: -6.25vh;
@@ -171,9 +173,11 @@ html {
 .textbox_button img {
   user-select: none;
   pointer-events: none;
+  filter: drop-shadow(2px 2px 2px #00000050);
 }
 
 .textbox_button {
+  user-select: none;
   width: 6vh;
   height: 6vh;
   background: white;

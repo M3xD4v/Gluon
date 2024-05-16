@@ -1,4 +1,5 @@
 .canvas_toolbar {
+  user-select: none;
   position: fixed;
   background-color: white;
   font-family: Arial, sans-serif;

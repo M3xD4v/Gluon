@@ -20,7 +20,7 @@ function line_f(firstPosition, secondPosition, color, strokeWidth) {
     });
 
     let collission_line = draw.line(firstPosition.x, firstPosition.y, secondPosition.x, secondPosition.y).stroke({
-        width: "5vh"
+        width: "2vh"
     });
     collission_line.stroke({
         color: "#00ff0d42"
@@ -49,12 +49,17 @@ function InitLine(line, collission_line) {
     object_list.push(combined);
 }
 
-function createMovableTextbox(position) {
+function createMovableTextbox(position, text, width, height) {
     let txt_template = document.getElementById("text_box_template");
     let new_instance = txt_template.cloneNode(true);
     new_instance.style.display = "block";
     new_instance.style.left = position.x + "px";
     new_instance.style.top = position.y + "px";
+    if (text != undefined && width != undefined && height != undefined) {
+        new_instance.getElementsByClassName("textbox")[0].innerHTML = text;
+        new_instance.getElementsByClassName("textbox")[0].style.width = width + "vh";
+        new_instance.getElementsByClassName("textbox")[0].style.height = height + "vh";
+    }
     document.getElementById("drawing").appendChild(new_instance);
     TextInit(new_instance);
 }
@@ -71,8 +76,7 @@ function TextInit(object) {
     let button_container = object.getElementsByClassName("text_buttons");
     let textbox = object.getElementsByClassName("textbox");
 
-    console.log(buttons);
-    const [moveButton, increaseButton, decreaseButton, boldButton, italicButton, underlineButton, colorPicker] = buttons;
+    const [moveButton, increaseButton, decreaseButton, boldButton, italicButton, underlineButton, colorPicker, hide, scaleDown, remove,] = buttons;
 
     function increaseFontSelected(factor) {
         var selection = window.getSelection();
@@ -98,7 +102,7 @@ function TextInit(object) {
 
 
     moveButton.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // prevent the mousedown event from causing the textbox to lose focus
+        e.preventDefault(); 
         isTextMoving = true;
         selectedText = e.target.parentElement.parentElement;
     });
@@ -151,13 +155,12 @@ function TextInit(object) {
 
     object.addEventListener('click', () => {
         document.addEventListener('mousemove', textmove);
+        textSelected = object;
         button_container[0].style.display = "flex";
-
         let rect = button_container[0].getBoundingClientRect();
         let isOnScreen = rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
         isOnScreen = true;
         if (isOnScreen == false) {
-            //move the button container to the bottom of the container, calculate it based on the textbox height
             let textbox_height = textbox[0].offsetHeight;
             button_container[0].style.left = "0px";
             button_container[0].style.top = `${textbox_height}px`;
@@ -171,6 +174,7 @@ function TextInit(object) {
 
     textbox[0].addEventListener('blur', () => {
         button_container[0].style.display = "none";
+        textSelected = null;
         document.removeEventListener('mousemove', textmove);
     });
 
@@ -197,23 +201,55 @@ function TextInit(object) {
     boldButton.addEventListener('mousedown', (e) => {
         e.preventDefault();
     });
-    boldButton.addEventListener('input', () => {
+    boldButton.addEventListener('mousedown', () => {
         document.execCommand('bold', false, null);
     });
 
     italicButton.addEventListener('mousedown', (e) => {
         e.preventDefault();
     });
-    italicButton.addEventListener('input', () => {
+    italicButton.addEventListener('mousedown', () => {
         document.execCommand('italic', false, null);
     });
 
     underlineButton.addEventListener('mousedown', (e) => {
         e.preventDefault();
     });
-    underlineButton.addEventListener('input', () => {
+    underlineButton.addEventListener('mousedown', () => {
         document.execCommand('underline', false, null);
     });
+
+    remove.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    remove.addEventListener('mousedown', () => {
+        if (delete_click_count == 0) {
+            window.parent.showNotification("double click for confirmation", 0)
+            delete_click_count = 1;
+        }
+        else if (delete_click_count == 1) {
+            delete_click_count = 0
+            object_list.splice(id, 1);
+            object.remove();
+        }
+    });
+
+    scaleDown.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    scaleDown.addEventListener('mousedown', () => {
+    
+        textbox[0].style.height = 50 + "vh";
+        textbox[0].style.width = 50 + "vh";
+    });
+    
+    hide.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+    hide.addEventListener('mousedown', () => {
+        object.style.display = "none";
+    });
+
 }
 
 function rectangle_f(firstPosition, secondPosition, color, strokeWidth) {

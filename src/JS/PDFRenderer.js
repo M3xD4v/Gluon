@@ -1,10 +1,7 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc ="../../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
 window.CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
 window.CMAP_PACKED = true;
-
-//const DEFAULT_URL = "../assets/numbered-test.pdf";
 var DEFAULT_URL = "../assets/norse.pdf";
-//const DEFAULT_URL = "../assets/grid.pdf";
 window.ENABLE_XFA = true;
 
 const SANDBOX_BUNDLE_SRC = new URL(
@@ -16,18 +13,15 @@ const container = document.getElementById("viewerContainer");
 
 const eventBus = new pdfjsViewer.EventBus();
 
-// (Optionally) enable hyperlinks within PDF files.
 window.pdfLinkService = new pdfjsViewer.PDFLinkService({
   eventBus,
 });
 
-// (Optionally) enable find controller.
 const pdfFindController = new pdfjsViewer.PDFFindController({
   eventBus,
   linkService: window.pdfLinkService,
 });
 
-// (Optionally) enable scripting support.
 const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
   eventBus,
   sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
@@ -49,8 +43,6 @@ eventBus.on("pagesinit", function () {
   window.pdfViewer.currentScaleValue = "page-width";
   var viewerContainer = document.getElementById('viewerContainer');
 
-
-// Create a MutationObserver instance
 var observer = new MutationObserver(function(mutationsList) {
     mutationsList.forEach(function(mutation) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'zoom') {
@@ -64,7 +56,6 @@ observer.observe(viewerContainer, { attributes: true });
 
 
 });
-// Loading document.
 const loadingTask = pdfjsLib.getDocument({
   url: DEFAULT_URL,
   cMapUrl: window.CMAP_URL,
@@ -73,11 +64,6 @@ const loadingTask = pdfjsLib.getDocument({
 });
 
 const pdfDocument = await loadingTask.promise;
-// Document loaded, specifying document for the viewer and
-// the (optional) linkService.
-//window.pdfViewer.setDocument(pdfDocument);
-
-//pdfLinkService.setDocument(pdfDocument, null);
 
 let total_height = 0;
 const pagePromises = [];

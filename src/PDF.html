@@ -17,20 +17,27 @@
 <body tabindex="1">
 
     <div id="customMenu" class="custom-menu" style="display: none;">
-        <button id="copyAction" class="quick_button" onclick="explain()">explain</button>
-        <button id="copyAction" class="quick_button">Lorem</button>
-        <button id="copyAction" class="quick_button">Lorem</button>
+        <button id="copyAction" class="quick_button" onclick="promptAI('explain')">Explain</button>
+        <button id="copyAction" class="quick_button" onclick="promptAI('shorten')">Shorten</button>
+        <button id="copyAction" class="quick_button" onclick="promptAI('bullet')">Bullet Points</button>
+        <button id="copyAction" class="quick_button" onclick="defineWord()">Define</button>
+        <button id="copyAction" class="quick_button" onclick="synonymWord()">Synonym</button>
+        <button id="copyAction" class="quick_button"onclick="text_to_canvas()">to Canvas</button>
+
+        
+
     </div>
 
     <div id="menu" class="canvas_toolbar">
-        <button onclick="onViewModeOne()" class="button">
+        <button onclick="window.parent.toggleAiChat()" class="button">
+            <img src="../assets/SVGs/ai.svg" style="width: 5vh;"><img>
         </button>
     </div>
 
     <div id="viewerContainer" zoom="1">
-    
         <div id="viewer" class="pdfViewer"></div>
     </div>
+    
     <button id="openpdf" onclick="window.parent.import_pdf()" class="importbutton">Import a PDF file</button>
     
 </body>
@@ -55,11 +62,46 @@
         });
     }
 
-    function explain() {
+    function promptAI(type) {
         let selectedText = window.getSelection().toString();
-        let string = "Explain this text in simpler terms: " + selectedText;
-        window.parent.ipcRenderer.send('AI', string);
+        window.parent.ipcRenderer.send('AI', selectedText, type);
     }
+
+    function text_to_canvas() {
+        let selectedText = window.getSelection().toString();
+        window.parent.text_to_canvas(selectedText);
+    
+    }
+    function defineWord() {
+        let word = window.getSelection().toString();
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
+                let string = data[0].meanings[0].definitions[0].definition
+                window.parent.createPromptMenu(string, "Definition");
+            } else {
+                window.parent.showNotification("No definition found for the word", 1);
+            }
+        })
+        .catch(error => console.error(`Error: ${error}`));
+}
+
+function synonymWord() {
+        let word = window.getSelection().toString();
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
+                let string = data[0].meanings[0].synonyms
+                window.parent.createPromptMenu(string, "Synonym");
+            } else {
+                window.parent.showNotification("No definition found for the word", 1);
+            }
+        })
+        .catch(error => console.error(`Error: ${error}`));
+}
+
 </script>
 <style>
     body {

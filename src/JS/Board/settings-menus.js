@@ -9,6 +9,7 @@ function show_settings_buttons(name) {
         let elements = document.getElementsByClassName("line_settings")
         let color_button = document.getElementById("color_settings"); color_button.style.display = "inline-flex";
         let delete_button = document.getElementById("delete_button"); delete_button.style.display = "inline-flex";
+        let hide_button = document.getElementById("hide_button"); hide_button.style.display = "inline-flex";
         for (let i = 0; i < elements.length; i++) {
             elements[i].style.display = "inline-flex";
         }
@@ -16,6 +17,7 @@ function show_settings_buttons(name) {
         let elements = document.getElementsByClassName("draw_settings")
         let color_button = document.getElementById("color_settings"); color_button.style.display = "inline-flex";
         let delete_button = document.getElementById("delete_button"); delete_button.style.display = "inline-flex";
+        let hide_button = document.getElementById("hide_button"); hide_button.style.display = "inline-flex";
         for (let i = 0; i < elements.length; i++) {
             elements[i].style.display = "inline-flex";
         }

@@ -18,34 +18,44 @@
 <body style="height: 1000px;">
   <div class="textbox_container" id="text_box_template" style="display: none;">
     <div class="text_buttons">
-        <button class="textbox_button" id="move" style="cursor: move;">
-          <img src="./../assets/SVGs/move.svg" width="32" height="32" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="move" style="cursor: move;">
+        <img src="./../assets/SVGs/move.svg" width="32" height="32" alt="Move Icon">
+      </button>
 
-        <button class="textbox_button" id="increase">
-          <img src="./../assets/SVGs/font-increase.svg" width="32" height="32" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="increase">
+        <img src="./../assets/SVGs/font-increase.svg" width="32" height="32" alt="Move Icon">
+      </button>
 
-        <button class="textbox_button" id="decrease">
-          <img src="./../assets/SVGs/font-decrease.svg" width="32" height="32" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="decrease">
+        <img src="./../assets/SVGs/font-decrease.svg" width="32" height="32" alt="Move Icon">
+      </button>
 
-        <button class="textbox_button" id="bold">
-          <img src="./../assets/SVGs/bold.svg" width="24" height="24" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="bold">
+        <img src="./../assets/SVGs/bold.svg" width="24" height="24" alt="Move Icon">
+      </button>
 
-        <button class="textbox_button" id="italic">
-          <img src="./../assets/SVGs/italic.svg" width="24" height="24" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="italic">
+        <img src="./../assets/SVGs/italic.svg" width="24" height="24" alt="Move Icon">
+      </button>
 
-        <button class="textbox_button" id="underline">
-          <img src="./../assets/SVGs/underline.svg" width="32" height="32" alt="Move Icon">
-        </button>
+      <button class="textbox_button" id="underline">
+        <img src="./../assets/SVGs/underline.svg" width="32" height="32" alt="Move Icon">
+      </button>
+      <input class="textbox_button" type="color" id="colorPicker" value="#000000">
+      <button class="textbox_button" id="Hide" style="font-size: 2vh;">
+        <img src="./../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
+      </button>
+      <button class="textbox_button" id="scaleDown" style="font-size: 2vh;">
+        <img src="./../assets/SVGs/size-actual.svg" width="32" height="32" alt="Move Icon">
+      </button>
+      <button class="textbox_button" id="remove" style="font-size: 2vh; border: 0.25vh solid red;">
+        <img src="./../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
+      </button>
 
-        <input class="textbox_button" type="color" id="colorPicker" value="#000000">
+
     </div>
     <div class="textbox" contenteditable="true" style="font-size: 20px;"> This is a movable textbox</div>
-</div>
+  </div>
 
 
   <div id="debugPanel" style="display: none;">
@@ -66,7 +76,9 @@
     <button onclick="setTool('selection')" title="(S) Selection Tool" id="selection_button" class="button">
       <img src="./../assets/SVGs/pointer.svg" width="32" height="32" alt="Move Icon" style="width: 3vh;">
     </button>
-
+    <button onclick="Unhide()" title="Unhide All" class="button">
+      <img src="./../assets/SVGs/show.svg" width="32" height="32" alt="Move Icon">
+    </button>
 
 
 
@@ -91,7 +103,7 @@
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
         <input id="line_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button id="line_width_increase"  onclick="adjust_width(1,'line')" class="settings_button">increase</button>
+        <button id="line_width_increase" onclick="adjust_width(1,'line')" class="settings_button">increase</button>
         <button id="decrease_width_increase" onclick="adjust_width(-1,'line')" class="settings_button">decrease</button>
       </div>
     </div>
@@ -104,7 +116,7 @@
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
         <input id="draw_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button id="draw_width_increase"  onclick="adjust_width(1,'draw')" class="settings_button">increase</button>
+        <button id="draw_width_increase" onclick="adjust_width(1,'draw')" class="settings_button">increase</button>
         <button id="decrease_width_increase" onclick="adjust_width(-1,'draw')" class="settings_button">decrease</button>
       </div>
     </div>
@@ -112,36 +124,43 @@
     <div id="settings_selection" class="settings_menu" style="height: 25vh; width: 26vh; display: none;">
       <div class="settings_inner">
         <p style="margin: 0px;">allow:</p>
-        <button onclick="toggle_selection('text');" class="button selection_toggle stbutton" id="text_selection"style="display: none;">
+        <button onclick="toggle_selection('text');" class="button selection_toggle stbutton" id="text_selection"
+          style="display: none;">
           <img src="./../assets/SVGs/T.svg" width="32" height="32" alt="Move Icon">
         </button>
-        <button onclick="toggle_selection('canvas');" class="button selection_toggle stbutton" id="canvas_selection" style="display: none;">
+        <button onclick="toggle_selection('canvas');" class="button selection_toggle stbutton" id="canvas_selection"
+          style="display: none;">
           <img src="./../assets/SVGs/canvas.svg" width="32" height="32" alt="Move Icon">
         </button>
       </div>
     </div>
-    
+
     <div class="edit_area">
 
-      <button onclick="selection_settings()" class="button selection_settings stbutton" style="display: none;" >
+      <button onclick="selection_settings()" class="button selection_settings stbutton" style="display: none;">
         <img src="./../assets/SVGs/selection-all-thin.svg" width="32" height="32" alt="Move Icon">
-       </button>
+      </button>
 
-      <button onclick="window.parent.showNotification('temporarily bugged, make sure to click the actual color', 2);" class="stbutton button all" id="color_settings" style="display: none;">
+      <button onclick="window.parent.showNotification('temporarily bugged, make sure to click the actual color', 2);"
+        class="stbutton button all" id="color_settings" style="display: none;">
         <input onclick="hide_all_menus()" id="colorvalue" type="color" value="#1dbbce"
           style="border: 0; background: transparent">
       </button>
 
-      <button onclick="line_settings()" class="button line_settings stbutton line" style="display: none;" >
+      <button onclick="line_settings()" class="button line_settings stbutton line" style="display: none;">
         <img src="./../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button onclick="draw_settings()" class="button draw_settings stbutton draw" style="display: none;">
         <img src="./../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
       </button>
-      
-      <button onclick="delete_selected()" id="delete_button" class="button delete_button stbutton delete" style="display: none;">
-        delete
+
+      <button onclick="delete_selected()" title="(Delete) Delete Selected" id="delete_button" class="button delete_button stbutton delete"
+        style="display: none;">
+        <img src="./../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
+      </button>
+      <button onclick="Hide()" id="hide_button" class="button hide_button stbutton hide" title="" class="button" style="display: none;">
+        <img src="./../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
       </button>
     </div>
   </div>
@@ -169,67 +188,95 @@
     function enable_freedraw_smoothening() {
       smooth_free_draw = !smooth_free_draw;
     }
+
     function exportBoard() {
       let data = JSON.stringify(exportCanvas());
       return data;
-  
-}
-function importBoard() {
-    let input = document.createElement('input');
-    input.type = 'file';
 
-    input.onchange = e => { 
-        let file = e.target.files[0]; 
+    }
+
+    function importBoard() {
+      let input = document.createElement('input');
+      input.type = 'file';
+
+      input.onchange = e => {
+        let file = e.target.files[0];
         let reader = new FileReader();
-        reader.readAsText(file,'UTF-8');
+        reader.readAsText(file, 'UTF-8');
 
         reader.onload = readerEvent => {
-            let content = readerEvent.target.result; 
-            importCanvas(content);
+          let content = readerEvent.target.result;
+          importCanvas(content);
         }
+      }
+      input.click();
     }
-    input.click();
-}
 
-function exportSVG() {
-    let data = draw.svg();
-    return data;
-}
+    function exportSVG() {
+      let data = draw.svg();
+      return data;
+    }
+
+    function add_text_box(text) {
+      let scroll = window.scrollY;
+      let pos = {
+        x: 20,
+        y: 100 + scroll
+      }
+      createMovableTextbox(pos, text, 80, 20)
+    }
 
 
+    // add hotkey support
+    document.addEventListener('keydown', function (event) {
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.classList
+        .contains("textbox")) {
+        return;
+      }
+      if (event.key === 's') {
+        setTool("selection");
+      }
+      if (event.key === 'd') {
+        setTool("draw");
+      }
+      if (event.key === 't') {
+        setTool("text");
+      }
+      if (event.key === 'l') {
+        setTool("line");
+      }
+      if (event.key === 'Delete') {
+        console.log("buh")
+        if (selected != null) delete_selected();
+      }
+      if (event.key === 'h') {
+        console.log("buh")
+        if (selected != null) Hide();
+      }
+      
+    });
 
-// add hotkey support
-document.addEventListener('keydown', function (event) {
-console.log(event.target.classList.contains("textbox"))
-console.log(event.target)
-console.log(event.target.classList)
-  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.classList.contains("textbox")) {
-    return;
-  }
-  if (event.key === 's') {
-      setTool("selection");
-  }
-  if (event.key === 'd') {
-      setTool("draw");
-  }
-  if (event.key === 't') {
-      setTool("text");
-  }
-  if (event.key === 'l') {
-      setTool("line");
-  }
-  //if delete
-  if (event.key === 'Delete') {
-    console.log("buh")
-    if (selected != null) delete_selected();
-  }
-});
-
-setTimeout(() => {
-  toggle_selection('canvas')
-  toggle_selection('text')
-}, 3000);
-
+    function Hide() {
+      if (selected != null) {
+        selected.object.node.style.display = "none";
+        deselect();
+      } 
+    }
+    function Unhide() {
+      for (let i = 0; i < object_list.length; i++) {
+        if (object_list[i].object.node && object_list[i].object.node.style.display == "none") {
+          object_list[i].object.node.style.display = "block";
+        } else {
+          console.log(object_list[i].object)
+          object_list[i].object.style.display = "block";
+        }
+      }
+    
+    }
+    setTimeout(() => {
+      toggle_selection('canvas')
+      toggle_selection('text')
+    }, 1000);
   </script>
 
 
