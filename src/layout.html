@@ -130,6 +130,7 @@
         resetZoom();
     };
     */
+   
     function onViewModeZero() {
         let board = document.getElementById("board_iframe");
         board.style.display = "block"
@@ -139,7 +140,7 @@
         let board = document.getElementById("board_iframe");
         board.style.display = "none"
     }
-    // Create a proxy to intercept changes to view_mode
+
     var view_mode_proxy = new Proxy({
         value: view_mode
     }, {
@@ -151,7 +152,7 @@
                     onViewModeOne();
                 } else {
                     console.error("Invalid view mode: " + value);
-                    return false; // Prevent setting invalid values
+                    return false; 
                 }
                 target[key] = value;
                 return true;
@@ -255,6 +256,8 @@
             showNotification("Multiple Page Mode is only available in Full Page Mode", 1.5);
         }
     }
+
+
     let board_test = false
     setTimeout(function () {
         if (board_test == false) {
@@ -272,7 +275,7 @@
     }, 300);
 
 
-    // Debounce function to limit scroll event firing frequency
+
     function debounce(func, delay) {
         let timeoutId;
         return function (...args) {
@@ -307,7 +310,6 @@
         const PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
         const PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
         let lastScrollTop = PDF_DIV.scrollTop;
-        // Synchronize PDF scroll to Board
         PDF_DIV.addEventListener('scroll', debounce(() => {
             const scrollTop = PDF_DIV.scrollTop;
             if (scrollTop !== lastScrollTop) {
@@ -319,14 +321,13 @@
         }, 1));
     });
 
-    // Board Viewer
+
     Board_Iframe.addEventListener("load", function () {
         setActiveIframe('Board');
         const iframeWindow = Board_Iframe.contentWindow;
         const iframeDocument = iframeWindow.document;
         let lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body.scrollTop;
 
-        // Synchronize Board scroll to PDF
         iframeDocument.addEventListener('scroll', debounce(() => {
             lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body
                 .scrollTop;
@@ -336,7 +337,7 @@
         }, 1));
     });
 
-    // Event listeners to track active iframe
+
     PDF_Iframe.addEventListener('mouseover', function () {
         setActiveIframe('PDF');
     });

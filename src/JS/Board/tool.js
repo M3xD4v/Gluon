@@ -222,9 +222,8 @@ function free_draw() {
         if (debug_c == true) {
             for (let i = 0; i < ramerDouglasPeucker_points.length; i++) {
                 const pnt = smooth_path.split(/[^\d.]+/)
-                    // Filter out empty strings
                     .filter(str => str !== "")
-                    // Group the numbers into pairs
+
                     .reduce((acc, val, index, array) => {
                         if (index % 2 === 0) {
                             acc.push({

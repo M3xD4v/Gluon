@@ -93,7 +93,6 @@ function TextInit(object) {
         span.style.fontSize = (parseInt(currentFontSize) + factor) + 'px';
         range.insertNode(span);
 
-        // Reselect the text
         var newRange = document.createRange();
         newRange.selectNodeContents(span);
         selection.removeAllRanges();

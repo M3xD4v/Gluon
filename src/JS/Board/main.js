@@ -94,7 +94,6 @@ function setTool(tool) {
 
             return
         }
-        //hide any buttons that are not matching the tool
         let buttons = document.getElementsByClassName("stbutton");
         for (let i = 0; i < buttons.length; i++) {
             if (buttons[i].classList.value.includes(tool) || buttons[i].classList.value.includes("all")) {
@@ -187,7 +186,6 @@ function importCanvas(data) {
     draw.clear();
     object_list = [];
     resetTools();
-    //turn data to json from string
     data = JSON.parse(data);
     for (let i = 0; i < data.length; i++) {
         if (data[i].type == "line") {

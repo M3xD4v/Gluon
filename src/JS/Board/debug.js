@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Initial update of debug values
+
   updateDebugValues();
-  // Update debug values periodically
+
   setInterval(updateDebugValues, 100);
 });

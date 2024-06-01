@@ -224,11 +224,9 @@ app.once('ready', () => {
 
     ];
 
-
-    // Create the menu with the template
     const menu = Menu.buildFromTemplate(menuTemplate);
 
-    // Set the application's menu
+
     Menu.setApplicationMenu(menu);
 
 });
