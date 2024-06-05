@@ -33,7 +33,8 @@ app.once('ready', () => {
         webPreferences: {
             plugins: true,
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            webviewTag: true
         }
     });
     win.setAspectRatio(16 / 9);

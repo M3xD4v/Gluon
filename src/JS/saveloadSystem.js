@@ -21,7 +21,7 @@
 
     function import_pdf() {
         openDialog("import_pdf")
-        ipcRenderer.on('importpdf_response', (event, file) => {
+        ipcRenderer.once('importpdf_response', (event, file) => {
             let int8Array = new Int8Array(file);
             PDF_Iframe.contentWindow.load_new_pdf(int8Array)
         });
@@ -54,8 +54,10 @@
         pdfWindow.exportPDF().then(function (binaryData) {
 
             let combinedData = JSON.stringify({
+                id: generateRandomHash(),
                 pdfData: arrayToBase64(binaryData),
-                boardData: board_data
+                boardData: board_data,
+                viewType: "SplitView"
             });
             openDialog("saveproject", combinedData)
         });
@@ -63,12 +65,9 @@
 
     function load_project() {
         openDialog("loadproject")
-        ipcRenderer.on('project_open', (event, file) => {
+        ipcRenderer.once('project_open', (event, file) => {
                 let json = JSON.parse(file);
-                let pdf_data = base64ToArray(json.pdfData);
-                let board_data = json.boardData;
-                PDF_Iframe.contentWindow.load_new_pdf(pdf_data);
-                Board_Iframe.contentWindow.importCanvas(board_data);
+                loadProject(json)
         });
 
     }

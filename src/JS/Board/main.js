@@ -182,7 +182,6 @@ function line_htmlstring_to_position(object) {
 function importCanvas(data) {
 
 
-
     draw.clear();
     object_list = [];
     resetTools();
@@ -618,7 +617,8 @@ function deselect(global) {
             }
         }
     } else {
-        console.log("selected is not valid");
+        //console.log("selected is not valid");
+        return;
     }
 }
 

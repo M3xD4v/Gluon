@@ -1,0 +1,286 @@
+@import url('global.css');
+.draggable-container {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 0.25vh solid var(--accent-color); /* Border to make it draggable */
+    cursor: grab;
+}
+.NavAddButton {
+    height: 100%;
+    background-color: var(--background-color);
+    border: none;
+    aspect-ratio: 1;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 2.5vh;
+    color: var(--text-color);
+}
+.NavAddButton:hover {
+    background-color: var(--background-color2);
+}
+
+.draggable-button {
+    position: absolute;
+    top: -60px; /* Position the button above the webview */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    cursor: grab;
+    z-index: 1;
+}
+body {
+    height: 100%;
+    background-color: var(--background-color);
+    overflow-y: hidden;
+    font-family: "Titillium Web Light";
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.iframe-container {
+    flex: 1;
+    height: 100%;
+    border-radius: 10px;
+    padding: 6px;
+}
+
+.innerIframe {
+    width: 100%;
+    height: calc(100% - 49px);
+    border: 0;
+    border-radius: var(--radius);
+    
+}
+
+.split {
+    height: 100%;
+    width: 2vh;
+    right: 50%;
+    background-color: black;
+
+}
+.draggable {
+    cursor: col-resize;
+}
+#notification {
+    position: absolute;
+    top: -10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border: solid 0.25vh black;
+    color: #000;
+    padding: 1vh 5vh;
+    z-index: 1;
+}
+
+.fileNavBar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--background-color);
+    height: 35px;
+    border-bottom: var(--background-color2) solid 2px;
+}
+.buttonWrapper {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.buttonWrapperActive {
+    background-color: var(--secondary-color2);
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: var(--accent-color) solid 3px;
+}
+
+.fileButton {
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 16px;
+    width: 100%;
+    text-align: left;
+    padding: 0 15px;
+    font-family: "Titillium Web";
+}
+.fileCloseButton {
+    background-color: transparent;
+    color: #ffffff8c;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+    font-family: "Titillium Web";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.fileIcon {
+    width: 20px;
+    margin-left: 10px;
+}
+
+.StartMenuContainer {
+    position: fixed;
+    top: 20%;
+    left: 25%;
+    width: 50vw;
+    height: 50vh;
+    background-color: var(--background-color3);
+    border-radius: var(--radius);
+}
+
+.StartMenuContainer h1 {
+    color: var(--accent-color);
+    font-size: 5vh;
+    padding-left: 5%;
+}
+
+.StartMenuContent {
+    display: flex;
+    list-style-type: none;
+    background-color: var(--background-color2);
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+}
+
+.StartMenuViews {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.StartMenuRecent {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+.TemplateCard {
+    display: flex;
+    margin: 1%;
+    padding: 1%;
+    align-items: center;
+    height: 25%;
+    transition: all var(--transition);
+}
+.TemplateCard:hover {
+    background-color: var(--background-color3);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+.TemplateCardPreview {
+    width: 5vw;
+    height: 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    padding: 5px;
+}
+
+.TemplateCardTextBox {
+    padding-left: 2%;
+}
+
+.TemplateCardTextBox h2 {
+    color: var(--text-color);
+    font-size: 3vh;
+    margin: 0;
+    padding: 0;
+}
+.TemplateCardTextBox p {
+    color: var(--text-color);
+    font-size: 2vh;
+    margin: 0;
+    padding: 0;
+}
+
+.StartMenuOpen {
+    background-color: transparent;
+    width: 98%;
+    height: 5vh;
+    border: none;
+    border-radius: var(--radius);
+    margin-top: 1%;
+    color: var(--text-color);
+    font-family: "Titillium Web";
+    transition: all var(--transition);
+}
+.StartMenuOpen:hover {
+    background-color: var(--background-color3);
+    cursor: pointer;
+}
+.RecentCard {
+    display: flex;
+    margin: 1%;
+    padding: 1%;
+    align-items: center;
+    color: var(--text-color);
+    width: 90%;
+    transition: all var(--transition);
+}
+.RecentCard h3, .RecentCard p, .RecentCard img {
+    font-size: 2vh;
+    margin: 0;
+    padding-right: 5%;
+}
+.RecentCard:hover {
+    background-color: var(--background-color3);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.StartMenuOtherButton {
+    background-color: transparent;
+    width: auto;
+    height: 5vh;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text-color);
+    font-family: "Titillium Web";
+    transition: all var(--transition);
+}
+.StartMenuOtherButton:hover {
+    background-color: var(--background-color3);
+    cursor: pointer;
+}
+.SplitViewCardReading {
+    width: 48%;
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: var(--radius);
+}
+
+.SplitViewCardCanvas {
+    width: 48%;
+    height: 100%;
+    background-color: var(--accent-color);
+    opacity: 20%;
+    border-radius: var(--radius);
+}

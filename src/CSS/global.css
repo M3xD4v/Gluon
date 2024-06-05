@@ -1,0 +1,58 @@
+:root {
+    --primary-color: #8CDDC9;
+    --secondary-color: #264b80;
+    --secondary-color2: #1a2831;
+    --background-color: #101816;
+    --background-color2: #272f2d;
+    --background-color3: #1c2522;
+    --accent-color: #A7EEc6;
+    --text-color: #DFF5ef;
+    --font-size: 16px;
+    --radius: 15px;
+    --transition: 0.15s;
+  }
+  .theme-gold {
+    --primary-color: #FFB6C1;
+    --secondary-color: #4B0082;
+    --secondary-color2: #2C2C54;
+    --background-color: #1A1A1D;
+    --background-color2: #2B2B2B;
+    --background-color3: #3C3C3C;
+    --accent-color: #FFD700;
+    --text-color: #FFFFFF;
+    --radius: 5px;
+    --transition: 0.15s;
+}
+.theme-a {
+  --primary-color: #FFA07A; /* Light Salmon */
+  --secondary-color: #4682B4; /* Steel Blue */
+  --secondary-color2: #2F4F4F; /* Dark Slate Gray */
+  --background-color: #1C1C1C; /* Very Dark Gray */
+  --background-color2: #333333; /* Dark Gray */
+  --background-color3: #4F4F4F; /* Gray */
+  --accent-color: #32CD32; /* Lime Green */
+  --text-color: #F5F5F5; /* White Smoke */
+  --radius: 15px;
+  --transition: 0.15s;
+}
+.theme-b {
+  --primary-color: #FFD700; /* Gold */
+  --secondary-color: #8B0000; /* Dark Red */
+  --secondary-color2: #4B0082; /* Indigo */
+  --background-color: #0D0D0D; /* Almost Black */
+  --background-color2: #1A1A1A; /* Very Dark Gray */
+  --background-color3: #262626; /* Dark Gray */
+  --accent-color: #FF4500; /* Orange Red */
+  --text-color: #E0E0E0; /* Gainsboro */
+  --radius: 1px;
+  --transition: 0.05s;
+}
+@font-face {
+    font-family: "Titillium Web";
+    src: url("../../assets/Fonts/TitilliumWeb-Regular.ttf");
+  }
+
+  @font-face {
+    font-family: "Titillium Web Light";
+    src: url("../../assets/Fonts/TitilliumWeb-Light.ttf");
+  }

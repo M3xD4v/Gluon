@@ -1,21 +1,22 @@
+@import url('global.css');
+
+
+
 .canvas_toolbar {
   user-select: none;
   position: fixed;
-  background-color: white;
+  background-color: var(--background-color);
   font-family: Arial, sans-serif;
   z-index: 1000;
   width: 100%;
   height: 6vh; /* Adjusted height to accommodate margins */
   bottom: 0;
-  border-top: solid 0.25vh;
+  border-top: var(--background-color2) solid 0.25vh;
 }
 
 #drawing {
-  background-color: rgb(255, 253, 252);
-  background-image:
-    linear-gradient(0deg, transparent 24px, rgba(0, 0, 0, 0.1) 25px, transparent 26px),
-    linear-gradient(90deg, transparent 24px, rgba(0, 0, 0, 0.1) 25px, transparent 26px);
-  background-size: 35px 35px;
+  background-color: var(--background-color);
+
 }
 
 .edit_area {
@@ -23,7 +24,7 @@
   font-size: 0;
   float: right;
   width: 30vh;
-  border-left: solid 0.25vh;
+  border-left: var(--background-color2) solid 0.25vh;
 }
 
 
@@ -34,10 +35,11 @@
   vertical-align: middle; /* aligns content vertically in the middle */
   width: 5vh;
   height: 5vh;
-  border: 0.25vh solid #58585859;
+  border: 0;
   outline: none;
   padding: 0.75vh;
-  background-color: #fff;
+  background-color: var(--background-color);
+  border-radius: var(--radius);
   margin: 0.5vh 0.5vh;
   margin-right: 0;
   transition: all 0.1s ease-in-out;
@@ -49,10 +51,11 @@
   vertical-align: middle; /* aligns content vertically in the middle */
   width: 5vh;
   height: 5vh;
-  border: 0.25vh solid #ffffff94;
+  border: 0;
   outline: none;
   padding: 0.75vh;
-  background-color: #121212;
+  background-color: var(--background-color2);
+  border-radius: var(--radius);
   margin: 0.5vh 0.5vh;
   margin-right: 0;
   transition: all 0.1s ease-in-out;
@@ -60,16 +63,16 @@
 }
 
   .button:hover {
-    background-color: #ffe1bf;
+    background-color: var(--background-color2);
   }
   .button:active {
-    background-color: #FFB385;
+    background-color: var(--background-color3);
   }
   .button_active:hover {
-    background-color: #292929;
+    background-color: var(--background-color3);
   }
   .button_active:active {
-    background-color: #2c2c2c;
+    background-color: var(--background-color3);
   }
 
   

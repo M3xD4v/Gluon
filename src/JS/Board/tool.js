@@ -4,7 +4,8 @@ function notool() {
     if (preview) {
         preview.remove();
     }
-    console.log("notool")
+    //console.log("notool")
+    return;
 }
 
 function line() {

@@ -1,10 +1,16 @@
+@import url('global.css');
+
+
 .canvas {
-  background-color: rgb(255, 255, 255);
   height: 100%;
   width: 100%;
   position: absolute;
 }
-
+.drawing { 
+  height: 100%; 
+  width: 100%; 
+  background-color: var(--background-color)
+}
 .dot {
   border-radius: 50%;
   position: absolute;

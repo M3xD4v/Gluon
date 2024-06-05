@@ -6,54 +6,12 @@
     <script src="JS/notification.js"></script>
     <script src="JS/IPC.js"></script>
     <script src="JS/saveloadSystem.js"></script>
+    <script src="JS/projectCreation.js"></script>
+
+
 
     <link rel="stylesheet" href="CSS/navbar.css">
-    <style>
-        body {
-            height: 100%;
-            overflow-y: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-
-        .iframe-container {
-            flex: 1;
-            height: 100%;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        .split {
-            height: 100%;
-            width: 0.25vh;
-            right: 50%;
-            background-color: black;
-            position: fixed;
-
-        }
-
-        #notification {
-            position: absolute;
-            top: -10vh;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #fff;
-            border: solid 0.25vh black;
-            color: #000;
-            padding: 1vh 5vh;
-            z-index: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/layout.css">
     <script>
         $(document).ready(function () {
             $(".iframe-container").scroll(function () {
@@ -68,9 +26,101 @@
 
 
 <body>
-
     <div id="notification">This is a notification</div>
+    <div class="StartMenuContainer" id="StartMenuContainer">
+        <h1>Welcome</h1>
+        <div class="StartMenuContent">
+            <div class="StartMenuViews">
+                
+                <div class="TemplateCard" id="SplitViewCard">
+                    <div class="TemplateCardPreview"> 
+                        <div class="SplitViewCardReading"></div>
+                        <div class="SplitViewCardCanvas"></div>
+                    </div>
+                    <div class="TemplateCardTextBox">
+                        <h2>Split</h2>
+                        <p>Description</p>
+                    </div>
+                </div>
 
+                <div class="TemplateCard" id="ReadViewCard">
+                    <div class="TemplateCardPreview"> 
+                        <div class="SplitViewCardReading" style="width: 100%;"></div>
+                    </div>
+                    <div class="TemplateCardTextBox">
+                        <h2>Reading</h2>
+                        <p>Description</p>
+                    </div>
+                </div>
+
+                <div class="TemplateCard" id="BoardViewCard">
+                    <div class="TemplateCardPreview" > 
+                        <div class="SplitViewCardCanvas" style="width: 100%;"></div>
+                    </div>
+                    <div class="TemplateCardTextBox">
+                        <h2>Canvas</h2>
+                        <p>Description</p>
+                    </div>
+                </div>
+
+                <div class="TemplateCard" id="TempBlank">
+                    <div class="TemplateCardPreview"> 
+                    </div>
+                    <div class="TemplateCardTextBox">
+                        <h2>Blank</h2>
+                        <p>Description</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="StartMenuRecent">
+                <button class="StartMenuOpen"> Open Project </button>
+                <div class="RecentCard">
+                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <h3>Project</h3>
+                    <p>Path/Path/Path/Path/Path/Path</p>
+                </div>
+                <div class="RecentCard">
+                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <h3>Project</h3>
+                    <p>Path/Path/Path/Path/Path/Path</p>
+                </div>
+                <div class="RecentCard">
+                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <h3>Project</h3>
+                    <p>Path/Path/Path/Path/Path/Path</p>
+                </div>
+                <div class="RecentCard">
+                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <h3>Project</h3>
+                    <p>Path/Path/Path/Path/Path/Path</p>
+                </div>
+
+                <div style="display: flex; width: 100%; justify-content: space-around; margin-top: auto; padding: 10px;">
+                    <button class="StartMenuOtherButton"> Documentation </button>
+                    <button class="StartMenuOtherButton"> Open Project </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="fileNavBar">
+        <button class="NavAddButton" onclick="NewTemplatePage()">+</button>
+    </div>
+
+    <!-- 
+    <div class="container">
+        <div class="iframe-container" id="pdf_iframe">
+            <iframe src="PDF.html" id="pdfViewer" class="innerIframe"></iframe>
+        </div>
+        <div class="iframe-container" id="board_iframe">
+            <iframe src="blank.html" id="Board_Viewer" class="innerIframe"></iframe>
+        </div>
+    </div>
+    -->
+
+    <!-- 
     <button class="openbtn" onclick="toggleNav()">
         <img src="../assets/SVGs/right.svg" style="width: 5vh;"><img>
     </button>
@@ -100,17 +150,18 @@
         </button>
     </div>
 
-
+    -->
+    <!-- 
     <div class="container">
         <div class="iframe-container" id="pdf_iframe">
             <iframe src="PDF.html" id="pdfViewer"></iframe>
         </div>
-        <div class="split"></div>
+        <div class="split draggable"></div>
         <div class="iframe-container" id="board_iframe">
             <iframe src="Board.html" id="Board_Viewer"></iframe>
         </div>
     </div>
-
+    -->
 
 </body>
 
@@ -118,6 +169,23 @@
 
 
 <script>
+var VisibleContainer;
+var CurrnetTheme = "gold";
+function switchTheme(themeName) {
+    const root = document.documentElement;
+    root.classList.remove('theme-gold', 'theme-a', 'theme-b');
+    root.classList.add(`theme-${themeName}`);
+
+    const iframes = document.getElementsByTagName('iframe');
+    for (let i = 0; i < iframes.length; i++) {
+        const iframeRoot = iframes[i].contentDocument.documentElement;
+        iframeRoot.classList.remove('theme-gold', 'theme-a', 'theme-b');
+        iframeRoot.classList.add(`theme-${themeName}`);
+    }
+}
+switchTheme(CurrnetTheme);
+
+
     var view_mode = "0";
     let zoomValue = 1;
     var {
@@ -130,7 +198,17 @@
         resetZoom();
     };
     */
-   
+    function generateRandomHash(length = 40) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let hash = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        hash += characters[randomIndex];
+    }
+    return hash;
+}
+
+
     function onViewModeZero() {
         let board = document.getElementById("board_iframe");
         board.style.display = "block"
@@ -152,7 +230,7 @@
                     onViewModeOne();
                 } else {
                     console.error("Invalid view mode: " + value);
-                    return false; 
+                    return false;
                 }
                 target[key] = value;
                 return true;
@@ -181,8 +259,8 @@
         }
     }
 
-    var PDF_Iframe = document.getElementById('pdfViewer');
-    var Board_Iframe = document.getElementById('Board_Viewer');
+    var PDF_Iframe;
+    var Board_Iframe;
     let temp_zoom = 1;
 
     function changeZoom(value) {
@@ -194,22 +272,6 @@
             temp_zoom = value;
         }
     }
-
-    PDF_Iframe.addEventListener('load', function () {
-        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-        viewerContainer.addEventListener('wheel', function (event) {
-            if (event.ctrlKey) {
-                event.preventDefault();
-                var delta = Math.sign(event.deltaY);
-
-                var zoomStep = 0.05; // You can adjust this value for finer or coarser zoom increments
-                var newZoom = zoomValue + delta * zoomStep;
-                newZoom = Math.max(0.1, Math.min(10.0, newZoom));
-
-                changeZoom(newZoom);
-            }
-        });
-    });
 
 
     function resetZoom() {
@@ -256,26 +318,6 @@
             showNotification("Multiple Page Mode is only available in Full Page Mode", 1.5);
         }
     }
-
-
-    let board_test = false
-    setTimeout(function () {
-        if (board_test == false) {
-            //setIframeBodyHeight('Board_Viewer', GetIframeHeight('pdfViewer'));
-            //setIframeBodyHeight('Board_Viewer', localStorage.getItem("total_height"));
-        }
-        if (board_test == true) {
-            let boardIF = document.getElementById('Board_Viewer');
-            let doc = boardIF.contentDocument || boardIF.contentWindow.document;
-            doc.body.style.height = '1000px';
-            if (document.getElementById('pdfViewer')) {
-                document.getElementById('pdf_iframe').style.display = "none";
-            }
-        }
-    }, 300);
-
-
-
     function debounce(func, delay) {
         let timeoutId;
         return function (...args) {
@@ -298,54 +340,11 @@
         PDF_DIV.scrollTo(0, value);
     }
 
-
     let activeIframe = null;
 
     function setActiveIframe(iframe) {
         activeIframe = iframe;
     }
-
-    PDF_Iframe.addEventListener("load", function () {
-        setActiveIframe('PDF');
-        const PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
-        const PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
-        let lastScrollTop = PDF_DIV.scrollTop;
-        PDF_DIV.addEventListener('scroll', debounce(() => {
-            const scrollTop = PDF_DIV.scrollTop;
-            if (scrollTop !== lastScrollTop) {
-                lastScrollTop = scrollTop;
-                if (activeIframe === 'PDF') {
-                    syncScroll(PDF_DIV, document.getElementById('Board_Viewer'));
-                }
-            }
-        }, 1));
-    });
-
-
-    Board_Iframe.addEventListener("load", function () {
-        setActiveIframe('Board');
-        const iframeWindow = Board_Iframe.contentWindow;
-        const iframeDocument = iframeWindow.document;
-        let lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body.scrollTop;
-
-        iframeDocument.addEventListener('scroll', debounce(() => {
-            lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body
-                .scrollTop;
-            if (activeIframe === 'Board') {
-                syncScroll_Second(lastScrollTop);
-            }
-        }, 1));
-    });
-
-
-    PDF_Iframe.addEventListener('mouseover', function () {
-        setActiveIframe('PDF');
-    });
-
-    Board_Iframe.addEventListener('mouseover', function () {
-        setActiveIframe('Board');
-    });
-
     function toggleNav() {
         let button = document.getElementsByClassName("openbtn")[0];
         let sidenav = document.getElementById("mySidenav");
@@ -376,11 +375,12 @@
         }
     }
 
-document.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-        if (document.activeElement.id == "chatInput") sendPrompt();
-    }
-});
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            if (document.activeElement.id == "chatInput") sendPrompt();
+        }
+    });
+
     function text_to_canvas(text) {
         Board_Iframe.contentWindow.add_text_box(text);
     }
@@ -409,54 +409,53 @@ document.addEventListener('keydown', function (event) {
             let output = document.getElementById("chatOutput");
             output.innerHTML += "<p>" + file + "</p>";
             output.scrollTop = output.scrollHeight
-        }
-        else {
-            createPromptMenu(file,type)
+        } else {
+            createPromptMenu(file, type)
         }
     });
 
-    function createPromptMenu(file,title) {
-    if (document.getElementsByClassName("prompt_response")[0]) {
-        let old_menu = document.getElementsByClassName("prompt_response")[0];
-        old_menu.remove();
+    function createPromptMenu(file, title) {
+        if (document.getElementsByClassName("prompt_response")[0]) {
+            let old_menu = document.getElementsByClassName("prompt_response")[0];
+            old_menu.remove();
+        }
+
+        let new_menu = document.createElement("div");
+        new_menu.className = "prompt_response";
+
+        let promptHeader = document.createElement("div");
+        promptHeader.className = "prompt_header";
+
+        let promptTitle = document.createElement("div");
+        promptTitle.className = "prompt_title";
+        promptTitle.textContent = title;
+
+        let removeButton = document.createElement("button");
+        removeButton.className = "remove_button";
+        removeButton.textContent = "X";
+        removeButton.onclick = function () {
+            new_menu.remove();
+        };
+        let transferButton = document.createElement("button");
+        transferButton.className = "transfer_button";
+        transferButton.textContent = "transfer";
+        transferButton.onclick = function () {
+            text_to_canvas(file);
+        };
+
+        promptHeader.appendChild(promptTitle);
+        promptHeader.appendChild(transferButton);
+        promptHeader.appendChild(removeButton);
+
+        let promptContent = document.createElement("div");
+        promptContent.className = "prompt_content";
+        promptContent.textContent = file;
+
+        new_menu.appendChild(promptHeader);
+        new_menu.appendChild(promptContent);
+
+        document.body.appendChild(new_menu);
     }
-
-    let new_menu = document.createElement("div");
-    new_menu.className = "prompt_response";
-
-    let promptHeader = document.createElement("div");
-    promptHeader.className = "prompt_header";
-
-    let promptTitle = document.createElement("div");
-    promptTitle.className = "prompt_title";
-    promptTitle.textContent = title;
-
-    let removeButton = document.createElement("button");
-    removeButton.className = "remove_button";
-    removeButton.textContent = "X";
-    removeButton.onclick = function () {
-        new_menu.remove();
-    };
-    let transferButton = document.createElement("button");
-    transferButton.className = "transfer_button";
-    transferButton.textContent = "transfer";
-    transferButton.onclick = function () {
-        text_to_canvas(file);
-    };
-
-    promptHeader.appendChild(promptTitle);
-    promptHeader.appendChild(transferButton);
-    promptHeader.appendChild(removeButton);
-
-    let promptContent = document.createElement("div");
-    promptContent.className = "prompt_content";
-    promptContent.textContent = file;
-
-    new_menu.appendChild(promptHeader);
-    new_menu.appendChild(promptContent);
-
-    document.body.appendChild(new_menu);
-}
 </script>
 
 </html>
