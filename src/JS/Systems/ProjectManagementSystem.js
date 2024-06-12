@@ -129,12 +129,12 @@ function initiateSplitElements(ID) {
     BoardiframeContainer.id = "board_iframe";
 
     var PDFiFrame = document.createElement('iframe');
-    PDFiFrame.src = "PDF.html?ID=" + ID;
+    PDFiFrame.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
     PDFiFrame.id = "pdfViewer";
     PDFiFrame.className = "innerIframe";
 
     var BoardIFrame = document.createElement('iframe');
-    BoardIFrame.src = "Board.html?ID=" + ID;
+    BoardIFrame.src = "../WebDocuments/CanvasViewer.html?ID=" + ID;
     BoardIFrame.id = "Board_Viewer";
     BoardIFrame.className = "innerIframe";
 
@@ -178,7 +178,7 @@ function initiateReadElements(ID) {
     iframeContainer.id = "pdf_iframe";
 
     var iframe = document.createElement('iframe');
-    iframe.src = "PDF.html?ID=" + ID;
+    iframe.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
     iframe.id = "pdfViewer?ID=" + ID;
     iframe.className = "innerIframe";
 
@@ -218,7 +218,7 @@ function initiateBoardElements(ID) {
     iframeContainer.id = "board_iframe";
 
     var iframe = document.createElement('iframe');
-    iframe.src = "Board.html?ID=" + ID;
+    iframe.src = "../WebDocuments/CanvasViewer.html?ID=" + ID;
     iframe.id = "Board_Viewer?ID=" + ID;
     iframe.className = "innerIframe";
 
@@ -257,7 +257,7 @@ function initiateBlankTempElements(ID) {
     iframeContainer.id = "temp_iframe";
 
     var iframe = document.createElement('iframe');
-    iframe.src = "temp.html?ID=" + ID;
+    iframe.src = "../WebDocuments/BlankDocument.html?ID=" + ID;
     iframe.id = "temp?ID=" + ID;
     iframe.className = "innerIframe";
     iframeContainer.appendChild(iframe);
@@ -300,7 +300,7 @@ function addNewNavBarElement(fileName, id) {
     newDiv.className = 'buttonWrapperActive';
 
     var newImg = document.createElement('img');
-    newImg.src = '../assets/SVGs/atom-svgrepo-com.svg';
+    newImg.src = '../../assets/SVGs/atom-svgrepo-com.svg';
     newImg.className = 'fileIcon';
 
     var newButton = document.createElement('button');
@@ -337,10 +337,10 @@ function splitLoadProject(projectFile) {
     var containerHTML = `
     <div class="container activeContainer" id="${projectFile.id}">
         <div class="iframe-container" id="pdf_iframe">
-            <iframe src="PDF.html" id="pdfViewer" class="innerIframe"></iframe>
+            <iframe src="../WebDocuments/PDFViewer.html" id="pdfViewer" class="innerIframe"></iframe>
         </div>
         <div class="iframe-container" id="board_iframe">
-            <iframe src="Board.html" id="Board_Viewer" class="innerIframe"></iframe>
+            <iframe src="../WebDocuments/CanvasViewer.html" id="Board_Viewer" class="innerIframe"></iframe>
         </div>
     </div>`;
 

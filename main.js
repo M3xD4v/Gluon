@@ -1,8 +1,17 @@
-const {app,BrowserWindow,Menu,screen,ipcMain,dialog} = require('electron');
+const {
+    app,
+    BrowserWindow,
+    Menu,
+    screen,
+    ipcMain,
+    dialog
+} = require('electron');
 
 var fs = require('fs');
 
-const { default: ollama } = require('ollama'); // CJS`
+const {
+    default: ollama
+} = require('ollama'); // CJS`
 
 
 let modelResponse = ""
@@ -10,21 +19,26 @@ let modelResponse = ""
 async function invokeLLM(props) {
     console.log(`[${props.model}]: ${props.content}`)
     try {
-      const response = await ollama.chat({
-        model: props.model,
-        messages: [{ role: props.role, content: props.content }],
-      })
-      return response.message.content;
+        const response = await ollama.chat({
+            model: props.model,
+            messages: [{
+                role: props.role,
+                content: props.content
+            }],
+        })
+        return response.message.content;
+    } catch (error) {
+        console.log(`Query failed`)
+        console.log(error)
     }
-    catch(error) {
-      console.log(`Query failed`)
-      console.log(error)
-    }
-  }
-  
-let offline_ai_enabled = true; 
+}
+
+let offline_ai_enabled = true;
 app.once('ready', () => {
-    const {width, height} = screen.getPrimaryDisplay().workAreaSize;
+    const {
+        width,
+        height
+    } = screen.getPrimaryDisplay().workAreaSize;
 
     let win = new BrowserWindow({
         width: width,
@@ -38,37 +52,36 @@ app.once('ready', () => {
         }
     });
     win.setAspectRatio(16 / 9);
-    win.loadFile('src/layout.html');
+    win.loadFile('./src/WebDocuments/Main.html')
     win.setMaximizable(true)
-    if (offline_ai_enabled){
-    ipcMain.on('AI', (event,data,type) => {
-        let chatConfig = {
-            model: "llama3",
-            role: "user",
-            content: data
-          }
-          if (type == "chat"){
-          invokeLLM(chatConfig).then(modelResponse => {
-            event.sender.send('AIResponse', modelResponse, type);
-            console.log(modelResponse)
-          })}
-            else if (type == "explain"){
+
+    if (offline_ai_enabled) {
+        ipcMain.on('AI', (event, data, type) => {
+            let chatConfig = {
+                model: "llama3",
+                role: "user",
+                content: data
+            }
+            if (type == "chat") {
+                invokeLLM(chatConfig).then(modelResponse => {
+                    event.sender.send('AIResponse', modelResponse, type);
+                    console.log(modelResponse)
+                })
+            } else if (type == "explain") {
                 chatConfig.content = "Explain in simpler terms this text: " + data
 
                 invokeLLM(chatConfig).then(modelResponse => {
                     event.sender.send('AIResponse', modelResponse, type);
                     console.log(modelResponse)
                 })
-            }
-            else if (type == "bullet"){
+            } else if (type == "bullet") {
                 chatConfig.content = "Give me the bullet points of the following text: " + data
 
                 invokeLLM(chatConfig).then(modelResponse => {
                     event.sender.send('AIResponse', modelResponse, type);
                     console.log(modelResponse)
                 })
-            }
-            else if (type == "shorten"){
+            } else if (type == "shorten") {
                 chatConfig.content = "Shorten this text but leave all the important information: " + data
                 console.log(chatConfig.content)
                 invokeLLM(chatConfig).then(modelResponse => {
@@ -78,9 +91,8 @@ app.once('ready', () => {
             }
 
         });
-    }
-    else {
-        ipcMain.on('AI', (event,data,type) => {
+    } else {
+        ipcMain.on('AI', (event, data, type) => {
             event.sender.send('AIResponse', "AI is disabled", type);
         });
     }

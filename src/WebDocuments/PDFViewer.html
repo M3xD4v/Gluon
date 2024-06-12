@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scrollable PDF Viewer with PDF.js</title>
 </head>
-<link rel="stylesheet" href="CSS/pdf_viewer.css">
-<link rel="stylesheet" href="CSS/menu.css">
-<script src="../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
-<script src="../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
-<script src="JS/RightClick.js" type="module"></script>
+<link rel="stylesheet" href="../../src/CSS/pdf_viewer.css">
+<link rel="stylesheet" href="../../src/CSS/menu.css">
+<script src="../../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
+<script src="../../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
+<script src="../../src/JS/Other/ContextMenu.js" type="module"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
-<script src="JS/PDFRenderer.js" type="module"></script>
-
+<script src="../../src/JS/Other/PDFRenderer.js" type="module"></script> 
 <body tabindex="1">
 
     <div id="customMenu" class="custom-menu" style="display: none;">
@@ -32,7 +31,7 @@
 
     <div id="menu" class="canvas_toolbar" style="display: none;">
         <button onclick="window.parent.toggleAiChat()" class="button">
-            <img src="../assets/SVGs/ai.svg" style="width: 5vh;"><img>
+            <img src="../../assets/SVGs/ai.svg" style="width: 5vh;"><img>
         </button>
     </div>
 

@@ -1,9 +1,8 @@
-pdfjsLib.GlobalWorkerOptions.workerSrc ="../../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc ="../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
 window.CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
 window.CMAP_PACKED = true;
-var DEFAULT_URL = "../assets/test.pdf";
+var DEFAULT_URL = "../../assets/test.pdf";
 window.ENABLE_XFA = true;
-
 const SANDBOX_BUNDLE_SRC = new URL(
   "../../node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
   window.location

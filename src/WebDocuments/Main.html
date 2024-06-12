@@ -3,15 +3,15 @@
 
 <head>
     <script src="http://code.jquery.com/jquery-1.3.2.js"></script>
-    <script src="JS/notification.js"></script>
-    <script src="JS/IPC.js"></script>
-    <script src="JS/saveloadSystem.js"></script>
-    <script src="JS/projectCreation.js"></script>
+    <script src="../JS/Systems/NotificationSystem.js"></script>
+    <script src="../JS/IPC.js"></script>
+    <script src="../JS/Systems/FileManagementSystem.js"></script>
+    <script src="../JS/Systems/ProjectManagementSystem.js"></script>
 
 
 
-    <link rel="stylesheet" href="CSS/navbar.css">
-    <link rel="stylesheet" href="CSS/layout.css">
+    <link rel="stylesheet" href="../CSS/navbar.css">
+    <link rel="stylesheet" href="../CSS/layout.css">
     <script>
         $(document).ready(function () {
             $(".iframe-container").scroll(function () {
@@ -76,22 +76,22 @@
             <div class="StartMenuRecent">
                 <button class="StartMenuOpen"> Open Project </button>
                 <div class="RecentCard">
-                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <img src="../../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
                     <h3>Project</h3>
                     <p>Path/Path/Path/Path/Path/Path</p>
                 </div>
                 <div class="RecentCard">
-                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <img src="../../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
                     <h3>Project</h3>
                     <p>Path/Path/Path/Path/Path/Path</p>
                 </div>
                 <div class="RecentCard">
-                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <img src="../../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
                     <h3>Project</h3>
                     <p>Path/Path/Path/Path/Path/Path</p>
                 </div>
                 <div class="RecentCard">
-                    <img src="../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
+                    <img src="../../assets/SVGs/atom-svgrepo-com.svg" class="fileIcon"><img>
                     <h3>Project</h3>
                     <p>Path/Path/Path/Path/Path/Path</p>
                 </div>
@@ -108,60 +108,6 @@
     <div class="fileNavBar">
         <button class="NavAddButton" onclick="NewTemplatePage()">+</button>
     </div>
-
-    <!-- 
-    <div class="container">
-        <div class="iframe-container" id="pdf_iframe">
-            <iframe src="PDF.html" id="pdfViewer" class="innerIframe"></iframe>
-        </div>
-        <div class="iframe-container" id="board_iframe">
-            <iframe src="blank.html" id="Board_Viewer" class="innerIframe"></iframe>
-        </div>
-    </div>
-    -->
-
-    <!-- 
-    <button class="openbtn" onclick="toggleNav()">
-        <img src="../assets/SVGs/right.svg" style="width: 5vh;"><img>
-    </button>
-
-
-    <div class="chat-container" style="display: none;">
-        <div class="chat-box">
-            <div class="chat-output" id="chatOutput">
-            </div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="Type your message here...">
-                <button id="sendButton" onclick="sendPrompt()">Send</button>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="mySidenav" class="sidenav">
-        <button class="tButton" id="fpButton" onclick="PageToggle(); changeFilter(this)">
-            <img src="../assets/SVGs/maximize.svg" style="width: 5vh;"><img>
-        </button>
-        <button class="tButton" id="mpButton" onclick="MultiplePage(); changeFilter(this)">
-            <img src="../assets/SVGs/book.svg" style="width: 5vh;"><img>
-        </button>
-        <button class="tButton" onclick="resetZoom()">
-            <img src="../assets/SVGs/zoom_reset.svg" style="width: 5vh;"><img>
-        </button>
-    </div>
-
-    -->
-    <!-- 
-    <div class="container">
-        <div class="iframe-container" id="pdf_iframe">
-            <iframe src="PDF.html" id="pdfViewer"></iframe>
-        </div>
-        <div class="split draggable"></div>
-        <div class="iframe-container" id="board_iframe">
-            <iframe src="Board.html" id="Board_Viewer"></iframe>
-        </div>
-    </div>
-    -->
 
 </body>
 

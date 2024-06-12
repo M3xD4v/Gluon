@@ -2,3 +2,5 @@
 /node_modules
 src/JS/Board/svg.panzoom.js
 node-v20.13.1-x64.msi
+/MyAppName-linux-x64
+MyAppName-linux-x64.zip
