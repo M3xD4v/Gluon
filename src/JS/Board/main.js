@@ -452,6 +452,7 @@ function path_controlpoints(path_object) {
 }
 
 function update_settings_menus(object) {
+    return
     if (object == undefined) {
         let buttons = document.getElementsByClassName("stbutton");
         for (let i = 0; i < buttons.length; i++) {
@@ -462,14 +463,14 @@ function update_settings_menus(object) {
     } else if (object.type == "line") {
         let color = selected.color
         let width = selected.object.node.getAttribute("stroke-width")
-        let width_value = document.getElementById("line_widthvalue");
+        let width_value = document.getElementById("Input_LineWidth");
         let color_value = document.getElementById("colorvalue");
         width_value.value = width;
         color_value.value = color;
     } else if (object.type == "path") {
         let color = selected.color
         let width = selected.object.node.getAttribute("stroke-width")
-        let width_value = document.getElementById("draw_widthvalue");
+        let width_value = document.getElementById("Input_DrawWidth");
         let color_value = document.getElementById("colorvalue");
         width_value.value = width;
         color_value.value = color;

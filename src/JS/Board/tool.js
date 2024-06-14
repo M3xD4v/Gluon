@@ -23,7 +23,7 @@ function line() {
             disableEventListener(getEventListenerByName("previewLine"));
             preview.remove();
             secondPosition = position;
-            execute(line_f(firstPosition, secondPosition, getColor(), getWidth("line")));
+            execute(line_f(firstPosition, secondPosition, CanvasDatabase.Global_Variables.Color, CanvasDatabase.Global_Variables.LineWidth));
             firstPosition = null;
             secondPosition = null;
         }
@@ -40,7 +40,7 @@ function previewLine(startingPosition) {
             preview.remove();
         }
         preview = draw.line(startingPosition.x, startingPosition.y, position.x, position.y).stroke({
-            width: getWidth("line")
+            width: CanvasDatabase.Global_Variables.LineWidth
         });
         preview.stroke({
             color: 'lightgray'
@@ -171,10 +171,10 @@ function free_draw() {
         let position = draw.point(event.clientX, event.clientY);
         path = "m " + position.x + " " + position.y;
         path_object = draw.path(path).stroke({
-            width: getWidth("draw")
+            width: CanvasDatabase.Global_Variables.LineWidth
         });
         path_object.stroke({
-            color: getColor()
+            color: CanvasDatabase.Global_Variables.Color
         });
         path_object.node.style.fill = "transparent";
         points.push([position.x, position.y]);
@@ -195,11 +195,11 @@ function free_draw() {
             smooth_path = points_to_path(ramerDouglasPeucker_points);
         }
         let new_path = draw.path(smooth_path).stroke({
-            width: getWidth("draw")
+            width: CanvasDatabase.Global_Variables.LineWidth
         });
 
         new_path.stroke({
-            color: getColor()
+            color: CanvasDatabase.Global_Variables.Color
         });
         new_path.node.style.fill = "transparent";
         new_path.node.style.strokeLinecap = "round";

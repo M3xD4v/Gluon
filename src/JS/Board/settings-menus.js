@@ -101,17 +101,3 @@ function toggle_smoothing() {
         }
     }
 }
-
-function adjust_width(value,object) {
-    let string = object + "_widthvalue"
-    let input = document.getElementById(string);
-    if (value == -1){
-        input.value = parseInt(input.value) - 1;
-    }
-    if (value == 1){
-        input.value = parseInt(input.value) + 1;
-    }
-    if (selected != null){
-        selected.object.node.setAttribute("stroke-width",parseInt(input.value))
-    }
-}

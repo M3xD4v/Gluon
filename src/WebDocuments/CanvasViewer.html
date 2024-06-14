@@ -2,15 +2,16 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="CSS/Board.css">
-  <link rel="stylesheet" href="CSS/menu.css">
+  <link rel="stylesheet" href="../CSS/Board.css">
+  <link rel="stylesheet" href="../CSS/menu.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-  <script src="JS/Board/main.js"></script>
-  <script src="JS/Board/fundamental.js"></script>
-  <script src="JS/Board/tool.js"></script>
-  <script src="JS/Board/debug.js"></script>
-  <script src="JS/Board/settings-menus.js"></script>
+  <script src="../JS/Board/GlobalCanvasManagament.js"></script>
+  <script src="../JS/Board/main.js"></script>
+  <script src="../JS/Board/fundamental.js"></script>
+  <script src="../JS/Board/tool.js"></script>
+  <script src="../JS/Board/debug.js"></script>
+  <script src="../JS/Board/settings-menus.js"></script>
 </head>
 
 
@@ -19,37 +20,37 @@
   <div class="textbox_container" id="text_box_template" style="display: none;">
     <div class="text_buttons">
       <button class="textbox_button" id="move" style="cursor: move;">
-        <img src="./../assets/SVGs/move.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/move.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button class="textbox_button" id="increase">
-        <img src="./../assets/SVGs/font-increase.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/font-increase.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button class="textbox_button" id="decrease">
-        <img src="./../assets/SVGs/font-decrease.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/ai.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button class="textbox_button" id="bold">
-        <img src="./../assets/SVGs/bold.svg" width="24" height="24" alt="Move Icon">
+        <img src="../../assets/SVGs/bold.svg" width="24" height="24" alt="Move Icon">
       </button>
 
       <button class="textbox_button" id="italic">
-        <img src="./../assets/SVGs/italic.svg" width="24" height="24" alt="Move Icon">
+        <img src="../../assets/SVGs/italic.svg" width="24" height="24" alt="Move Icon">
       </button>
 
       <button class="textbox_button" id="underline">
-        <img src="./../assets/SVGs/underline.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/underline.svg" width="32" height="32" alt="Move Icon">
       </button>
       <input class="textbox_button" type="color" id="colorPicker" value="#000000">
       <button class="textbox_button" id="Hide" style="font-size: 2vh;">
-        <img src="./../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
       </button>
       <button class="textbox_button" id="scaleDown" style="font-size: 2vh;">
-        <img src="./../assets/SVGs/size-actual.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/size-actual.svg" width="32" height="32" alt="Move Icon">
       </button>
       <button class="textbox_button" id="remove" style="font-size: 2vh; border: 0.25vh solid red;">
-        <img src="./../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
       </button>
 
 
@@ -65,19 +66,19 @@
   </div>
   <div id="menu" class="canvas_toolbar">
     <button onclick="setTool('draw')" title="(D) Draw tool" class="button" id="draw_button">
-      <img src="./../assets/SVGs/pen-fancy.svg" width="32" height="32" alt="Move Icon" style="width: 4vh;">
+      <img src="../../assets/SVGs/pen-fancy.svg" width="32" height="32" alt="Move Icon" style="width: 4vh;">
     </button>
     <button onclick="setTool('line')" title="(L) Line Tool" class="button" id="line_button">
-      <img src="./../assets/SVGs/line-tool.svg" width="32" height="32" alt="Move Icon" style="width: 5vh;">
+      <img src="../../assets/SVGs/line-tool.svg" width="32" height="32" alt="Move Icon" style="width: 5vh;">
     </button>
     <button onclick="setTool('text')" title="(T) Text Tool" class="button" id="text_button">
-      <img src="./../assets/SVGs/textbox.svg" width="32" height="32" alt="Move Icon" style="width: 4vh;">
+      <img src="../../assets/SVGs/textbox.svg" width="32" height="32" alt="Move Icon" style="width: 4vh;">
     </button>
     <button onclick="setTool('selection')" title="(S) Selection Tool" id="selection_button" class="button">
-      <img src="./../assets/SVGs/pointer.svg" width="32" height="32" alt="Move Icon" style="width: 3vh;">
+      <img src="../../assets/SVGs/pointer.svg" width="32" height="32" alt="Move Icon" style="width: 3vh;">
     </button>
     <button onclick="Unhide()" title="Unhide All" class="button">
-      <img src="./../assets/SVGs/show.svg" width="32" height="32" alt="Move Icon">
+      <img src="../../assets/SVGs/show.svg" width="32" height="32" alt="Move Icon">
     </button>
 
 
@@ -102,9 +103,9 @@
       </div>
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
-        <input id="line_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button id="line_width_increase" onclick="adjust_width(1,'line')" class="settings_button">increase</button>
-        <button id="decrease_width_increase" onclick="adjust_width(-1,'line')" class="settings_button">decrease</button>
+        <input id="Input_LineWidth" oninput="Canvas_HandleWidthChange(this.value, 'line', false)" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
+        <button onclick="Canvas_HandleWidthChange(1, 'line', true)" class="settings_button">increase</button>
+        <button onclick="Canvas_HandleWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
       </div>
     </div>
 
@@ -115,9 +116,9 @@
       </div>
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
-        <input id="draw_widthvalue" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button id="draw_width_increase" onclick="adjust_width(1,'draw')" class="settings_button">increase</button>
-        <button id="decrease_width_increase" onclick="adjust_width(-1,'draw')" class="settings_button">decrease</button>
+        <input id="Input_DrawWidth" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
+        <button onclick="Canvas_HandleWidthChange(1, 'line', true)" class="settings_button">increase</button>
+        <button onclick="Canvas_HandleWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
       </div>
     </div>
 
@@ -126,11 +127,11 @@
         <p style="margin: 0px;">allow:</p>
         <button onclick="toggle_selection('text');" class="button selection_toggle stbutton" id="text_selection"
           style="display: none;">
-          <img src="./../assets/SVGs/T.svg" width="32" height="32" alt="Move Icon">
+          <img src="../../assets/SVGs/T.svg" width="32" height="32" alt="Move Icon">
         </button>
         <button onclick="toggle_selection('canvas');" class="button selection_toggle stbutton" id="canvas_selection"
           style="display: none;">
-          <img src="./../assets/SVGs/canvas.svg" width="32" height="32" alt="Move Icon">
+          <img src="../../assets/SVGs/canvas.svg" width="32" height="32" alt="Move Icon">
         </button>
       </div>
     </div>
@@ -138,29 +139,29 @@
     <div class="edit_area">
 
       <button onclick="selection_settings()" class="button selection_settings stbutton" style="display: none;">
-        <img src="./../assets/SVGs/selection-all-thin.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/selection-all-thin.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button onclick="window.parent.showNotification('temporarily bugged, make sure to click the actual color', 2);"
         class="stbutton button all" id="color_settings" style="display: none;">
-        <input onclick="hide_all_menus()" id="colorvalue" type="color" value="#1dbbce"
+        <input onclick="hide_all_menus()" oninput="Canvas_HandleColorChange(this.value)" id="colorvalue" type="color" value="#1dbbce"
           style="border: 0; background: transparent">
       </button>
 
       <button onclick="line_settings()" class="button line_settings stbutton line" style="display: none;">
-        <img src="./../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button onclick="draw_settings()" class="button draw_settings stbutton draw" style="display: none;">
-        <img src="./../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/settings-ui.svg" width="32" height="32" alt="Move Icon">
       </button>
 
       <button onclick="delete_selected()" title="(Delete) Delete Selected" id="delete_button" class="button delete_button stbutton delete"
         style="display: none;">
-        <img src="./../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/delete.svg" width="32" height="32" alt="Move Icon">
       </button>
       <button onclick="Hide()" id="hide_button" class="button hide_button stbutton hide" title="" class="button" style="display: none;">
-        <img src="./../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
+        <img src="../../assets/SVGs/hide.svg" width="32" height="32" alt="Move Icon">
       </button>
     </div>
   </div>

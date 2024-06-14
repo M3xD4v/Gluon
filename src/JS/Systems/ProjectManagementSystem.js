@@ -272,14 +272,20 @@ function initiateBlankTempElements(ID) {
     changeActiveIFrames(ID)
     iframe.onload = function () {
         updateIframeTheme();
-
-        // Create a new webview element
-        var webview = document.createElement('webview');
-        webview.setAttribute('id', 'foo');
-        webview.setAttribute('src', 'https://www.wikiwand.com/');
-        webview.setAttribute('style', 'display:inline-flex; width:100%; height:100%');
-        this.contentDocument.body.style.overflow = 'hidden';
-        this.contentDocument.body.appendChild(webview);
+        var urls = [
+            'https://www.google.com/search?q=Cors+Bypass+html',
+            'https://search.brave.com/search?q=Cors+Bypass+html',
+            'https://www.perplexity.ai/?q=Cors+Bypass+html'
+        ];
+        
+        for (let i = 0; i < urls.length; i++) {
+            var webview = document.createElement('webview');
+            webview.setAttribute('id', 'webview' + i);
+            webview.setAttribute('src', urls[i]);
+            webview.setAttribute('style', 'display:inline-flex; width:33%; height:100%');
+            this.contentDocument.body.style.overflow = 'hidden';
+            this.contentDocument.body.appendChild(webview);
+        }
     };
 }
 

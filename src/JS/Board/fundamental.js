@@ -1,16 +1,3 @@
-function getColor() {
-    return document.getElementById('colorvalue').value;
-
-}
-
-function getWidth(object) {
-    if (object == "line") {
-        return document.getElementById('line_widthvalue').value;
-    } else if (object == "draw") {
-        return document.getElementById('draw_widthvalue').value;
-    }
-}
-
 function line_f(firstPosition, secondPosition, color, strokeWidth) {
     let line = draw.line(firstPosition.x, firstPosition.y, secondPosition.x, secondPosition.y).stroke({
         width: strokeWidth
