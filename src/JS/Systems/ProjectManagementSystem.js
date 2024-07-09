@@ -367,7 +367,7 @@ function splitLoadProject(projectFile) {
         let pdf_data = base64ToArray(projectFile.pdfData);
         let board_data = projectFile.boardData;
         console.log(iframes[projectFile.id].Board_Iframe);
-        iframes[projectFile.id].PDF_Iframe.contentWindow.load_new_pdf(pdf_data);
+        iframes[projectFile.id].PDF_Iframe.contentWindow.loadNewPDF(pdf_data);
         iframes[projectFile.id].Board_Iframe.contentWindow.importCanvas(board_data);
     }, 1000);
 

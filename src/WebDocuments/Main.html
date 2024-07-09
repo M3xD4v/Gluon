@@ -211,7 +211,7 @@ switchTheme(CurrnetTheme);
 
     function changeZoom(value) {
         if (view_mode_proxy.value == 1) {
-            showNotification_value("zoom: " + value.toFixed(3));
+            showNotificationValue("zoom: " + value.toFixed(3));
             zoomValue = value;
             var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
             viewerContainer.setAttribute('zoom', value);
@@ -221,7 +221,7 @@ switchTheme(CurrnetTheme);
 
 
     function resetZoom() {
-        showNotification_value("zoom: page-width");
+        showNotificationValue("zoom: page-width");
         var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
         var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
         viewerContainer.setAttribute('zoom', "page-width");
@@ -240,12 +240,12 @@ switchTheme(CurrnetTheme);
 
 
         if (view_mode_proxy.value == 0) {
-            showNotification_value("page layout: text only");
+            showNotificationValue("page layout: text only");
             split.style.display = "none";
             view_mode_proxy.value = "1"
             viewerContainer.setAttribute('zoom', temp_zoom);
         } else if (view_mode_proxy.value == 1) {
-            showNotification_value("page layout: text & board");
+            showNotificationValue("page layout: text & board");
             split.style.display = "block";
             view_mode_proxy.value = "0";
             viewerContainer.setAttribute('zoom', "page-width");
@@ -328,7 +328,7 @@ switchTheme(CurrnetTheme);
     });
 
     function text_to_canvas(text) {
-        Board_Iframe.contentWindow.add_text_box(text);
+        Board_Iframe.contentWindow.addTransferTextBox(text);
     }
 
     function toggleAiChat() {

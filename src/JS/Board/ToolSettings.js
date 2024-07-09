@@ -51,7 +51,7 @@ function toggle_buttons(name) {
     }
 }
 
-function toggle_button_by_id(object) {
+function toggleButtonById(object) {
         let elements = document.getElementById(object)
         elements.classList.toggle("button_active");
         elements.classList.toggle("button");
@@ -90,7 +90,7 @@ function toggle_smoothing() {
         smooth_free_draw = true;
         if (selected != null) {
             selected.smoothing = "true";
-            path_smoothen(selected)
+            pathSmoothen(selected)
         }
     } else if (button.classList.contains("checkmark_active")) {
         button.classList.remove("checkmark_active");

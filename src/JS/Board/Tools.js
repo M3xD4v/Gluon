@@ -1,15 +1,15 @@
-function notool() {
+function noTool() {
     clearDrawEventListeners()
     deselect();
     if (preview) {
         preview.remove();
     }
-    //console.log("notool")
+    //console.log("noTool")
     return;
 }
 
 function line() {
-    change_selection_state("off");
+    changeSelectionState("off");
     clearDrawEventListeners()
     deselect();
 
@@ -20,17 +20,17 @@ function line() {
             previewLine(position);
 
         } else if (secondPosition === null) {
-            disableEventListener(getEventListenerByName("previewLine"));
+            unregisterEventListener(findEventListener("previewLine"));
             preview.remove();
             secondPosition = position;
-            execute(line_f(firstPosition, secondPosition, CanvasDatabase.Global_Variables.Color, CanvasDatabase.Global_Variables.LineWidth));
+            execute(line_util(firstPosition, secondPosition, canvasDatabase.Global_Variables.Color, canvasDatabase.Global_Variables.LineWidth));
             firstPosition = null;
             secondPosition = null;
         }
     }
 
     draw.on('click', handleClick);
-    EventListenerTrack("line_drawing", "click", handleClick);
+    registerEventListener("line_drawing", "click", handleClick);
 }
 
 function previewLine(startingPosition) {
@@ -40,7 +40,7 @@ function previewLine(startingPosition) {
             preview.remove();
         }
         preview = draw.line(startingPosition.x, startingPosition.y, position.x, position.y).stroke({
-            width: CanvasDatabase.Global_Variables.LineWidth
+            width: canvasDatabase.Global_Variables.LineWidth
         });
         preview.stroke({
             color: 'lightgray'
@@ -48,12 +48,12 @@ function previewLine(startingPosition) {
     }
 
     draw.on('mousemove', handleMouseMove);
-    EventListenerTrack("previewLine", "mousemove", handleMouseMove);
+    registerEventListener("previewLine", "mousemove", handleMouseMove);
 }
 
 
 function text() {
-    change_selection_state("off");
+    changeSelectionState("off");
     clearDrawEventListeners()
     deselect();
     if (preview) {
@@ -66,60 +66,60 @@ function text() {
         resetTools();
     }
     draw.on('click', handleClick);
-    EventListenerTrack("text_drawing", "click", handleClick);
+    registerEventListener("text_drawing", "click", handleClick);
 }
 
 
 function selection() {
     deselect();
-    if (selection_type.length == 1 && selection_type[0] == "canvas") {
-        change_selection_state("canvas");
-    } else if (selection_type.length == 1 && selection_type[0] == "text") {
-        change_selection_state("text");
-    } else if (selection_type.length == 2) {
-        change_selection_state("both");
-    } else if (selection_type.length == 0) {
-        change_selection_state("off");
+    if (selectionType.length == 1 && selectionType[0] == "canvas") {
+        changeSelectionState("canvas");
+    } else if (selectionType.length == 1 && selectionType[0] == "text") {
+        changeSelectionState("text");
+    } else if (selectionType.length == 2) {
+        changeSelectionState("both");
+    } else if (selectionType.length == 0) {
+        changeSelectionState("off");
     }
 
 
     /*
     function tgmultiselect(event) {
-        toggle_multi_select(draw.point(event.clientX, event.clientY))
+        toggleMultiSelect(draw.point(event.clientX, event.clientY))
     }
 
     draw.on('mousedown',tgmultiselect);
 
     function tgstop(event) {
-        toggle_multi_select()
+        toggleMultiSelect()
         if (multi_select_box == null) return;
         
         let box_position = multi_select_box.bbox();
         multi_select_box.remove();
         multi_select_box = null;
-        for (let i = 0; i < object_list.length; i++) {
-            let object = object_list[i].object;
+        for (let i = 0; i < objectList.length; i++) {
+            let object = objectList[i].object;
             let object_position = object.bbox();
-            if (check_if_bbox_collides(box_position, object_position)) {
-                select_multiple(object_list[i].object)
+            if (isBoundingBoxColliding(box_position, object_position)) {
+                select_multiple(objectList[i].object)
             }
         }
     }
     draw.on('mouseup', tgstop);
 
-    EventListenerTrack("selection", "mousedown", tgmultiselect);
-    EventListenerTrack("selection", "mouseup", tgstop);
+    registerEventListener("selection", "mousedown", tgmultiselect);
+    registerEventListener("selection", "mouseup", tgstop);
     */
 }
 
-function check_if_bbox_collides(box1, box2) {
+function isBoundingBoxColliding(box1, box2) {
     if (box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.y + box1.height > box2.y) {
         return true;
     }
 }
 
 
-function toggle_multi_select(data) {
+function toggleMultiSelect(data) {
     multi_select = !multi_select;
     if (multi_select == true) {
         function multiselectfunction(event) {
@@ -155,8 +155,8 @@ function toggle_multi_select(data) {
     }
 }
 
-function free_draw() {
-    change_selection_state("off");
+function freeDraw() {
+    changeSelectionState("off");
     clearDrawEventListeners()
     deselect();
     let path = "";
@@ -171,18 +171,18 @@ function free_draw() {
         let position = draw.point(event.clientX, event.clientY);
         path = "m " + position.x + " " + position.y;
         path_object = draw.path(path).stroke({
-            width: CanvasDatabase.Global_Variables.LineWidth
+            width: canvasDatabase.Global_Variables.LineWidth
         });
         path_object.stroke({
-            color: CanvasDatabase.Global_Variables.Color
+            color: canvasDatabase.Global_Variables.Color
         });
         path_object.node.style.fill = "transparent";
         points.push([position.x, position.y]);
-        draw_f(points, path, path_object);
+        draw_util(points, path, path_object);
         points.push([position.x + 1, position.y]);
     }
 
-    function let_go(event) {
+    function letGo(event) {
         if (event.button !== 0) {
             return;
         }
@@ -190,16 +190,16 @@ function free_draw() {
         let ramerDouglasPeucker_points = ramerDouglasPeucker(points, 3.0);
         let smooth_path;
         if (smooth_free_draw == true) {
-            smooth_path = Catmull_Rom_Spline(transformArray(ramerDouglasPeucker_points), 1.0);
+            smooth_path = catmullRomSpline(transformArray(ramerDouglasPeucker_points), 1.0);
         } else {
-            smooth_path = points_to_path(ramerDouglasPeucker_points);
+            smooth_path = pointsToPath(ramerDouglasPeucker_points);
         }
         let new_path = draw.path(smooth_path).stroke({
-            width: CanvasDatabase.Global_Variables.LineWidth
+            width: canvasDatabase.Global_Variables.LineWidth
         });
 
         new_path.stroke({
-            color: CanvasDatabase.Global_Variables.Color
+            color: canvasDatabase.Global_Variables.Color
         });
         new_path.node.style.fill = "transparent";
         new_path.node.style.strokeLinecap = "round";
@@ -213,7 +213,7 @@ function free_draw() {
         });
         collission_path.node.style.fill = "none";
         collission_path.node.style.strokeLinecap = "round";
-        InitDrawLine(new_path, collission_path);
+        initFreeDraw(new_path, collission_path);
 
         points = [];
         path = "";
@@ -243,7 +243,7 @@ function free_draw() {
     }
 
     draw.on("mousedown", initial_check);
-    EventListenerTrack("free_draw", "mousedown", initial_check);
-    draw.on("mouseup", let_go);
-    EventListenerTrack("free_draw", "mouseup", let_go);
+    registerEventListener("freeDraw", "mousedown", initial_check);
+    draw.on("mouseup", letGo);
+    registerEventListener("freeDraw", "mouseup", letGo);
 }

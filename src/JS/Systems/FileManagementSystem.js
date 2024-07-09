@@ -23,7 +23,7 @@
         openDialog("import_pdf")
         ipcRenderer.once('importpdf_response', (event, file) => {
             let int8Array = new Int8Array(file);
-            PDF_Iframe.contentWindow.load_new_pdf(int8Array)
+            PDF_Iframe.contentWindow.loadNewPDF(int8Array)
         });
     }
 

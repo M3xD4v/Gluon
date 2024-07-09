@@ -1,4 +1,4 @@
-function line_f(firstPosition, secondPosition, color, strokeWidth) {
+function line_util(firstPosition, secondPosition, color, strokeWidth) {
     let line = draw.line(firstPosition.x, firstPosition.y, secondPosition.x, secondPosition.y).stroke({
         width: strokeWidth
     });
@@ -15,25 +15,25 @@ function line_f(firstPosition, secondPosition, color, strokeWidth) {
     collission_line.node.setAttribute("class", "collission_line");
     collission_line.node.setAttribute("id", "collission_line");
 
-    InitLine(line, collission_line)
+    initiateLine(line, collission_line)
     return {
         do: () => line.show(),
         undo: () => line.hide()
     };
 }
 
-function InitLine(line, collission_line) {
-    let id = object_list.length;
+function initiateLine(line, collission_line) {
+    let id = objectList.length;
     let combined = {
         object: line,
         type: "line",
         collission_object: collission_line,
         id: id,
         color: line.node.attributes.stroke.value,
-        control_points: [],
+        controlPoints: [],
         pivot: []
     };
-    object_list.push(combined);
+    objectList.push(combined);
 }
 
 function createMovableTextbox(position, text, width, height) {
@@ -48,17 +48,17 @@ function createMovableTextbox(position, text, width, height) {
         new_instance.getElementsByClassName("textbox")[0].style.height = height + "vh";
     }
     document.getElementById("drawing").appendChild(new_instance);
-    TextInit(new_instance);
+    initiateText(new_instance);
 }
 
-function TextInit(object) {
-    let id = object_list.length;
+function initiateText(object) {
+    let id = objectList.length;
     let combined = {
         object: object,
         type: "text",
         id: id,
     };
-    object_list.push(combined);
+    objectList.push(combined);
     let buttons = object.getElementsByClassName("textbox_button");
     let button_container = object.getElementsByClassName("text_buttons");
     let textbox = object.getElementsByClassName("textbox");
@@ -111,29 +111,6 @@ function TextInit(object) {
 
             let offsetx = selectedText.getBoundingClientRect().left - moveButton.getBoundingClientRect().left;
             let offsety = selectedText.getBoundingClientRect().top - moveButton.getBoundingClientRect().top;
-            /*
-            let boxWidth = selectedText.offsetWidth;
-            let boxHeight = selectedText.offsetHeight;
-            let scrollY = window.scrollY;
-            let windowWidth = window.innerWidth;
-            let windowHeight = window.innerHeight;
-    
-            if (newX + boxWidth + 50 > windowWidth) {
-                newX = windowWidth - boxWidth - 50;
-            }
-    
-            if (newY + boxHeight > windowHeight) {
-                newY = windowHeight - boxHeight ;
-            }
-    
-            if (newX < 0) {
-                newX = 0;
-            }
-    
-            if (newY < 0) {
-                newY = 0;
-            }
-            */
             selectedText.style.left = newX + offsetx - pixels + "px";
             selectedText.style.top = newY + offsety - pixels + "px";
         }
@@ -215,7 +192,7 @@ function TextInit(object) {
         }
         else if (delete_click_count == 1) {
             delete_click_count = 0
-            object_list.splice(id, 1);
+            objectList.splice(id, 1);
             object.remove();
         }
     });
@@ -238,7 +215,7 @@ function TextInit(object) {
 
 }
 
-function rectangle_f(firstPosition, secondPosition, color, strokeWidth) {
+function rectangle_util(firstPosition, secondPosition, color, strokeWidth) {
     let rectangle = draw.rect(secondPosition.x - firstPosition.x, secondPosition.y - firstPosition.y).stroke({
         width: strokeWidth
     });
@@ -262,10 +239,10 @@ function rectangle_f(firstPosition, secondPosition, color, strokeWidth) {
     };
 }
 
-function draw_f(points_array, path, path_object) {
+function draw_util(points_array, path, path_object) {
     let points = points_array
-    if (getEventListenerByName("drawing") != undefined) {
-        disableEventListener(getEventListenerByName("drawing"));
+    if (findEventListener("drawing") != undefined) {
+        unregisterEventListener(findEventListener("drawing"));
     }
 
     function drawing(event) {
@@ -276,11 +253,11 @@ function draw_f(points_array, path, path_object) {
         path_object.plot(path);
     }
     draw.on("mousemove", drawing);
-    EventListenerTrack("drawing", "mousemove", drawing);
+    registerEventListener("drawing", "mousemove", drawing);
 }
 
-function InitDrawLine(object, collission_line) {
-    let id = object_list.length;
+function initFreeDraw(object, collission_line) {
+    let id = objectList.length;
     let smooth_value = smooth_free_draw ? "true" : "false";
     let combined = {
         object: object,
@@ -288,11 +265,11 @@ function InitDrawLine(object, collission_line) {
         collission_object: collission_line,
         id: id,
         color: object.node.attributes.stroke.value,
-        control_points: [],
+        controlPoints: [],
         pivot: [],
         smoothing: smooth_value
     };
-    object_list.push(combined);
+    objectList.push(combined);
 }
 
 function distanceFromPointToLine(point, lineStart, lineEnd) {
@@ -333,7 +310,7 @@ function ramerDouglasPeucker(pointList, epsilon) {
     }
 }
 
-function points_to_path(points) {
+function pointsToPath(points) {
     let path = "";
     let m = "M " + points[0][0] + " " + points[0][1];
     let l = "";
@@ -352,7 +329,7 @@ function transformArray(inputArray) {
     return outputArray;
 }
 
-function Catmull_Rom_Spline(data, k) {
+function catmullRomSpline(data, k) {
 
     if (k == null) k = 1;
 
@@ -402,7 +379,7 @@ function thinPoints(points, threshold) {
 }
 
 
-function path_array(path) {
+function pathArray(path) {
     var regex = /([MLHVCSQTAZ])([^MLHVCSQTAZ]*)/ig;
     var points = [];
     var match;

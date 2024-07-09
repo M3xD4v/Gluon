@@ -10,7 +10,7 @@ function showNotification(text, time) {
     }, seconds);
 }
 
-function showNotification_value(text) {
+function showNotificationValue(text) {
     if (value_notifications.length == 0) {
     let notification = document.createElement("div");
     value_notifications.push(notification);

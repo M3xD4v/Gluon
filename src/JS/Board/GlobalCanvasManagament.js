@@ -1,4 +1,4 @@
-let CanvasDatabase = {
+let canvasDatabase = {
     "Global_Variables": {
         "Color" : "#FFFFFF",
         "LineWidth" : "3",
@@ -9,7 +9,7 @@ let CanvasDatabase = {
         "SelectedObject": null
     }
 }
-function Canvas_HandleWidthChange(value, type, AddValue) {
+function canvasWidthChange(value, type, AddValue) {
     const AdmissibleTypes = {
         "line": "LineWidth",
         "draw": "DrawWidth"
@@ -19,26 +19,26 @@ function Canvas_HandleWidthChange(value, type, AddValue) {
     if (!EntryType) return;
 
     if (AddValue) {
-        CanvasDatabase.Global_Variables[EntryType] = Number(CanvasDatabase.Global_Variables[EntryType]) + value;
+        canvasDatabase.Global_Variables[EntryType] = Number(canvasDatabase.Global_Variables[EntryType]) + value;
     } else {
-        CanvasDatabase.Global_Variables[EntryType] = value;
+        canvasDatabase.Global_Variables[EntryType] = value;
     }
 
-    Canvas_UpdateGlobalVariables();
+    canvasVariableUpdate();
 }
 
 
-function Canvas_HandleColorChange(value) {
-    CanvasDatabase.Global_Variables.Color = value
+function canvasColorChange(value) {
+    canvasDatabase.Global_Variables.Color = value
 }
 
-function Canvas_UpdateGlobalVariables() {
+function canvasVariableUpdate() {
     let CanvasDrawWidthLabel = document.getElementById("Input_LineWidth")
     let CanvasLineWidthLabel = document.getElementById("Input_DrawWidth")
-    CanvasDrawWidthLabel.value = CanvasDatabase.Global_Variables.DrawWidth
-    CanvasLineWidthLabel.value = CanvasDatabase.Global_Variables.LineWidth
+    CanvasDrawWidthLabel.value = canvasDatabase.Global_Variables.DrawWidth
+    CanvasLineWidthLabel.value = canvasDatabase.Global_Variables.LineWidth
 }
 
-setInterval(() => {
-    console.log(CanvasDatabase.Global_Variables)
-}, 1000);
+// setInterval(() => {
+//     console.log(canvasDatabase.Global_Variables)
+// }, 1000);

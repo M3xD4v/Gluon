@@ -2,16 +2,15 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="../CSS/Board.css">
+  <link rel="stylesheet" href="../CSS/board.css">
   <link rel="stylesheet" href="../CSS/menu.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.0/svg.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="../JS/Board/GlobalCanvasManagament.js"></script>
-  <script src="../JS/Board/main.js"></script>
-  <script src="../JS/Board/fundamental.js"></script>
-  <script src="../JS/Board/tool.js"></script>
-  <script src="../JS/Board/debug.js"></script>
-  <script src="../JS/Board/settings-menus.js"></script>
+  <script src="../JS/Board/Core.js"></script>
+  <script src="../JS/Board/Utils.js"></script>
+  <script src="../JS/Board/Tools.js"></script>
+  <script src="../JS/Board/ToolSettings.js"></script>
 </head>
 
 
@@ -103,9 +102,9 @@
       </div>
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
-        <input id="Input_LineWidth" oninput="Canvas_HandleWidthChange(this.value, 'line', false)" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button onclick="Canvas_HandleWidthChange(1, 'line', true)" class="settings_button">increase</button>
-        <button onclick="Canvas_HandleWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
+        <input id="Input_LineWidth" oninput="canvasWidthChange(this.value, 'line', false)" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
+        <button onclick="canvasWidthChange(1, 'line', true)" class="settings_button">increase</button>
+        <button onclick="canvasWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
       </div>
     </div>
 
@@ -117,19 +116,19 @@
       <div class="settings_inner">
         <p style="margin: 0px;">Width:</p>
         <input id="Input_DrawWidth" style="width: 4vh; border: 0.25vh solid #58585859;" value="3">
-        <button onclick="Canvas_HandleWidthChange(1, 'line', true)" class="settings_button">increase</button>
-        <button onclick="Canvas_HandleWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
+        <button onclick="canvasWidthChange(1, 'line', true)" class="settings_button">increase</button>
+        <button onclick="canvasWidthChange(-1, 'line', true)" class="settings_button">decrease</button>
       </div>
     </div>
 
     <div id="settings_selection" class="settings_menu" style="height: 25vh; width: 26vh; display: none;">
       <div class="settings_inner">
         <p style="margin: 0px;">allow:</p>
-        <button onclick="toggle_selection('text');" class="button selection_toggle stbutton" id="text_selection"
+        <button onclick="toggleSelection('text');" class="button selection_toggle stbutton" id="text_selection"
           style="display: none;">
           <img src="../../assets/SVGs/T.svg" width="32" height="32" alt="Move Icon">
         </button>
-        <button onclick="toggle_selection('canvas');" class="button selection_toggle stbutton" id="canvas_selection"
+        <button onclick="toggleSelection('canvas');" class="button selection_toggle stbutton" id="canvas_selection"
           style="display: none;">
           <img src="../../assets/SVGs/canvas.svg" width="32" height="32" alt="Move Icon">
         </button>
@@ -144,7 +143,7 @@
 
       <button onclick="window.parent.showNotification('temporarily bugged, make sure to click the actual color', 2);"
         class="stbutton button all" id="color_settings" style="display: none;">
-        <input onclick="hide_all_menus()" oninput="Canvas_HandleColorChange(this.value)" id="colorvalue" type="color" value="#1dbbce"
+        <input onclick="hide_all_menus()" oninput="canvasColorChange(this.value)" id="colorvalue" type="color" value="#1dbbce"
           style="border: 0; background: transparent">
       </button>
 
@@ -218,7 +217,7 @@
       return data;
     }
 
-    function add_text_box(text) {
+    function addTransferTextBox(text) {
       let scroll = window.scrollY;
       let pos = {
         x: 20,
@@ -264,19 +263,19 @@
       } 
     }
     function Unhide() {
-      for (let i = 0; i < object_list.length; i++) {
-        if (object_list[i].object.node && object_list[i].object.node.style.display == "none") {
-          object_list[i].object.node.style.display = "block";
+      for (let i = 0; i < objectList.length; i++) {
+        if (objectList[i].object.node && objectList[i].object.node.style.display == "none") {
+          objectList[i].object.node.style.display = "block";
         } else {
-          console.log(object_list[i].object)
-          object_list[i].object.style.display = "block";
+          console.log(objectList[i].object)
+          objectList[i].object.style.display = "block";
         }
       }
     
     }
     setTimeout(() => {
-      toggle_selection('canvas')
-      toggle_selection('text')
+      toggleSelection('canvas')
+      toggleSelection('text')
     }, 1000);
   </script>
 
