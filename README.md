@@ -1,2 +1,1 @@
 # Gluon
-Gluon is a new approach to ebook reader, it's your ultimate companion for reading, note-taking, and knowledge gathering. With Gluon, users can seamlessly read and take notes simultaneously, among other powerful features. With its intuitive interface and powerful features, Gluon streamlines researching, notetaking, learning knowleadge gathering in general. Whether you're a beginner or an expert, Gluon provides the tools you need to understand a subject/book better.
