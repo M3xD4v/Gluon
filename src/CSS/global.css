@@ -11,6 +11,19 @@
     --radius: 15px;
     --transition: 0.15s;
   }
+  .theme-root {
+    --primary-color: #8CDDC9;
+    --secondary-color: #264b80;
+    --secondary-color2: #1a2831;
+    --background-color: #101816;
+    --background-color2: #272f2d;
+    --background-color3: #1c2522;
+    --accent-color: #A7EEc6;
+    --text-color: #DFF5ef;
+    --font-size: 16px;
+    --radius: 15px;
+    --transition: 0.15s;
+  }
   .theme-gold {
     --primary-color: #FFB6C1;
     --secondary-color: #4B0082;

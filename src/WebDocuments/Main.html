@@ -116,16 +116,16 @@
 
 <script>
 var VisibleContainer;
-var CurrnetTheme = "gold";
+var CurrnetTheme = "root";
 function switchTheme(themeName) {
     const root = document.documentElement;
-    root.classList.remove('theme-gold', 'theme-a', 'theme-b');
+    root.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
     root.classList.add(`theme-${themeName}`);
 
     const iframes = document.getElementsByTagName('iframe');
     for (let i = 0; i < iframes.length; i++) {
         const iframeRoot = iframes[i].contentDocument.documentElement;
-        iframeRoot.classList.remove('theme-gold', 'theme-a', 'theme-b');
+        iframeRoot.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
         iframeRoot.classList.add(`theme-${themeName}`);
     }
 }

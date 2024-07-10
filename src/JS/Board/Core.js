@@ -101,6 +101,8 @@ function setTool(tool) {
         }
     }
 
+    const toolButton = document.getElementById(`${tool}_button`)
+    toolButton.classList.replace(`button`, `button_active`)
     // Special case for selection tool (show relevant buttons)
     if (tool === "selection") {
         toggle_buttons("selection");
@@ -139,8 +141,6 @@ function resetTools(keepSelection = false) {
       for (let i = 0; i < activeButtons.length; i++) {
         const button = activeButtons[i];
         if (!button.classList.value.includes("selection_toggle")) {
-          const img = button.getElementsByTagName("img")[0];
-          img.style.filter = "invert(0)";
           button.classList.remove("button_active");
           button.classList.add("button");
         }
