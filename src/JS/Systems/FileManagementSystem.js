@@ -19,11 +19,16 @@
         return bytes;
     }
 
-    function import_pdf() {
+    function import_pdf(IFrame_URL) {
         openDialog("import_pdf")
+        const urlObj = new URL(IFrame_URL);
+        const id = urlObj.searchParams.get("ID");
+        let pdfID = "pdfViewer?ID=" + id 
         ipcRenderer.once('importpdf_response', (event, file) => {
             let int8Array = new Int8Array(file);
-            PDF_Iframe.contentWindow.loadNewPDF(int8Array)
+            console.log(pdfID)
+            let container = document.getElementById(pdfID)
+            container.contentWindow.loadNewPDF(int8Array)
         });
     }
 

@@ -33,7 +33,7 @@
   align-items: center; /* aligns items vertically in the center */
   justify-content: center; /* aligns items horizontally in the center */
   vertical-align: middle; /* aligns content vertically in the middle */
-  width: 5vh;
+  width: 10vh;
   height: 5vh;
   border: 0;
   outline: none;
@@ -45,6 +45,7 @@
   transition: all 0.1s ease-in-out;
   color: var(--text-color);
   background-color: var(--background-color3);
+  overflow: clip;
 }
 .button_active {
   display: inline-flex;

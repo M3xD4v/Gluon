@@ -181,8 +181,7 @@ body {
 }
 .TemplateCard {
     display: flex;
-    margin: 1%;
-    padding: 1%;
+    margin: 5px;
     align-items: center;
     height: 25%;
     transition: all var(--transition);
@@ -193,8 +192,8 @@ body {
     cursor: pointer;
 }
 .TemplateCardPreview {
-    width: 5vw;
-    height: 5vw;
+    width: 63px;
+    aspect-ratio: 1/1;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="../CSS/navbar.css">
     <link rel="stylesheet" href="../CSS/layout.css">
     <script>
+        // REMOVE ME LATER ON!
+        setTimeout(() => {
+            //ReadProject()
+            //import_pdf()
+        }, 100);
+
+
+
         $(document).ready(function () {
             $(".iframe-container").scroll(function () {
                 var scrollTop = $(this).scrollTop();
@@ -26,14 +34,18 @@
 
 
 <body>
+
+    <button onclick="temporaryFunctionName(0)" style="position: absolute; left: 1000px;">add reading module</button>
+    <button onclick="temporaryFunctionName(1)" style="position: absolute; left: 1500px;">add drawing module</button>
+
     <div id="notification">This is a notification</div>
     <div class="StartMenuContainer" id="StartMenuContainer">
         <h1>Welcome</h1>
         <div class="StartMenuContent">
             <div class="StartMenuViews">
-                
+
                 <div class="TemplateCard" id="SplitViewCard">
-                    <div class="TemplateCardPreview"> 
+                    <div class="TemplateCardPreview">
                         <div class="SplitViewCardReading"></div>
                         <div class="SplitViewCardCanvas"></div>
                     </div>
@@ -44,7 +56,7 @@
                 </div>
 
                 <div class="TemplateCard" id="ReadViewCard">
-                    <div class="TemplateCardPreview"> 
+                    <div class="TemplateCardPreview">
                         <div class="SplitViewCardReading" style="width: 100%;"></div>
                     </div>
                     <div class="TemplateCardTextBox">
@@ -54,7 +66,7 @@
                 </div>
 
                 <div class="TemplateCard" id="BoardViewCard">
-                    <div class="TemplateCardPreview" > 
+                    <div class="TemplateCardPreview">
                         <div class="SplitViewCardCanvas" style="width: 100%;"></div>
                     </div>
                     <div class="TemplateCardTextBox">
@@ -64,7 +76,7 @@
                 </div>
 
                 <div class="TemplateCard" id="TempBlank">
-                    <div class="TemplateCardPreview"> 
+                    <div class="TemplateCardPreview">
                     </div>
                     <div class="TemplateCardTextBox">
                         <h2>Blank</h2>
@@ -96,7 +108,8 @@
                     <p>Path/Path/Path/Path/Path/Path</p>
                 </div>
 
-                <div style="display: flex; width: 100%; justify-content: space-around; margin-top: auto; padding: 10px;">
+                <div
+                    style="display: flex; width: 100%; justify-content: space-around; margin-top: auto; padding: 10px;">
                     <button class="StartMenuOtherButton"> Documentation </button>
                     <button class="StartMenuOtherButton"> Open Project </button>
                 </div>
@@ -115,21 +128,24 @@
 
 
 <script>
-var VisibleContainer;
-var CurrnetTheme = "root";
-function switchTheme(themeName) {
-    const root = document.documentElement;
-    root.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
-    root.classList.add(`theme-${themeName}`);
+    var VisibleContainer;
+    var CurrnetTheme = "a";
+    var PDF_Iframe;
+    var Board_Iframe;
 
-    const iframes = document.getElementsByTagName('iframe');
-    for (let i = 0; i < iframes.length; i++) {
-        const iframeRoot = iframes[i].contentDocument.documentElement;
-        iframeRoot.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
-        iframeRoot.classList.add(`theme-${themeName}`);
+    function switchTheme(themeName) {
+        const root = document.documentElement;
+        root.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
+        root.classList.add(`theme-${themeName}`);
+
+        const iframes = document.getElementsByTagName('iframe');
+        for (let i = 0; i < iframes.length; i++) {
+            const iframeRoot = iframes[i].contentDocument.documentElement;
+            iframeRoot.classList.remove('theme-gold', 'theme-a', 'theme-b', 'theme-root');
+            iframeRoot.classList.add(`theme-${themeName}`);
+        }
     }
-}
-switchTheme(CurrnetTheme);
+    switchTheme(CurrnetTheme);
 
 
     var view_mode = "0";
@@ -138,21 +154,15 @@ switchTheme(CurrnetTheme);
         ipcRenderer
     } = require('electron');
 
-
-    /*
-    window.onresize = function () {
-        resetZoom();
-    };
-    */
     function generateRandomHash(length = 40) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let hash = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        hash += characters[randomIndex];
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let hash = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            hash += characters[randomIndex];
+        }
+        return hash;
     }
-    return hash;
-}
 
 
     function onViewModeZero() {
@@ -164,27 +174,6 @@ switchTheme(CurrnetTheme);
         let board = document.getElementById("board_iframe");
         board.style.display = "none"
     }
-
-    var view_mode_proxy = new Proxy({
-        value: view_mode
-    }, {
-        set: function (target, key, value) {
-            if (key === 'value') {
-                if (value === "0") {
-                    onViewModeZero();
-                } else if (value === "1") {
-                    onViewModeOne();
-                } else {
-                    console.error("Invalid view mode: " + value);
-                    return false;
-                }
-                target[key] = value;
-                return true;
-            }
-        }
-    });
-
-
 
     function GetIframeHeight(ID) {
         var iframe = document.getElementById(ID);
@@ -205,65 +194,7 @@ switchTheme(CurrnetTheme);
         }
     }
 
-    var PDF_Iframe;
-    var Board_Iframe;
-    let temp_zoom = 1;
 
-    function changeZoom(value) {
-        if (view_mode_proxy.value == 1) {
-            showNotificationValue("zoom: " + value.toFixed(3));
-            zoomValue = value;
-            var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-            viewerContainer.setAttribute('zoom', value);
-            temp_zoom = value;
-        }
-    }
-
-
-    function resetZoom() {
-        showNotificationValue("zoom: page-width");
-        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-        var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
-        viewerContainer.setAttribute('zoom', "page-width");
-        temp_zoom = "page-width";
-        let pdf_width = viewerContainer.scrollWidth;
-        localStorage.setItem("pdf_width", pdf_width);
-    }
-
-    function PageToggle() {
-        var viewerContainer = PDF_Iframe.contentDocument.getElementById('viewerContainer');
-        var currentZoom = parseFloat(viewerContainer.getAttribute('zoom'));
-        let split = document.getElementsByClassName("split")[0];
-        let button = document.getElementById('fpButton');
-        button.classList.toggle('tButton_activated');
-        button.classList.toggle('tButton');
-
-
-        if (view_mode_proxy.value == 0) {
-            showNotificationValue("page layout: text only");
-            split.style.display = "none";
-            view_mode_proxy.value = "1"
-            viewerContainer.setAttribute('zoom', temp_zoom);
-        } else if (view_mode_proxy.value == 1) {
-            showNotificationValue("page layout: text & board");
-            split.style.display = "block";
-            view_mode_proxy.value = "0";
-            viewerContainer.setAttribute('zoom', "page-width");
-        }
-    }
-
-    function MultiplePage() {
-        var viewer = PDF_Iframe.contentDocument.getElementById('viewer');
-        let button = document.getElementById('mpButton');
-        button.classList.toggle('tButton_activated');
-        button.classList.toggle('tButton');
-
-        viewer.classList.toggle('pdfViewer');
-        viewer.classList.toggle('pdfViewer_MultiplePage');
-        if (view_mode_proxy.value == 0) {
-            showNotification("Multiple Page Mode is only available in Full Page Mode", 1.5);
-        }
-    }
     function debounce(func, delay) {
         let timeoutId;
         return function (...args) {
@@ -291,6 +222,7 @@ switchTheme(CurrnetTheme);
     function setActiveIframe(iframe) {
         activeIframe = iframe;
     }
+
     function toggleNav() {
         let button = document.getElementsByClassName("openbtn")[0];
         let sidenav = document.getElementById("mySidenav");
@@ -402,6 +334,7 @@ switchTheme(CurrnetTheme);
 
         document.body.appendChild(new_menu);
     }
+
 </script>
 
 </html>

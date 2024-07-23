@@ -21,7 +21,7 @@
     --accent-color: #A7EEc6;
     --text-color: #DFF5ef;
     --font-size: 16px;
-    --radius: 15px;
+    --radius: 0px;
     --transition: 0.15s;
   }
   .theme-gold {
@@ -41,8 +41,8 @@
   --secondary-color: #4682B4; /* Steel Blue */
   --secondary-color2: #2F4F4F; /* Dark Slate Gray */
   --background-color: #1C1C1C; /* Very Dark Gray */
-  --background-color2: #333333; /* Dark Gray */
-  --background-color3: #4F4F4F; /* Gray */
+  --background-color2: #2b2b2b; /* Dark Gray */
+  --background-color3: #35353557; /* Gray */
   --accent-color: #32CD32; /* Lime Green */
   --text-color: #F5F5F5; /* White Smoke */
   --radius: 15px;

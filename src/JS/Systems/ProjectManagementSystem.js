@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function updateIframeTheme() {
     const themeName = CurrnetTheme;
-    console.log(themeName);
     const root = document.documentElement;
     root.classList.remove('theme-gold', 'theme-a', 'theme-b');
     root.classList.add(`theme-${themeName}`);
@@ -120,13 +119,13 @@ function initiateSplitElements(ID) {
     container.className = "container activeContainer";
     container.id = ID;
 
-    var PDFiframeContainer = document.createElement('div');
-    PDFiframeContainer.className = "iframe-container";
-    PDFiframeContainer.id = "pdf_iframe";
+    var PDFContainer = document.createElement('div');
+    PDFContainer.className = "iframe-container";
+    PDFContainer.id = "pdf_iframe";
 
-    var BoardiframeContainer = document.createElement('div');
-    BoardiframeContainer.className = "iframe-container";
-    BoardiframeContainer.id = "board_iframe";
+    var BoardContainer = document.createElement('div');
+    BoardContainer.className = "iframe-container";
+    BoardContainer.id = "board_iframe";
 
     var PDFiFrame = document.createElement('iframe');
     PDFiFrame.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
@@ -138,10 +137,10 @@ function initiateSplitElements(ID) {
     BoardIFrame.id = "Board_Viewer";
     BoardIFrame.className = "innerIframe";
 
-    PDFiframeContainer.appendChild(PDFiFrame);
-    BoardiframeContainer.appendChild(BoardIFrame);
-    container.appendChild(PDFiframeContainer);
-    container.appendChild(BoardiframeContainer);
+    PDFContainer.appendChild(PDFiFrame);
+    BoardContainer.appendChild(BoardIFrame);
+    container.appendChild(PDFContainer);
+    container.appendChild(BoardContainer);
 
     document.body.appendChild(container);
 
@@ -173,17 +172,17 @@ function initiateReadElements(ID) {
     container.className = "container activeContainer";
     container.id = ID;
 
-    var iframeContainer = document.createElement('div');
-    iframeContainer.className = "iframe-container";
-    iframeContainer.id = "pdf_iframe";
+    var PDFContainer = document.createElement('div');
+    PDFContainer.className = "iframe-container";
+    PDFContainer.id = "pdf_iframe";
 
     var iframe = document.createElement('iframe');
     iframe.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
     iframe.id = "pdfViewer?ID=" + ID;
     iframe.className = "innerIframe";
 
-    iframeContainer.appendChild(iframe);
-    container.appendChild(iframeContainer);
+    PDFContainer.appendChild(iframe);
+    container.appendChild(PDFContainer);
 
     document.body.appendChild(container);
 
@@ -260,8 +259,8 @@ function initiateBlankTempElements(ID) {
     iframe.src = "../WebDocuments/BlankDocument.html?ID=" + ID;
     iframe.id = "temp?ID=" + ID;
     iframe.className = "innerIframe";
-    iframeContainer.appendChild(iframe);
-    container.appendChild(iframeContainer);
+    //iframeContainer.appendChild(iframe);
+    //container.appendChild(iframeContainer);
 
     document.body.appendChild(container);
 
@@ -277,7 +276,7 @@ function initiateBlankTempElements(ID) {
             'https://search.brave.com/search?q=Cors+Bypass+html',
             'https://www.perplexity.ai/?q=Cors+Bypass+html'
         ];
-        
+
         for (let i = 0; i < urls.length; i++) {
             var webview = document.createElement('webview');
             webview.setAttribute('id', 'webview' + i);
@@ -441,7 +440,35 @@ function NewTemplatePage() {
         activeProject.style.display = 'none';
         let button = document.querySelector('.buttonWrapperActive');
         button.className = 'buttonWrapper';
-
-
     }
+}
+
+function temporaryFunctionName(pih) {
+    if (pih == 0) {
+        var activeContainer = document.getElementsByClassName("activeContainer")[0];
+        var PDFContainer = document.createElement('div');
+        PDFContainer.className = "iframe-container";
+        PDFContainer.id = "pdf_iframe";
+
+        var PDFiFrame = document.createElement('iframe');
+        var ID = generateRandomHash()
+        PDFiFrame.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
+        PDFiFrame.id = "pdfViewer?ID=" + ID;
+        PDFiFrame.className = "innerIframe";
+        PDFContainer.appendChild(PDFiFrame);
+        activeContainer.appendChild(PDFContainer);
+    } else {
+        var activeContainer = document.getElementsByClassName("activeContainer")[0];
+        var BoardCOntainer = document.createElement('div');
+        BoardCOntainer.className = "iframe-container";
+        BoardCOntainer.id = "board_iframe";
+
+        var iframe = document.createElement('iframe');
+        iframe.src = "../WebDocuments/CanvasViewer.html?ID=" + ID;
+        iframe.id = "Board_Viewer?ID=" + ID;
+        iframe.className = "innerIframe";
+        BoardCOntainer.appendChild(iframe);
+        activeContainer.appendChild(BoardCOntainer);
+    }
+
 }

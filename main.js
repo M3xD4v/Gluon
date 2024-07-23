@@ -51,7 +51,7 @@ app.once('ready', () => {
             webviewTag: true
         }
     });
-    win.setAspectRatio(16 / 9);
+    //win.setAspectRatio(16 / 9);
     win.loadFile('./src/WebDocuments/Main.html')
     win.setMaximizable(true)
 

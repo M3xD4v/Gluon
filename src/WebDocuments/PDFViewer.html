@@ -12,7 +12,8 @@
 <script src="../../node_modules/pdfjs-dist/web/pdf_viewer.mjs" type="module"></script>
 <script src="../../src/JS/Other/ContextMenu.js" type="module"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
-<script src="../../src/JS/Other/PDFRenderer.js" type="module"></script> 
+<script src="../../src/JS/Other/PDFRenderer.js" type="module"></script>
+
 <body tabindex="1">
 
     <div id="customMenu" class="custom-menu" style="display: none;">
@@ -23,24 +24,33 @@
         <button id="copyAction" class="quick_button" onclick="promptAI('bullet')">Bullet Points</button>
         <button id="copyAction" class="quick_button" onclick="defineWord()">Define</button>
         <button id="copyAction" class="quick_button" onclick="synonymWord()">Synonym</button>
-        <button id="copyAction" class="quick_button"onclick="text_to_canvas()">to Canvas</button>
+        <button id="copyAction" class="quick_button" onclick="text_to_canvas()">to Canvas</button>
 
-        
+
 
     </div>
 
-    <div id="menu" class="canvas_toolbar" style="display: none;">
-        <button onclick="window.parent.toggleAiChat()" class="button">
-            <img src="../../assets/SVGs/ai.svg" style="width: 5vh;"><img>
+    <div id="menu" class="canvas_toolbar" style="">
+        <button onclick="resetPageZoom()" class="button">
+            Reset Zoom
+        </button>
+        <input type="range" min="0.1" max="2" step="0.1" value="1" oninput="changePageZoom(this.value)">
+        <button onclick="toggleMultiplePageView()" class="button">
+            MultiplePage
+        </button>
+        <button onclick="resetPageZoom()" class="button">
+            test
         </button>
     </div>
+
 
     <div id="viewerContainer" zoom="1">
         <div id="viewer" class="pdfViewer"></div>
     </div>
+
     
-    <button id="openpdf" onclick="window.parent.import_pdf()" class="importbutton">Import a PDF file</button>
-    
+    <button id="openpdf" onclick="window.parent.import_pdf(window.location)" class="importbutton">Import a PDF file</button>
+
 </body>
 <script>
     function exportPDF() {
@@ -63,6 +73,27 @@
         });
     }
 
+    function changePageZoom(value) {
+        var viewerContainer = window.document.getElementById('viewerContainer');
+        if (viewerContainer.getAttribute("zoom") == "page-width") {
+            viewerContainer.setAttribute("zoom", 1)
+        }
+        viewerContainer.setAttribute("zoom", value);
+        window.parent.showNotificationValue("zoom: " + value);
+    }
+
+    function resetPageZoom() {
+        var viewerContainer = window.document.getElementById('viewerContainer');
+        viewerContainer.setAttribute("zoom", "page-width")
+        window.parent.showNotificationValue("zoom: " + "page-width");
+    }
+    
+    function toggleMultiplePageView() {
+        var viewer = window.document.getElementById('viewer');
+        viewer.classList.toggle('pdfViewer');
+        viewer.classList.toggle('pdfViewer_MultiplePage');
+    }
+
     function promptAI(type) {
         let selectedText = window.getSelection().toString();
         window.parent.ipcRenderer.send('AI', selectedText, type);
@@ -71,139 +102,138 @@
     function text_to_canvas() {
         let selectedText = window.getSelection().toString();
         window.parent.text_to_canvas(selectedText);
-    
+
     }
+
     function defineWord() {
         let word = window.getSelection().toString();
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
-                let string = data[0].meanings[0].definitions[0].definition
-                window.parent.createPromptMenu(string, "Definition");
-            } else {
-                window.parent.showNotification("No definition found for the word", 1);
-            }
-        })
-        .catch(error => console.error(`Error: ${error}`));
-}
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
+                    let string = data[0].meanings[0].definitions[0].definition
+                    window.parent.createPromptMenu(string, "Definition");
+                } else {
+                    window.parent.showNotification("No definition found for the word", 1);
+                }
+            })
+            .catch(error => console.error(`Error: ${error}`));
+    }
 
-function synonymWord() {
+    function synonymWord() {
         let word = window.getSelection().toString();
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
-                let string = data[0].meanings[0].synonyms
-                window.parent.createPromptMenu(string, "Synonym");
-            } else {
-                window.parent.showNotification("No definition found for the word", 1);
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data[0] && data[0].meanings[0] && data[0].meanings[0].definitions[0]) {
+                    let string = data[0].meanings[0].synonyms
+                    window.parent.createPromptMenu(string, "Synonym");
+                } else {
+                    window.parent.showNotification("No definition found for the word", 1);
+                }
+            })
+            .catch(error => console.error(`Error: ${error}`));
+    }
+
+    function testWebView() {
+        let container = document.createElement("div");
+        container.className = "draggable-container";
+
+        let element = document.createElement("webview");
+        element.src = "https://www.perplexity.ai/";
+        element.style.width = "100%";
+        element.style.height = "100%";
+
+        let button = document.createElement("div");
+        button.className = "draggable-button";
+
+        container.appendChild(button);
+        container.appendChild(element);
+        window.parent.document.body.appendChild(container);
+
+        // Variables to store the initial position and mouse position
+        let isDraggingg = false;
+        let initialX, initialY, mouseX, mouseY;
+
+        // Mouse down event to start dragging
+        button.addEventListener('mousedown', (e) => {
+            isDraggingg = true;
+            initialX = container.offsetLeft;
+            initialY = container.offsetTop + 60;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            container.style.cursor = "grabbing";
+        });
+
+        // Mouse move event to drag the element
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingg) {
+                const dx = e.clientX - mouseX;
+                const dy = e.clientY - mouseY;
+                container.style.left = `${initialX + dx}px`;
+                container.style.top = `${initialY + dy}px`;
             }
-        })
-        .catch(error => console.error(`Error: ${error}`));
-}
+        });
 
-function testWebView() {
-            let container = document.createElement("div");
-            container.className = "draggable-container";
+        // Mouse up event to stop dragging
+        document.addEventListener('mouseup', () => {
+            isDraggingg = false;
+            container.style.cursor = "grab";
+        });
+    }
 
-            let element = document.createElement("webview");
-            element.src = "https://www.perplexity.ai/";
-            element.style.width = "100%";
-            element.style.height = "100%";
+    function testWiki() {
+        let container = document.createElement("div");
+        container.className = "draggable-container";
+        let url = "https://www.google.com/search?q=" + window.getSelection().toString();
+        console.log(url);
+        let element = document.createElement("webview");
+        element.src = url;
+        element.style.width = "100%";
+        element.style.height = "100%";
 
-            let button = document.createElement("div");
-            button.className = "draggable-button";
+        let button = document.createElement("div");
+        button.className = "draggable-button";
 
-            container.appendChild(button);
-            container.appendChild(element);
-            window.parent.document.body.appendChild(container);
+        container.appendChild(button);
+        container.appendChild(element);
+        window.parent.document.body.appendChild(container);
 
-            // Variables to store the initial position and mouse position
-            let isDraggingg = false;
-            let initialX, initialY, mouseX, mouseY;
+        // Variables to store the initial position and mouse position
+        let isDraggingg = false;
+        let initialX, initialY, mouseX, mouseY;
 
-            // Mouse down event to start dragging
-            button.addEventListener('mousedown', (e) => {
-                isDraggingg = true;
-                initialX = container.offsetLeft;
-                initialY = container.offsetTop + 60;
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                container.style.cursor = "grabbing";
-            });
+        // Mouse down event to start dragging
+        button.addEventListener('mousedown', (e) => {
+            isDraggingg = true;
+            initialX = container.offsetLeft;
+            initialY = container.offsetTop + 60;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            container.style.cursor = "grabbing";
+        });
 
-            // Mouse move event to drag the element
-            document.addEventListener('mousemove', (e) => {
-                if (isDraggingg) {
-                    const dx = e.clientX - mouseX;
-                    const dy = e.clientY - mouseY;
-                    container.style.left = `${initialX + dx}px`;
-                    container.style.top = `${initialY + dy}px`;
-                }
-            });
+        // Mouse move event to drag the element
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingg) {
+                const dx = e.clientX - mouseX;
+                const dy = e.clientY - mouseY;
+                container.style.left = `${initialX + dx}px`;
+                container.style.top = `${initialY + dy}px`;
+            }
+        });
 
-            // Mouse up event to stop dragging
-            document.addEventListener('mouseup', () => {
-                isDraggingg = false;
-                container.style.cursor = "grab";
-            });
-        }
-
-        function testWiki() {
-            let container = document.createElement("div");
-            container.className = "draggable-container";
-            let url = "https://www.google.com/search?q=" + window.getSelection().toString();
-            console.log(url);
-            let element = document.createElement("webview");
-            element.src = url;
-            element.style.width = "100%";
-            element.style.height = "100%";
-
-            let button = document.createElement("div");
-            button.className = "draggable-button";
-
-            container.appendChild(button);
-            container.appendChild(element);
-            window.parent.document.body.appendChild(container);
-
-            // Variables to store the initial position and mouse position
-            let isDraggingg = false;
-            let initialX, initialY, mouseX, mouseY;
-
-            // Mouse down event to start dragging
-            button.addEventListener('mousedown', (e) => {
-                isDraggingg = true;
-                initialX = container.offsetLeft;
-                initialY = container.offsetTop + 60;
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                container.style.cursor = "grabbing";
-            });
-
-            // Mouse move event to drag the element
-            document.addEventListener('mousemove', (e) => {
-                if (isDraggingg) {
-                    const dx = e.clientX - mouseX;
-                    const dy = e.clientY - mouseY;
-                    container.style.left = `${initialX + dx}px`;
-                    container.style.top = `${initialY + dy}px`;
-                }
-            });
-
-            // Mouse up event to stop dragging
-            document.addEventListener('mouseup', () => {
-                isDraggingg = false;
-                container.style.cursor = "grab";
-            });
-        }
-        // Call the function to create the draggable webview
-
-
-
+        // Mouse up event to stop dragging
+        document.addEventListener('mouseup', () => {
+            isDraggingg = false;
+            container.style.cursor = "grab";
+        });
+    }
+    // Call the function to create the draggable webview
 </script>
 <style>
     @import url('global.css');
+
     body {
         background-color: #ffffff;
         margin: 0;
@@ -233,18 +263,18 @@ function testWebView() {
         background-color: white;
         border: 0.25vh solid #000000;
     }
+
     .importbutton {
-    height: 5vh;
-    top: 50%;
-    left: 50%;
-    background: var(--background-color);
-    color: var(--text-color);
-    border:0;
-    border-radius: var(--radius);
-    position: absolute;
-    transform: translateX(-50%);
+        height: 5vh;
+        top: 50%;
+        left: 50%;
+        background: var(--background-color);
+        color: var(--text-color);
+        border: 0;
+        border-radius: var(--radius);
+        position: absolute;
+        transform: translateX(-50%);
     }
-    
 </style>
 
 

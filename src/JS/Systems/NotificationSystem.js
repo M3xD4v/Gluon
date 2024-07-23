@@ -19,7 +19,7 @@ function showNotificationValue(text) {
     notification.style.position = "fixed";
     notification.style.top = "80vh";
     notification.style.padding = "10px 20px";
-    notification.style.color = "#00000061";
+    notification.style.color = "#FF4500";
     notification.style.transition = "color 0.5s ease";
     setTimeout(() => {
         notification.style.color = "transparent";
@@ -42,7 +42,7 @@ function showNotificationValue(text) {
     notification.style.position = "fixed";
     notification.style.top = "80vh";
     notification.style.padding = "10px 20px";
-    notification.style.color = "#00000061";
+    notification.style.color = "#FF4500";
     notification.style.transition = "color 0.5s ease";
     setTimeout(() => {
         notification.style.color = "transparent";
