@@ -95,7 +95,6 @@ function addEventListeners(PDF_Iframe, Board_Iframe) {
         let lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body.scrollTop;
 
         iframeDocument.addEventListener('scroll', debounce(() => {
-            console.log("a")
             lastScrollTop = iframeDocument.documentElement.scrollTop || iframeDocument.body
                 .scrollTop;
             if (activeIframe === 'Board') {
@@ -116,6 +115,7 @@ function addEventListeners(PDF_Iframe, Board_Iframe) {
 
 function initiateSplitElements(ID) {
     var container = document.createElement('div');
+    container.dataset.type = "SplitView";
     container.className = "container activeContainer";
     container.id = ID;
 
@@ -129,12 +129,12 @@ function initiateSplitElements(ID) {
 
     var PDFiFrame = document.createElement('iframe');
     PDFiFrame.src = "../WebDocuments/PDFViewer.html?ID=" + ID;
-    PDFiFrame.id = "pdfViewer";
+    PDFiFrame.id = "pdfViewer?ID="+ ID;
     PDFiFrame.className = "innerIframe";
 
     var BoardIFrame = document.createElement('iframe');
     BoardIFrame.src = "../WebDocuments/CanvasViewer.html?ID=" + ID;
-    BoardIFrame.id = "Board_Viewer";
+    BoardIFrame.id = "Board_Viewer?ID="+ ID;
     BoardIFrame.className = "innerIframe";
 
     PDFContainer.appendChild(PDFiFrame);
@@ -149,7 +149,9 @@ function initiateSplitElements(ID) {
         Board_Iframe: BoardIFrame
     };
     changeActiveIFrames(ID)
-    addEventListeners(iframes[ID].PDF_Iframe, iframes[ID].Board_Iframe);
+    // Fix Scroll Sync later
+    // Change sync logic to use IDs, Add resync button, resync calibration
+    //addEventListeners(iframes[ID].PDF_Iframe, iframes[ID].Board_Iframe);
 
     BoardIFrame.onload = function () {
         updateIframeTheme();
@@ -169,6 +171,7 @@ function ReadProject() {
 
 function initiateReadElements(ID) {
     var container = document.createElement('div');
+    container.dataset.type = "ReadView";
     container.className = "container activeContainer";
     container.id = ID;
 
@@ -209,6 +212,7 @@ function BoardProject() {
 
 function initiateBoardElements(ID) {
     var container = document.createElement('div');
+    container.dataset.type = "BoardView";
     container.className = "container activeContainer";
     container.id = ID;
 
@@ -342,10 +346,10 @@ function splitLoadProject(projectFile) {
     var containerHTML = `
     <div class="container activeContainer" id="${projectFile.id}">
         <div class="iframe-container" id="pdf_iframe">
-            <iframe src="../WebDocuments/PDFViewer.html" id="pdfViewer" class="innerIframe"></iframe>
+            <iframe src="../WebDocuments/PDFViewer.html" id="${projectFile.pdfID}" class="innerIframe"></iframe>
         </div>
         <div class="iframe-container" id="board_iframe">
-            <iframe src="../WebDocuments/CanvasViewer.html" id="Board_Viewer" class="innerIframe"></iframe>
+            <iframe src="../WebDocuments/CanvasViewer.html" id="${projectFile.BoardID}" class="innerIframe"></iframe>
         </div>
     </div>`;
 
@@ -353,15 +357,14 @@ function splitLoadProject(projectFile) {
     container.innerHTML = containerHTML;
     document.body.appendChild(container.firstElementChild);
 
-
-
     setTimeout(() => {
         iframes[projectFile.id] = {
-            PDF_Iframe: document.getElementById('pdfViewer'),
-            Board_Iframe: document.getElementById('Board_Viewer')
+            PDF_Iframe: document.getElementById(projectFile.pdfID),
+            Board_Iframe: document.getElementById(projectFile.BoardID)
         };
 
-        addEventListeners(iframes[projectFile.id].PDF_Iframe, iframes[projectFile.id].Board_Iframe);
+        // Implement sync scroll later
+        //addEventListeners(iframes[projectFile.id].PDF_Iframe, iframes[projectFile.id].Board_Iframe);
 
         let pdf_data = base64ToArray(projectFile.pdfData);
         let board_data = projectFile.boardData;
@@ -372,15 +375,78 @@ function splitLoadProject(projectFile) {
 
 }
 
-function loadProject(projectFile) {
-    if (projectFile.viewType === "SplitView") {
-        let id = projectFile.id;
-        activeID = id;
+function boardLoadProject(projectFile) {
+    let startmenu = document.getElementById("StartMenuContainer");
+    startmenu.style.display = "none";
+    if (document.getElementsByClassName('activeContainer').length > 0) {
+        let element = document.getElementsByClassName('activeContainer')[0];
+        element.classList.remove('activeContainer');
+        element.style.display = 'none';
+    }
+
+    var containerHTML = `
+    <div class="container activeContainer" id="${projectFile.id}">
+        <div class="iframe-container" id="board_iframe">
+            <iframe src="../WebDocuments/CanvasViewer.html" id="${projectFile.BoardID}" class="innerIframe"></iframe>
+        </div>
+    </div>`;
+
+    var container = document.createElement('div');
+    container.innerHTML = containerHTML;
+    document.body.appendChild(container.firstElementChild);
+
+    setTimeout(() => {
+        iframes[projectFile.id] = {
+            Board_Iframe: document.getElementById(projectFile.BoardID)
+        };
+        let board_data = projectFile.boardData;
+        iframes[projectFile.id].Board_Iframe.contentWindow.importCanvas(board_data);
+    }, 1000);
+}
+
+function readLoadProject(projectFile) {
+    let startmenu = document.getElementById("StartMenuContainer");
+    startmenu.style.display = "none";
+    if (document.getElementsByClassName('activeContainer').length > 0) {
+        let element = document.getElementsByClassName('activeContainer')[0];
+        element.classList.remove('activeContainer');
+        element.style.display = 'none';
+    }
+
+    var containerHTML = `
+    <div class="container activeContainer" id="${projectFile.id}">
+        <div class="iframe-container" id="pdf_iframe">
+            <iframe src="../WebDocuments/PDFViewer.html" id="${projectFile.pdfID}" class="innerIframe"></iframe>
+        </div>
+    </div>`;
+
+    var container = document.createElement('div');
+    container.innerHTML = containerHTML;
+    document.body.appendChild(container.firstElementChild);
+
+    setTimeout(() => {
+        iframes[projectFile.id] = {
+            PDF_Iframe: document.getElementById(projectFile.pdfID),
+        };
         let pdf_data = base64ToArray(projectFile.pdfData);
         let board_data = projectFile.boardData;
+        iframes[projectFile.id].PDF_Iframe.contentWindow.loadNewPDF(pdf_data);
+    }, 1000);
+
+}
+
+function loadProject(projectFile) {
+    if (projectFile.viewType === "SplitView") {
+        if (document.getElementById(projectFile.id) != null) {
+            showNotification("File is already open in another tab", 1);
+            return;
+        }
+        let id = projectFile.id;
+        let pdf_data = base64ToArray(projectFile.pdfData);
+        let board_data = projectFile.boardData;
+        activeID = id;
+
         splitLoadProject(projectFile)
-
-
         let activeNavbar = document.querySelector('.buttonWrapperActive');
         if (activeNavbar != null) {
             activeNavbar.className = 'buttonWrapper';
@@ -391,8 +457,46 @@ function loadProject(projectFile) {
             board: board_data
         };
         loadedWorkspaces[id] = Data;
-        console.log(loadedWorkspaces)
+    } else if (projectFile.viewType === "BoardView") {
+        if (document.getElementById(projectFile.id) != null) {
+            showNotification("File is already open in another tab", 1);
+            return;
+        }
+        let id = projectFile.id;
+        let board_data = projectFile.boardData;
+        activeID = id;
+
+        boardLoadProject(projectFile)
+        let activeNavbar = document.querySelector('.buttonWrapperActive');
+        if (activeNavbar != null) {
+            activeNavbar.className = 'buttonWrapper';
+        }
+        addNewNavBarElement('New File', id);
+        let Data = {
+            pdf: pdf_data,
+            board: board_data
+        };
+        loadedWorkspaces[id] = Data;
+    } else if (projectFile.viewType === "ReadView") {
+        if (document.getElementById(projectFile.id) != null) {
+            showNotification("File is already open in another tab", 1);
+            return;
+        }
+        let id = projectFile.id;
+        let pdf_data = base64ToArray(projectFile.pdfData);
+        activeID = id;
+
+        readLoadProject(projectFile)
+        let activeNavbar = document.querySelector('.buttonWrapperActive');
+        if (activeNavbar != null) {
+            activeNavbar.className = 'buttonWrapper';
+        }
+        addNewNavBarElement('New File', id);
+        let Data = {
+            pdf: pdf_data,        };
+        loadedWorkspaces[id] = Data;
     }
+    else showNotification("Unknown Type at loadProject()", 1);
 }
 
 function swapToProject(id) {

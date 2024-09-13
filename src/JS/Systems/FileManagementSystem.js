@@ -23,12 +23,11 @@
         openDialog("import_pdf")
         const urlObj = new URL(IFrame_URL);
         const id = urlObj.searchParams.get("ID");
-        let pdfID = "pdfViewer?ID=" + id 
+        let pdfID = "pdfViewer?ID=" + id ;
         ipcRenderer.once('importpdf_response', (event, file) => {
             let int8Array = new Int8Array(file);
-            console.log(pdfID)
-            let container = document.getElementById(pdfID)
-            container.contentWindow.loadNewPDF(int8Array)
+            let container = document.getElementById(pdfID);
+            container.contentWindow.loadNewPDF(int8Array);
         });
     }
 
@@ -39,33 +38,17 @@
     }
     function export_svg() {
         let boardWindow = Board_Iframe.contentDocument.defaultView
-        let svg = boardWindow.exportSVG();
+        let svg = boardWindow.exportSVG();s
         openDialog("export_svg", svg);
-    }
-    function save_File() {
-        let pdfWindow = PDF_Iframe.contentDocument.defaultView
-        let boardWindow = Board_Iframe.contentDocument.defaultView
-        let pdf_data = pdfWindow.exportPDF()
-        boardWindow.exportCanvas();
     }
 
     function save_project() {
-        let pdfWindow = PDF_Iframe.contentDocument.defaultView
-        let boardWindow = Board_Iframe.contentDocument.defaultView
+        let type = document.getElementsByClassName("activeContainer")[0].dataset.type;
 
-        let pdf_data;
-        let board_data = boardWindow.exportBoard()
-
-        pdfWindow.exportPDF().then(function (binaryData) {
-
-            let combinedData = JSON.stringify({
-                id: generateRandomHash(),
-                pdfData: arrayToBase64(binaryData),
-                boardData: board_data,
-                viewType: "SplitView"
-            });
-            openDialog("saveproject", combinedData)
-        });
+        if (type == "SplitView") save_splitview_project();
+        else if (type == "ReadView") save_readview_project();
+        else if (type == "BoardView") save_boardview_project();
+        else window.parent.showNotification("Saveing: Unknown type at save_project()", 1);
     }
 
     function load_project() {
@@ -75,4 +58,48 @@
                 loadProject(json)
         });
 
+    }
+
+    function save_splitview_project() {
+        let pdfWindow = PDF_Iframe.contentDocument.defaultView
+        let boardWindow = Board_Iframe.contentDocument.defaultView
+        let board_data = boardWindow.exportBoard()
+
+        pdfWindow.exportPDF().then(function (binaryData) {
+
+            let combinedData = JSON.stringify({
+                id: generateRandomHash(),
+                pdfID: pdfWindow.frameElement.id,
+                BoardID: boardWindow.frameElement.id,
+                pdfData: arrayToBase64(binaryData),
+                boardData: board_data,
+                viewType: "SplitView"
+            });
+            openDialog("saveproject", combinedData)
+        });
+    }
+
+    function save_readview_project() {
+        let pdfWindow = PDF_Iframe.contentDocument.defaultView
+        pdfWindow.exportPDF().then(function (binaryData) {
+            let combinedData = JSON.stringify({
+                id: generateRandomHash(),
+                pdfID: pdfWindow.frameElement.id,
+                pdfData: arrayToBase64(binaryData),
+                viewType: "ReadView"
+            });
+            openDialog("saveproject", combinedData)
+        });
+    }
+
+    function save_boardview_project() {
+        let boardWindow = Board_Iframe.contentDocument.defaultView
+        let board_data = boardWindow.exportBoard()
+        let combinedData = JSON.stringify({
+            id: generateRandomHash(),
+            BoardID: boardWindow.frameElement.id,
+            boardData: board_data,
+            viewType: "BoardView"
+        });
+            openDialog("saveproject", combinedData)
     }

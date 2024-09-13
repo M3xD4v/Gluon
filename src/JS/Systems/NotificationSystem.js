@@ -3,8 +3,11 @@ function showNotification(text, time) {
     let notification = document.getElementById("notification");
     let seconds = time * 1000 + 1000;
     notification.style.transition = "top " + 0.5 + "s " + "ease";
-    notification.style.top = "25px";
+    notification.style.top = "50px";
     notification.innerHTML = text;
+    notification.style.backgroundColor = "rgb(2 2 2 / 65%)"; 
+    notification.style.border = 0;
+    notification.style.color = "white";
     setTimeout(() => {
         notification.style.top = "-16vh";
     }, seconds);

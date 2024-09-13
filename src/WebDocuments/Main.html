@@ -35,8 +35,10 @@
 
 <body>
 
+    <!-- Implement later on
     <button onclick="temporaryFunctionName(0)" style="position: absolute; left: 1000px;">add reading module</button>
-    <button onclick="temporaryFunctionName(1)" style="position: absolute; left: 1500px;">add drawing module</button>
+    <button onclick="temporaryFunctionName(1)" style="position: absolute; left: 1500px;">add drawing module</button> 
+    -->
 
     <div id="notification">This is a notification</div>
     <div class="StartMenuContainer" id="StartMenuContainer">
@@ -129,7 +131,7 @@
 
 <script>
     var VisibleContainer;
-    var CurrnetTheme = "a";
+    var CurrnetTheme = "b";
     var PDF_Iframe;
     var Board_Iframe;
 
@@ -212,6 +214,7 @@
 
     function syncScroll_Second(value) {
         var PDF_Iframe = document.getElementById('pdfViewer');
+        console.log(PDF_iframe)
         var PDF_iframeDocument = PDF_Iframe.contentDocument || PDF_Iframe.contentWindow.document;
         var PDF_DIV = PDF_iframeDocument.getElementById('viewerContainer');
         PDF_DIV.scrollTo(0, value);

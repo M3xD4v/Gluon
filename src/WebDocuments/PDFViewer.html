@@ -39,7 +39,7 @@
             MultiplePage
         </button>
         <button onclick="resetPageZoom()" class="button">
-            test
+            ResetZoom
         </button>
     </div>
 
@@ -92,6 +92,7 @@
         var viewer = window.document.getElementById('viewer');
         viewer.classList.toggle('pdfViewer');
         viewer.classList.toggle('pdfViewer_MultiplePage');
+        window.parent.showNotificationValue("Multiple Page View Toggled");
     }
 
     function promptAI(type) {
