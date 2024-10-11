@@ -162,10 +162,11 @@ html {
 
 .textbox {
   position: absolute;
-  border: 1px solid black;
+  border: 1px solid rgba(255, 255, 255, 0.355);
   padding: 5px;
   resize: both;
   overflow: auto;
+  color:white
 
 }
 

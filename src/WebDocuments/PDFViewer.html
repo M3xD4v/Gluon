@@ -200,11 +200,9 @@
         container.appendChild(element);
         window.parent.document.body.appendChild(container);
 
-        // Variables to store the initial position and mouse position
         let isDraggingg = false;
         let initialX, initialY, mouseX, mouseY;
 
-        // Mouse down event to start dragging
         button.addEventListener('mousedown', (e) => {
             isDraggingg = true;
             initialX = container.offsetLeft;
@@ -214,7 +212,6 @@
             container.style.cursor = "grabbing";
         });
 
-        // Mouse move event to drag the element
         document.addEventListener('mousemove', (e) => {
             if (isDraggingg) {
                 const dx = e.clientX - mouseX;
@@ -224,13 +221,11 @@
             }
         });
 
-        // Mouse up event to stop dragging
         document.addEventListener('mouseup', () => {
             isDraggingg = false;
             container.style.cursor = "grab";
         });
     }
-    // Call the function to create the draggable webview
 </script>
 <style>
     @import url('global.css');
